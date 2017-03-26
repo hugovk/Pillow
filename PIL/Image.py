@@ -46,6 +46,13 @@ class _imaging_not_installed(object):
 # Limit to around a quarter gigabyte for a 24 bit (3 bpp) image
 MAX_IMAGE_PIXELS = int(1024 * 1024 * 1024 // 4 // 3)
 
+# TEMP FOR TESTING: Add fake lines to artificially increase code coverage to 
+# see how it looks with codecov
+aaaa = 1
+bbbb = 2
+cccc = 3
+dddd = 4
+eeee = 5
 
 try:
     # If the _imaging C module is not present, Pillow will not load.
@@ -2707,5 +2714,5 @@ def radial_gradient(mode):
     Generate 256x256 radial gradient from black to white, centre to edge.
 
     :param mode: Input mode.
-    """
+    """    
     return Image()._new(core.radial_gradient(mode))
