@@ -4,6 +4,15 @@ Changelog (Pillow)
 4.2.0 (unreleased)
 ------------------
 
+- Set executable flag on scripts with shebang line #2295
+  [radarhere]
+
+- Flake8 #2460
+  [radarhere]
+
+- Doc: Release Process Changes #2516
+  [wiredfool]
+  
 - CI: Added region for s3 deployment on appveyor #2515
   [wiredfool]
   
@@ -2535,7 +2544,7 @@ Pre-fork
 
         import numpy, Image
 
-        im = Image.open('lena.jpg')
+        im = Image.open('hopper.jpg')
 
         a = numpy.asarray(im) # a is readonly
 
