@@ -16,8 +16,8 @@ pip install pyroma
 pip install test-image-results
 pip install numpy
 
-# docs only on Python 2.7
-if [ "$TRAVIS_PYTHON_VERSION" == "2.7" ]; then pip install -r requirements.txt ; fi
+# docs only on Python 3.7
+if [ "$TRAVIS_PYTHON_VERSION" == "3.7" ]; then pip install -r requirements.txt ; fi
 
 # webp
 pushd depends && ./install_webp.sh && popd
