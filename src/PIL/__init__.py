@@ -13,14 +13,35 @@ Use PIL.__version__ for this Pillow version.
 ;-)
 """
 
+import sys
+import warnings
+
 from . import _version
 
 # VERSION was removed in Pillow 6.0.0.
 # PILLOW_VERSION is deprecated and will be removed in a future release.
 # Use __version__ instead.
-PILLOW_VERSION = __version__ = _version.__version__
+__version__ = _version.__version__
 
 del _version
+
+
+if sys.version_info >= (3, 7):
+
+    def __getattr__(name):
+        if name == "PILLOW_VERSION":
+            warnings.warn(
+                "PILLOW_VERSION is deprecated and will be removed in a future release. "
+                "Use __version__ instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return __version__
+        raise AttributeError("module '{}' has no attribute '{}'".format(__name__, name))
+
+
+else:
+    PILLOW_VERSION = __version__
 
 
 _plugins = [

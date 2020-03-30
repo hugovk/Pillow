@@ -1,6 +1,7 @@
 import io
 import os
 import shutil
+import sys
 import tempfile
 
 import pytest
@@ -630,6 +631,17 @@ class TestImage:
                 assert False
             except OSError as e:
                 assert str(e) == "buffer overrun when reading image file"
+
+    def test_deprecated_pillow_version(self):
+        if sys.version_info >= (3, 7):
+            expected = DeprecationWarning
+        else:
+            expected = None
+
+        with pytest.warns(expected):
+            version = Image.PILLOW_VERSION
+
+        assert version == Image.__version__
 
 
 class MockEncoder:

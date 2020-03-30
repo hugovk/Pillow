@@ -41,19 +41,27 @@ from pathlib import Path
 # VERSION was removed in Pillow 6.0.0.
 # PILLOW_VERSION is deprecated and will be removed in a future release.
 # Use __version__ instead.
-from . import (
-    PILLOW_VERSION,
-    ImageMode,
-    TiffTags,
-    UnidentifiedImageError,
-    __version__,
-    _plugins,
-)
+from . import ImageMode, TiffTags, UnidentifiedImageError, __version__, _plugins
 from ._binary import i8, i32le
 from ._util import deferred_error, isPath
 
-# Silence warning
-assert PILLOW_VERSION
+if sys.version_info >= (3, 7):
+
+    def __getattr__(name):
+        if name == "PILLOW_VERSION":
+            warnings.warn(
+                "PILLOW_VERSION is deprecated and will be removed in a future release. "
+                "Use __version__ instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return __version__
+        raise AttributeError("module '{}' has no attribute '{}'".format(__name__, name))
+
+
+else:
+    PILLOW_VERSION = __version__
+
 
 logger = logging.getLogger(__name__)
 
