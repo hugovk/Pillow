@@ -42,7 +42,7 @@ Several deprecated items have been removed.
 * Before Pillow 4.2.0, attempting to save an RGBA image as JPEG would
   discard the alpha channel. From Pillow 3.4.0, a deprecation warning
   was shown. From Pillow 4.2.0, the deprecation warning is removed and
-  an :py:exc:`IOError` is raised.
+  an :py:exc:`OSError` is raised.
 
 Removed Core Image Function
 ===========================
