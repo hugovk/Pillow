@@ -75,7 +75,7 @@ IncludeCategories:
 IncludeIsMainRegex: '(Test)?$'
 IndentCaseLabels: false
 IndentPPDirectives: None
-IndentWidth:     2
+IndentWidth:     4
 IndentWrappedFunctionNames: false
 JavaScriptQuotes: Leave
 JavaScriptWrapImports: true
@@ -85,7 +85,7 @@ MacroBlockEnd:   ''
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 ObjCBinPackProtocolList: Auto
-ObjCBlockIndentWidth: 2
+ObjCBlockIndentWidth: 4
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
 PenaltyBreakAssignment: 2
