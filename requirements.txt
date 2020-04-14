@@ -9,4 +9,5 @@ pyflakes
 pyroma
 pytest
 pytest-cov
+pytest-reverse
 sphinx-rtd-theme

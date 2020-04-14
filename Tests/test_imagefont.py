@@ -460,6 +460,7 @@ class TestImageFont:
         assert_image_similar_tofile(img, target, self.metrics["multiline"])
 
     def _test_fake_loading_font(self, monkeypatch, path_to_fake, fontname):
+        print(path_to_fake, fontname)
         # Make a copy of FreeTypeFont so we can patch the original
         free_type_font = copy.deepcopy(ImageFont.FreeTypeFont)
         with monkeypatch.context() as m:

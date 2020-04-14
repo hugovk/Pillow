@@ -27,6 +27,7 @@ pip install coverage
 pip install olefile
 pip install -U pytest
 pip install -U pytest-cov
+pip install -U pytest-reverse
 pip install pyroma
 pip install test-image-results
 pip install numpy
