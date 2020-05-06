@@ -13,12 +13,10 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
 
-int
-ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
-              UINT8* buf, Py_ssize_t bytes)
+int ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
+    UINT8* buf, Py_ssize_t bytes)
 {
     UINT8 n;
     UINT8* ptr;
@@ -35,7 +33,8 @@ ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
 
             if (ptr[0] == 0x80) {
                 /* Nop */
-                ptr++; bytes--;
+                ptr++;
+                bytes--;
                 continue;
             }
 
@@ -51,12 +50,13 @@ ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
                 state->buffer[state->x++] = ptr[1];
             }
 
-            ptr += 2; bytes -= 2;
+            ptr += 2;
+            bytes -= 2;
 
         } else {
 
             /* Literal */
-            n = ptr[0]+2;
+            n = ptr[0] + 2;
 
             if (bytes < n)
                 return ptr - buf;
@@ -69,16 +69,15 @@ ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
                 state->buffer[state->x++] = ptr[i];
             }
 
-            ptr += n; bytes -= n;
-
+            ptr += n;
+            bytes -= n;
         }
 
         if (state->x >= state->bytes) {
 
             /* Got a full line, unpack it */
-            state->shuffle((UINT8*) im->image[state->y + state->yoff] +
-                   state->xoff * im->pixelsize, state->buffer,
-                   state->xsize);
+            state->shuffle((UINT8*)im->image[state->y + state->yoff] + state->xoff * im->pixelsize, state->buffer,
+                state->xsize);
 
             state->x = 0;
 
@@ -87,6 +86,5 @@ ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
                 return -1;
             }
         }
-
     }
 }

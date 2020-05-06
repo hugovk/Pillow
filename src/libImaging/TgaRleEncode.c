@@ -4,16 +4,13 @@
 #include <assert.h>
 #include <string.h>
 
-
 static int comparePixels(const UINT8* buf, int x, int bytesPerPixel)
 {
     buf += x * bytesPerPixel;
     return memcmp(buf, buf + bytesPerPixel, bytesPerPixel) == 0;
 }
 
-
-int
-ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
+int ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
 {
     UINT8* dst;
     int bytesPerPixel;

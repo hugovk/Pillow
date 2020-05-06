@@ -7,14 +7,12 @@
  * Copyright (c) Fredrik Lundh 1995-96.
  */
 
-
 /* Max size for a LZW code word. */
 
-#define GIFBITS     12
+#define GIFBITS 12
 
-#define GIFTABLE    (1<<GIFBITS)
-#define GIFBUFFER   (1<<GIFBITS)
-
+#define GIFTABLE (1 << GIFBITS)
+#define GIFBUFFER (1 << GIFBITS)
 
 typedef struct {
 
@@ -65,9 +63,8 @@ typedef struct {
 
 } GIFDECODERSTATE;
 
-typedef struct GIFENCODERBLOCK_T
-{
-    struct GIFENCODERBLOCK_T *next;
+typedef struct GIFENCODERBLOCK_T {
+    struct GIFENCODERBLOCK_T* next;
     int size;
     UINT8 data[255];
 } GIFENCODERBLOCK;

@@ -62,7 +62,7 @@
 #define INT64 long
 #endif
 
-#define INT8  signed char
+#define INT8 signed char
 #define UINT8 unsigned char
 
 #define UINT16 unsigned INT16
@@ -76,11 +76,11 @@
 #define FLOAT64 double
 
 #ifdef _MSC_VER
-typedef signed __int64       int64_t;
+typedef signed __int64 int64_t;
 #endif
 
 #ifdef __GNUC__
-    #define GCC_VERSION (__GNUC__ * 10000 \
-                       + __GNUC_MINOR__ * 100 \
-                       + __GNUC_PATCHLEVEL__)
+#define GCC_VERSION (__GNUC__ * 10000 \
+    + __GNUC_MINOR__ * 100            \
+    + __GNUC_PATCHLEVEL__)
 #endif

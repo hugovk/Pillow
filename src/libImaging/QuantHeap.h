@@ -16,12 +16,12 @@
 
 typedef struct _Heap Heap;
 
-typedef int (*HeapCmpFunc)(const Heap *,const void *,const void *);
+typedef int (*HeapCmpFunc)(const Heap*, const void*, const void*);
 
-void ImagingQuantHeapFree(Heap *);
-int ImagingQuantHeapRemove(Heap *,void **);
-int ImagingQuantHeapAdd(Heap *,void *);
-int ImagingQuantHeapTop(Heap *,void **);
-Heap *ImagingQuantHeapNew(HeapCmpFunc);
+void ImagingQuantHeapFree(Heap*);
+int ImagingQuantHeapRemove(Heap*, void**);
+int ImagingQuantHeapAdd(Heap*, void*);
+int ImagingQuantHeapTop(Heap*, void**);
+Heap* ImagingQuantHeapNew(HeapCmpFunc);
 
 #endif // __QUANTHEAP_H__
