@@ -19,7 +19,7 @@ typedef struct {
 
     /* Lookup table (not implemented) */
     unsigned long lutsize;
-    FLOAT32* lut;
+    FLOAT32 *lut;
 
     /* INTERNAL */
     unsigned long mask;

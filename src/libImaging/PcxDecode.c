@@ -13,14 +13,12 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
 
-int
-ImagingPcxDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t bytes)
-{
+int ImagingPcxDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
+                     Py_ssize_t bytes) {
     UINT8 n;
-    UINT8* ptr;
+    UINT8 *ptr;
 
     if ((state->xsize * state->bits + 7) / 8 > state->bytes) {
         state->errcode = IMAGING_CODEC_OVERRUN;
@@ -51,14 +49,15 @@ ImagingPcxDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
                 n--;
             }
 
-            ptr += 2; bytes -= 2;
+            ptr += 2;
+            bytes -= 2;
 
         } else {
 
             /* Literal */
             state->buffer[state->x++] = ptr[0];
-            ptr++; bytes--;
-
+            ptr++;
+            bytes--;
         }
 
         if (state->x >= state->bytes) {
@@ -66,16 +65,15 @@ ImagingPcxDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
                 int bands = state->bytes / state->xsize;
                 int stride = state->bytes / bands;
                 int i;
-                for (i=1; i< bands; i++) {  // note -- skipping first band
-                    memmove(&state->buffer[i*state->xsize],
-                            &state->buffer[i*stride],
-                            state->xsize);
+                for (i = 1; i < bands; i++) { // note -- skipping first band
+                    memmove(&state->buffer[i * state->xsize],
+                            &state->buffer[i * stride], state->xsize);
                 }
             }
             /* Got a full line, unpack it */
-            state->shuffle((UINT8*) im->image[state->y + state->yoff] +
-                   state->xoff * im->pixelsize, state->buffer,
-                   state->xsize);
+            state->shuffle((UINT8 *)im->image[state->y + state->yoff] +
+                               state->xoff * im->pixelsize,
+                           state->buffer, state->xsize);
 
             state->x = 0;
 
@@ -84,6 +82,5 @@ ImagingPcxDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
                 return -1;
             }
         }
-
     }
 }

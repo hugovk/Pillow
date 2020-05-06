@@ -35,9 +35,9 @@ struct ImagingDIBInstance {
     ImagingShuffler unpack;
 };
 
-typedef struct ImagingDIBInstance* ImagingDIB;
+typedef struct ImagingDIBInstance *ImagingDIB;
 
-extern char* ImagingGetModeDIB(int size_out[2]);
+extern char *ImagingGetModeDIB(int size_out[2]);
 
 extern ImagingDIB ImagingNewDIB(const char *mode, int xsize, int ysize);
 

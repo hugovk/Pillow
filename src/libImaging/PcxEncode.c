@@ -13,7 +13,6 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
 
 enum { INIT, FETCH, ENCODE };
@@ -21,10 +20,9 @@ enum { INIT, FETCH, ENCODE };
 /* we're reusing "ystep" to store the last value */
 #define LAST ystep
 
-int
-ImagingPcxEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
-{
-    UINT8* ptr;
+int ImagingPcxEncode(Imaging im, ImagingCodecState state, UINT8 *buf,
+                     int bytes) {
+    UINT8 *ptr;
     int this;
     int bytes_per_line = 0;
     int padding = 0;
@@ -45,12 +43,12 @@ ImagingPcxEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
     }
 
     bpp = state->bits;
-    if (state->bits == 24){
+    if (state->bits == 24) {
         planes = 3;
         bpp = 8;
     }
 
-    bytes_per_line = (state->xsize*bpp + 7) / 8;
+    bytes_per_line = (state->xsize * bpp + 7) / 8;
     /* The stride here needs to be kept in sync with the version in
        PcxImagePlugin.py. If it's not, the header and the body of the
        image will be out of sync and bad things will happen on decode.
@@ -58,7 +56,6 @@ ImagingPcxEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
     stride = bytes_per_line + (bytes_per_line % 2);
 
     padding = stride - bytes_per_line;
-
 
     for (;;) {
 
@@ -72,8 +69,9 @@ ImagingPcxEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
             }
 
             state->shuffle(state->buffer,
-                           (UINT8*) im->image[state->y + state->yoff] +
-                           state->xoff * im->pixelsize, state->xsize);
+                           (UINT8 *)im->image[state->y + state->yoff] +
+                               state->xoff * im->pixelsize,
+                           state->xsize);
 
             state->y += 1;
 
@@ -188,4 +186,3 @@ ImagingPcxEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
         }
     }
 }
-
