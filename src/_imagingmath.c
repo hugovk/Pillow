@@ -23,50 +23,51 @@
 #define MAX_INT32 2147483647.0
 #define MIN_INT32 -2147483648.0
 
-#define UNOP(name, op, type)\
-void name(Imaging out, Imaging im1)\
-{\
-    int x, y;\
-    for (y = 0; y < out->ysize; y++) {\
-        type* p0 = (type*) out->image[y];\
-        type* p1 = (type*) im1->image[y];\
-        for (x = 0; x < out->xsize; x++) {\
-            *p0 = op(type, *p1);\
-            p0++; p1++;\
-        }\
-    }\
-}
+#define UNOP(name, op, type)                   \
+    void name(Imaging out, Imaging im1) {      \
+        int x, y;                              \
+        for (y = 0; y < out->ysize; y++) {     \
+            type* p0 = (type*)out->image[y];   \
+            type* p1 = (type*)im1->image[y];   \
+            for (x = 0; x < out->xsize; x++) { \
+                *p0 = op(type, *p1);           \
+                p0++;                          \
+                p1++;                          \
+            }                                  \
+        }                                      \
+    }
 
-#define BINOP(name, op, type)\
-void name(Imaging out, Imaging im1, Imaging im2)\
-{\
-    int x, y;\
-    for (y = 0; y < out->ysize; y++) {\
-        type* p0 = (type*) out->image[y];\
-        type* p1 = (type*) im1->image[y];\
-        type* p2 = (type*) im2->image[y];\
-        for (x = 0; x < out->xsize; x++) {\
-            *p0 = op(type, *p1, *p2);\
-            p0++; p1++; p2++;\
-        }\
-    }\
-}
+#define BINOP(name, op, type)                          \
+    void name(Imaging out, Imaging im1, Imaging im2) { \
+        int x, y;                                      \
+        for (y = 0; y < out->ysize; y++) {             \
+            type* p0 = (type*)out->image[y];           \
+            type* p1 = (type*)im1->image[y];           \
+            type* p2 = (type*)im2->image[y];           \
+            for (x = 0; x < out->xsize; x++) {         \
+                *p0 = op(type, *p1, *p2);              \
+                p0++;                                  \
+                p1++;                                  \
+                p2++;                                  \
+            }                                          \
+        }                                              \
+    }
 
 #define NEG(type, v1) -(v1)
 #define INVERT(type, v1) ~(v1)
 
-#define ADD(type, v1, v2) (v1)+(v2)
-#define SUB(type, v1, v2) (v1)-(v2)
-#define MUL(type, v1, v2) (v1)*(v2)
+#define ADD(type, v1, v2) (v1) + (v2)
+#define SUB(type, v1, v2) (v1) - (v2)
+#define MUL(type, v1, v2) (v1) * (v2)
 
-#define MIN(type, v1, v2) ((v1)<(v2))?(v1):(v2)
-#define MAX(type, v1, v2) ((v1)>(v2))?(v1):(v2)
+#define MIN(type, v1, v2) ((v1) < (v2)) ? (v1) : (v2)
+#define MAX(type, v1, v2) ((v1) > (v2)) ? (v1) : (v2)
 
-#define AND(type, v1, v2) (v1)&(v2)
-#define OR(type, v1, v2) (v1)|(v2)
-#define XOR(type, v1, v2) (v1)^(v2)
-#define LSHIFT(type, v1, v2) (v1)<<(v2)
-#define RSHIFT(type, v1, v2) (v1)>>(v2)
+#define AND(type, v1, v2) (v1) & (v2)
+#define OR(type, v1, v2) (v1) | (v2)
+#define XOR(type, v1, v2) (v1) ^ (v2)
+#define LSHIFT(type, v1, v2) (v1) << (v2)
+#define RSHIFT(type, v1, v2) (v1) >> (v2)
 
 #define ABS_I(type, v1) abs((v1))
 #define ABS_F(type, v1) fabs((v1))
@@ -79,14 +80,13 @@ void name(Imaging out, Imaging im1, Imaging im2)\
  * PyFPE_END_PROTECT(result)
  */
 
-#define DIV_I(type, v1, v2) ((v2)!=0)?(v1)/(v2):0
-#define DIV_F(type, v1, v2) ((v2)!=0.0F)?(v1)/(v2):0.0F
+#define DIV_I(type, v1, v2) ((v2) != 0) ? (v1) / (v2) : 0
+#define DIV_F(type, v1, v2) ((v2) != 0.0F) ? (v1) / (v2) : 0.0F
 
-#define MOD_I(type, v1, v2) ((v2)!=0)?(v1)%(v2):0
-#define MOD_F(type, v1, v2) ((v2)!=0.0F)?fmod((v1),(v2)):0.0F
+#define MOD_I(type, v1, v2) ((v2) != 0) ? (v1) % (v2) : 0
+#define MOD_F(type, v1, v2) ((v2) != 0.0F) ? fmod((v1), (v2)) : 0.0F
 
-static int powi(int x, int y)
-{
+static int powi(int x, int y) {
     double v = pow(x, y) + 0.5;
     if (errno == EDOM)
         return 0;
@@ -94,21 +94,21 @@ static int powi(int x, int y)
         v = MIN_INT32;
     else if (v > MAX_INT32)
         v = MAX_INT32;
-    return (int) v;
+    return (int)v;
 }
 
 #define POW_I(type, v1, v2) powi(v1, v2)
 #define POW_F(type, v1, v2) powf(v1, v2) /* FIXME: EDOM handling */
 
-#define DIFF_I(type, v1, v2) abs((v1)-(v2))
-#define DIFF_F(type, v1, v2) fabs((v1)-(v2))
+#define DIFF_I(type, v1, v2) abs((v1) - (v2))
+#define DIFF_F(type, v1, v2) fabs((v1) - (v2))
 
-#define EQ(type, v1, v2) (v1)==(v2)
-#define NE(type, v1, v2) (v1)!=(v2)
-#define LT(type, v1, v2) (v1)<(v2)
-#define LE(type, v1, v2) (v1)<=(v2)
-#define GT(type, v1, v2) (v1)>(v2)
-#define GE(type, v1, v2) (v1)>=(v2)
+#define EQ(type, v1, v2) (v1) == (v2)
+#define NE(type, v1, v2) (v1) != (v2)
+#define LT(type, v1, v2) (v1) < (v2)
+#define LE(type, v1, v2) (v1) <= (v2)
+#define GT(type, v1, v2) (v1) > (v2)
+#define GE(type, v1, v2) (v1) >= (v2)
 
 UNOP(abs_I, ABS_I, INT32)
 UNOP(neg_I, NEG, INT32)
@@ -159,9 +159,7 @@ BINOP(le_F, LE, FLOAT32)
 BINOP(gt_F, GT, FLOAT32)
 BINOP(ge_F, GE, FLOAT32)
 
-static PyObject *
-_unop(PyObject* self, PyObject* args)
-{
+static PyObject* _unop(PyObject* self, PyObject* args) {
     Imaging out;
     Imaging im1;
     void (*unop)(Imaging, Imaging);
@@ -170,10 +168,10 @@ _unop(PyObject* self, PyObject* args)
     if (!PyArg_ParseTuple(args, "nnn", &op, &i0, &i1))
         return NULL;
 
-    out = (Imaging) i0;
-    im1 = (Imaging) i1;
+    out = (Imaging)i0;
+    im1 = (Imaging)i1;
 
-    unop = (void*) op;
+    unop = (void*)op;
 
     unop(out, im1);
 
@@ -181,9 +179,7 @@ _unop(PyObject* self, PyObject* args)
     return Py_None;
 }
 
-static PyObject *
-_binop(PyObject* self, PyObject* args)
-{
+static PyObject* _binop(PyObject* self, PyObject* args) {
     Imaging out;
     Imaging im1;
     Imaging im2;
@@ -193,11 +189,11 @@ _binop(PyObject* self, PyObject* args)
     if (!PyArg_ParseTuple(args, "nnnn", &op, &i0, &i1, &i2))
         return NULL;
 
-    out = (Imaging) i0;
-    im1 = (Imaging) i1;
-    im2 = (Imaging) i2;
+    out = (Imaging)i0;
+    im1 = (Imaging)i1;
+    im2 = (Imaging)i2;
 
-    binop = (void*) op;
+    binop = (void*)op;
 
     binop(out, im1, im2);
 
@@ -205,23 +201,18 @@ _binop(PyObject* self, PyObject* args)
     return Py_None;
 }
 
-static PyMethodDef _functions[] = {
-    {"unop", _unop, 1},
-    {"binop", _binop, 1},
-    {NULL, NULL}
-};
+static PyMethodDef _functions[] = {{"unop", _unop, 1},
+                                   {"binop", _binop, 1},
+                                   {NULL, NULL}};
 
-static void
-install(PyObject *d, char* name, void* value)
-{
-    PyObject *v = PyLong_FromSsize_t((Py_ssize_t) value);
+static void install(PyObject* d, char* name, void* value) {
+    PyObject* v = PyLong_FromSsize_t((Py_ssize_t)value);
     if (!v || PyDict_SetItemString(d, name, v))
         PyErr_Clear();
     Py_XDECREF(v);
 }
 
-static int
-setup_module(PyObject* m) {
+static int setup_module(PyObject* m) {
     PyObject* d = PyModule_GetDict(m);
 
     install(d, "abs_I", abs_I);
@@ -272,16 +263,15 @@ setup_module(PyObject* m) {
     return 0;
 }
 
-PyMODINIT_FUNC
-PyInit__imagingmath(void) {
+PyMODINIT_FUNC PyInit__imagingmath(void) {
     PyObject* m;
 
     static PyModuleDef module_def = {
         PyModuleDef_HEAD_INIT,
-        "_imagingmath",     /* m_name */
-        NULL,               /* m_doc */
-        -1,                 /* m_size */
-        _functions,         /* m_methods */
+        "_imagingmath", /* m_name */
+        NULL,           /* m_doc */
+        -1,             /* m_size */
+        _functions,     /* m_methods */
     };
 
     m = PyModule_Create(&module_def);

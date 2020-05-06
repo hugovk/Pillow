@@ -1,17 +1,16 @@
 /* Sgi.h */
 
 typedef struct {
-
     /* CONFIGURATION */
 
     /* Number of bytes per channel per pixel */
     int bpc;
 
     /* RLE offsets table */
-    UINT32 *starttab;
+    UINT32* starttab;
 
     /* RLE lengths table */
-    UINT32 *lengthtab;
+    UINT32* lengthtab;
 
     /* current row offset */
     UINT32 rleoffset;

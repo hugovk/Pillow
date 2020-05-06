@@ -19,26 +19,22 @@
 
 #include "Jpeg2K.h"
 
-#define CINEMA_24_CS_LENGTH   1302083
-#define CINEMA_48_CS_LENGTH    651041
+#define CINEMA_24_CS_LENGTH 1302083
+#define CINEMA_48_CS_LENGTH 651041
 #define COMP_24_CS_MAX_LENGTH 1041666
-#define COMP_48_CS_MAX_LENGTH  520833
+#define COMP_48_CS_MAX_LENGTH 520833
 
 /* -------------------------------------------------------------------- */
 /* Error handler                                                        */
 /* -------------------------------------------------------------------- */
 
-static void
-j2k_error(const char *msg, void *client_data)
-{
-    JPEG2KENCODESTATE *state = (JPEG2KENCODESTATE *) client_data;
-    free((void *)state->error_msg);
+static void j2k_error(const char* msg, void* client_data) {
+    JPEG2KENCODESTATE* state = (JPEG2KENCODESTATE*)client_data;
+    free((void*)state->error_msg);
     state->error_msg = strdup(msg);
 }
 
-static void
-j2k_warn(const char *msg, void *client_data)
-{
+static void j2k_warn(const char* msg, void* client_data) {
     // Null handler
 }
 
@@ -46,9 +42,9 @@ j2k_warn(const char *msg, void *client_data)
 /* Buffer output stream                                                 */
 /* -------------------------------------------------------------------- */
 
-static OPJ_SIZE_T
-j2k_write(void *p_buffer, OPJ_SIZE_T p_nb_bytes, void *p_user_data)
-{
+static OPJ_SIZE_T j2k_write(void* p_buffer,
+                            OPJ_SIZE_T p_nb_bytes,
+                            void* p_user_data) {
     ImagingCodecState state = (ImagingCodecState)p_user_data;
     int result;
 
@@ -57,16 +53,13 @@ j2k_write(void *p_buffer, OPJ_SIZE_T p_nb_bytes, void *p_user_data)
     return result ? result : (OPJ_SIZE_T)-1;
 }
 
-
-static OPJ_OFF_T
-j2k_skip(OPJ_OFF_T p_nb_bytes, void *p_user_data)
-{
+static OPJ_OFF_T j2k_skip(OPJ_OFF_T p_nb_bytes, void* p_user_data) {
     ImagingCodecState state = (ImagingCodecState)p_user_data;
-    char *buffer;
+    char* buffer;
     int result;
 
     /* Explicitly write zeros */
-    buffer = calloc(p_nb_bytes,1);
+    buffer = calloc(p_nb_bytes, 1);
     if (!buffer) {
         return (OPJ_OFF_T)-1;
     }
@@ -78,9 +71,7 @@ j2k_skip(OPJ_OFF_T p_nb_bytes, void *p_user_data)
     return result ? result : p_nb_bytes;
 }
 
-static OPJ_BOOL
-j2k_seek(OPJ_OFF_T p_nb_bytes, void *p_user_data)
-{
+static OPJ_BOOL j2k_seek(OPJ_OFF_T p_nb_bytes, void* p_user_data) {
     ImagingCodecState state = (ImagingCodecState)p_user_data;
     off_t pos = 0;
 
@@ -94,31 +85,38 @@ j2k_seek(OPJ_OFF_T p_nb_bytes, void *p_user_data)
 /* Encoder                                                              */
 /* -------------------------------------------------------------------- */
 
-typedef void (*j2k_pack_tile_t)(Imaging im, UINT8 *buf,
-                                unsigned x0, unsigned y0,
-                                unsigned w, unsigned h);
+typedef void (*j2k_pack_tile_t)(Imaging im,
+                                UINT8* buf,
+                                unsigned x0,
+                                unsigned y0,
+                                unsigned w,
+                                unsigned h);
 
-static void
-j2k_pack_l(Imaging im, UINT8 *buf,
-           unsigned x0, unsigned y0, unsigned w, unsigned h)
-{
-    UINT8 *ptr = buf;
-    unsigned x,y;
+static void j2k_pack_l(Imaging im,
+                       UINT8* buf,
+                       unsigned x0,
+                       unsigned y0,
+                       unsigned w,
+                       unsigned h) {
+    UINT8* ptr = buf;
+    unsigned x, y;
     for (y = 0; y < h; ++y) {
-        UINT8 *data = (UINT8 *)(im->image[y + y0] + x0);
+        UINT8* data = (UINT8*)(im->image[y + y0] + x0);
         for (x = 0; x < w; ++x)
             *ptr++ = *data++;
     }
 }
 
-static void
-j2k_pack_i16(Imaging im, UINT8 *buf,
-             unsigned x0, unsigned y0, unsigned w, unsigned h)
-{
-    UINT8 *ptr = buf;
-    unsigned x,y;
+static void j2k_pack_i16(Imaging im,
+                         UINT8* buf,
+                         unsigned x0,
+                         unsigned y0,
+                         unsigned w,
+                         unsigned h) {
+    UINT8* ptr = buf;
+    unsigned x, y;
     for (y = 0; y < h; ++y) {
-        UINT8 *data = (UINT8 *)(im->image[y + y0] + x0);
+        UINT8* data = (UINT8*)(im->image[y + y0] + x0);
         for (x = 0; x < w; ++x) {
             *ptr++ = *data++;
             *ptr++ = *data++;
@@ -126,16 +124,17 @@ j2k_pack_i16(Imaging im, UINT8 *buf,
     }
 }
 
-
-static void
-j2k_pack_la(Imaging im, UINT8 *buf,
-            unsigned x0, unsigned y0, unsigned w, unsigned h)
-{
-    UINT8 *ptr = buf;
-    UINT8 *ptra = buf + w * h;
-    unsigned x,y;
+static void j2k_pack_la(Imaging im,
+                        UINT8* buf,
+                        unsigned x0,
+                        unsigned y0,
+                        unsigned w,
+                        unsigned h) {
+    UINT8* ptr = buf;
+    UINT8* ptra = buf + w * h;
+    unsigned x, y;
     for (y = 0; y < h; ++y) {
-        UINT8 *data = (UINT8 *)(im->image[y + y0] + 4 * x0);
+        UINT8* data = (UINT8*)(im->image[y + y0] + 4 * x0);
         for (x = 0; x < w; ++x) {
             *ptr++ = data[0];
             *ptra++ = data[3];
@@ -144,16 +143,18 @@ j2k_pack_la(Imaging im, UINT8 *buf,
     }
 }
 
-static void
-j2k_pack_rgb(Imaging im, UINT8 *buf,
-             unsigned x0, unsigned y0, unsigned w, unsigned h)
-{
-    UINT8 *pr = buf;
-    UINT8 *pg = pr + w * h;
-    UINT8 *pb = pg + w * h;
-    unsigned x,y;
+static void j2k_pack_rgb(Imaging im,
+                         UINT8* buf,
+                         unsigned x0,
+                         unsigned y0,
+                         unsigned w,
+                         unsigned h) {
+    UINT8* pr = buf;
+    UINT8* pg = pr + w * h;
+    UINT8* pb = pg + w * h;
+    unsigned x, y;
     for (y = 0; y < h; ++y) {
-        UINT8 *data = (UINT8 *)(im->image[y + y0] + 4 * x0);
+        UINT8* data = (UINT8*)(im->image[y + y0] + 4 * x0);
         for (x = 0; x < w; ++x) {
             *pr++ = data[0];
             *pg++ = data[1];
@@ -163,17 +164,19 @@ j2k_pack_rgb(Imaging im, UINT8 *buf,
     }
 }
 
-static void
-j2k_pack_rgba(Imaging im, UINT8 *buf,
-              unsigned x0, unsigned y0, unsigned w, unsigned h)
-{
-    UINT8 *pr = buf;
-    UINT8 *pg = pr + w * h;
-    UINT8 *pb = pg + w * h;
-    UINT8 *pa = pb + w * h;
-    unsigned x,y;
+static void j2k_pack_rgba(Imaging im,
+                          UINT8* buf,
+                          unsigned x0,
+                          unsigned y0,
+                          unsigned w,
+                          unsigned h) {
+    UINT8* pr = buf;
+    UINT8* pg = pr + w * h;
+    UINT8* pb = pg + w * h;
+    UINT8* pa = pb + w * h;
+    unsigned x, y;
     for (y = 0; y < h; ++y) {
-        UINT8 *data = (UINT8 *)(im->image[y + y0] + 4 * x0);
+        UINT8* data = (UINT8*)(im->image[y + y0] + 4 * x0);
         for (x = 0; x < w; ++x) {
             *pr++ = *data++;
             *pg++ = *data++;
@@ -190,9 +193,9 @@ enum {
     J2K_STATE_FAILED = 3,
 };
 
-static void
-j2k_set_cinema_params(Imaging im, int components, opj_cparameters_t *params)
-{
+static void j2k_set_cinema_params(Imaging im,
+                                  int components,
+                                  opj_cparameters_t* params) {
     float rate;
     int n;
 
@@ -214,8 +217,8 @@ j2k_set_cinema_params(Imaging im, int components, opj_cparameters_t *params)
     params->irreversible = 1;
 
     if (params->cp_cinema == OPJ_CINEMA4K_24) {
-        float max_rate = ((float)(components * im->xsize * im->ysize * 8)
-                          / (CINEMA_24_CS_LENGTH * 8));
+        float max_rate = ((float)(components * im->xsize * im->ysize * 8) /
+                          (CINEMA_24_CS_LENGTH * 8));
 
         params->POC[0].tile = 1;
         params->POC[0].resno0 = 0;
@@ -238,8 +241,8 @@ j2k_set_cinema_params(Imaging im, int components, opj_cparameters_t *params)
             if (params->tcp_rates[0] == 0) {
                 params->tcp_rates[n] = max_rate;
             } else {
-                rate = ((float)(components * im->xsize * im->ysize * 8)
-                        / (params->tcp_rates[n] * 8));
+                rate = ((float)(components * im->xsize * im->ysize * 8) /
+                        (params->tcp_rates[n] * 8));
                 if (rate > CINEMA_24_CS_LENGTH)
                     params->tcp_rates[n] = max_rate;
             }
@@ -247,16 +250,16 @@ j2k_set_cinema_params(Imaging im, int components, opj_cparameters_t *params)
 
         params->max_comp_size = COMP_24_CS_MAX_LENGTH;
     } else {
-        float max_rate = ((float)(components * im->xsize * im->ysize * 8)
-                          / (CINEMA_48_CS_LENGTH * 8));
+        float max_rate = ((float)(components * im->xsize * im->ysize * 8) /
+                          (CINEMA_48_CS_LENGTH * 8));
 
         for (n = 0; n < params->tcp_numlayers; ++n) {
             rate = 0;
             if (params->tcp_rates[0] == 0) {
                 params->tcp_rates[n] = max_rate;
             } else {
-                rate = ((float)(components * im->xsize * im->ysize * 8)
-                        / (params->tcp_rates[n] * 8));
+                rate = ((float)(components * im->xsize * im->ysize * 8) /
+                        (params->tcp_rates[n] * 8));
                 if (rate > CINEMA_48_CS_LENGTH)
                     params->tcp_rates[n] = max_rate;
             }
@@ -266,13 +269,11 @@ j2k_set_cinema_params(Imaging im, int components, opj_cparameters_t *params)
     }
 }
 
-static int
-j2k_encode_entry(Imaging im, ImagingCodecState state)
-{
-    JPEG2KENCODESTATE *context = (JPEG2KENCODESTATE *)state->context;
-    opj_stream_t *stream = NULL;
-    opj_image_t *image = NULL;
-    opj_codec_t *codec = NULL;
+static int j2k_encode_entry(Imaging im, ImagingCodecState state) {
+    JPEG2KENCODESTATE* context = (JPEG2KENCODESTATE*)state->context;
+    opj_stream_t* stream = NULL;
+    opj_image_t* image = NULL;
+    opj_codec_t* codec = NULL;
     opj_cparameters_t params;
     unsigned components;
     OPJ_COLOR_SPACE color_space;
@@ -309,35 +310,35 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
 #endif
 
     /* Setup an opj_image */
-    if (strcmp (im->mode, "L") == 0) {
+    if (strcmp(im->mode, "L") == 0) {
         components = 1;
         color_space = OPJ_CLRSPC_GRAY;
         pack = j2k_pack_l;
-    } else if (strcmp (im->mode, "I;16") == 0){
+    } else if (strcmp(im->mode, "I;16") == 0) {
         components = 1;
         color_space = OPJ_CLRSPC_GRAY;
         pack = j2k_pack_i16;
         prec = 16;
         bpp = 12;
-    } else if (strcmp (im->mode, "I;16B") == 0){
+    } else if (strcmp(im->mode, "I;16B") == 0) {
         components = 1;
         color_space = OPJ_CLRSPC_GRAY;
         pack = j2k_pack_i16;
         prec = 16;
         bpp = 12;
-    } else if (strcmp (im->mode, "LA") == 0) {
+    } else if (strcmp(im->mode, "LA") == 0) {
         components = 2;
         color_space = OPJ_CLRSPC_GRAY;
         pack = j2k_pack_la;
-    } else if (strcmp (im->mode, "RGB") == 0) {
+    } else if (strcmp(im->mode, "RGB") == 0) {
         components = 3;
         color_space = OPJ_CLRSPC_SRGB;
         pack = j2k_pack_rgb;
-    } else if (strcmp (im->mode, "YCbCr") == 0) {
+    } else if (strcmp(im->mode, "YCbCr") == 0) {
         components = 3;
         color_space = OPJ_CLRSPC_SYCC;
         pack = j2k_pack_rgb;
-    } else if (strcmp (im->mode, "RGBA") == 0) {
+    } else if (strcmp(im->mode, "RGBA") == 0) {
         components = 4;
         color_space = OPJ_CLRSPC_SRGB;
         pack = j2k_pack_rgba;
@@ -394,11 +395,11 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
     if (context->quality_layers && PySequence_Check(context->quality_layers)) {
         Py_ssize_t len = PySequence_Length(context->quality_layers);
         Py_ssize_t n;
-        float *pq;
+        float* pq;
 
         if (len) {
             if (len > sizeof(params.tcp_rates) / sizeof(params.tcp_rates[0]))
-                len = sizeof(params.tcp_rates)/sizeof(params.tcp_rates[0]);
+                len = sizeof(params.tcp_rates) / sizeof(params.tcp_rates[0]);
 
             params.tcp_numlayers = (int)len;
 
@@ -413,7 +414,7 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
             }
 
             for (n = 0; n < len; ++n) {
-                PyObject *obj = PySequence_ITEM(context->quality_layers, n);
+                PyObject* obj = PySequence_ITEM(context->quality_layers, n);
                 pq[n] = PyFloat_AsDouble(obj);
             }
         }
@@ -426,16 +427,16 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
     if (context->num_resolutions)
         params.numresolution = context->num_resolutions;
 
-    if (context->cblk_width >= 4 && context->cblk_width <= 1024
-        && context->cblk_height >= 4 && context->cblk_height <= 1024
-        && context->cblk_width * context->cblk_height <= 4096) {
+    if (context->cblk_width >= 4 && context->cblk_width <= 1024 &&
+        context->cblk_height >= 4 && context->cblk_height <= 1024 &&
+        context->cblk_width * context->cblk_height <= 4096) {
         params.cblockw_init = context->cblk_width;
         params.cblockh_init = context->cblk_height;
     }
 
-    if (context->precinct_width >= 4 && context->precinct_height >= 4
-        && context->precinct_width >= context->cblk_width
-        && context->precinct_height > context->cblk_height) {
+    if (context->precinct_width >= 4 && context->precinct_height >= 4 &&
+        context->precinct_width >= context->cblk_width &&
+        context->precinct_height > context->cblk_height) {
         params.prcw_init[0] = context->precinct_width;
         params.prch_init[0] = context->precinct_height;
         params.res_spec = 1;
@@ -449,20 +450,20 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
     params.cp_cinema = context->cinema_mode;
 
     switch (params.cp_cinema) {
-    case OPJ_OFF:
-        params.cp_rsiz = OPJ_STD_RSIZ;
-        break;
-    case OPJ_CINEMA2K_24:
-    case OPJ_CINEMA2K_48:
-        params.cp_rsiz = OPJ_CINEMA2K;
-        if (params.numresolution > 6)
-            params.numresolution = 6;
-        break;
-    case OPJ_CINEMA4K_24:
-        params.cp_rsiz = OPJ_CINEMA4K;
-        if (params.numresolution > 7)
-            params.numresolution = 7;
-        break;
+        case OPJ_OFF:
+            params.cp_rsiz = OPJ_STD_RSIZ;
+            break;
+        case OPJ_CINEMA2K_24:
+        case OPJ_CINEMA2K_48:
+            params.cp_rsiz = OPJ_CINEMA2K;
+            if (params.numresolution > 6)
+                params.numresolution = 6;
+            break;
+        case OPJ_CINEMA4K_24:
+            params.cp_rsiz = OPJ_CINEMA4K;
+            if (params.numresolution > 7)
+                params.numresolution = 7;
+            break;
     }
 
     if (context->cinema_mode != OPJ_OFF)
@@ -496,24 +497,26 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
     }
 
     /* Write each tile */
-    tiles_x = (im->xsize + (params.image_offset_x0 - params.cp_tx0)
-               + tile_width - 1) / tile_width;
-    tiles_y = (im->ysize + (params.image_offset_y0 - params.cp_ty0)
-               + tile_height - 1) / tile_height;
+    tiles_x = (im->xsize + (params.image_offset_x0 - params.cp_tx0) +
+               tile_width - 1) /
+              tile_width;
+    tiles_y = (im->ysize + (params.image_offset_y0 - params.cp_ty0) +
+               tile_height - 1) /
+              tile_height;
 
     /* check for integer overflow for the malloc line, checking any expression
        that may multiply either tile_width or tile_height */
     _overflow_scale_factor = components * prec;
-    if (( tile_width > UINT_MAX / _overflow_scale_factor ) ||
-        ( tile_height > UINT_MAX / _overflow_scale_factor ) ||
-        ( tile_width > UINT_MAX / (tile_height * _overflow_scale_factor )) ||
-        ( tile_height > UINT_MAX / (tile_width * _overflow_scale_factor ))) {
+    if ((tile_width > UINT_MAX / _overflow_scale_factor) ||
+        (tile_height > UINT_MAX / _overflow_scale_factor) ||
+        (tile_width > UINT_MAX / (tile_height * _overflow_scale_factor)) ||
+        (tile_height > UINT_MAX / (tile_width * _overflow_scale_factor))) {
         state->errcode = IMAGING_CODEC_BROKEN;
         state->state = J2K_STATE_FAILED;
         goto quick_exit;
     }
     /* malloc check ok, checked for overflow above */
-    state->buffer = malloc (tile_width * tile_height * components * prec / 8);
+    state->buffer = malloc(tile_width * tile_height * components * prec / 8);
     if (!state->buffer) {
         state->errcode = IMAGING_CODEC_BROKEN;
         state->state = J2K_STATE_FAILED;
@@ -552,8 +555,8 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
 
             data_size = pixw * pixh * components * prec / 8;
 
-            if (!opj_write_tile(codec, tile_ndx++, state->buffer,
-                                data_size, stream)) {
+            if (!opj_write_tile(codec, tile_ndx++, state->buffer, data_size,
+                                stream)) {
                 state->errcode = IMAGING_CODEC_BROKEN;
                 state->state = J2K_STATE_FAILED;
                 goto quick_exit;
@@ -571,7 +574,7 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
     state->state = J2K_STATE_DONE;
     ret = -1;
 
- quick_exit:
+quick_exit:
     if (codec)
         opj_destroy_codec(codec);
     if (image)
@@ -582,14 +585,14 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
     return ret;
 }
 
-int
-ImagingJpeg2KEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
-{
+int ImagingJpeg2KEncode(Imaging im,
+                        ImagingCodecState state,
+                        UINT8* buf,
+                        int bytes) {
     if (state->state == J2K_STATE_FAILED)
         return -1;
 
     if (state->state == J2K_STATE_START) {
-
         state->state = J2K_STATE_ENCODING;
 
         return j2k_encode_entry(im, state);
@@ -602,9 +605,8 @@ ImagingJpeg2KEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
 /* Cleanup                                                              */
 /* -------------------------------------------------------------------- */
 
-int
-ImagingJpeg2KEncodeCleanup(ImagingCodecState state) {
-    JPEG2KENCODESTATE *context = (JPEG2KENCODESTATE *)state->context;
+int ImagingJpeg2KEncodeCleanup(ImagingCodecState state) {
+    JPEG2KENCODESTATE* context = (JPEG2KENCODESTATE*)state->context;
 
     if (context->quality_layers) {
         Py_XDECREF(context->quality_layers);
@@ -612,10 +614,9 @@ ImagingJpeg2KEncodeCleanup(ImagingCodecState state) {
     }
 
     if (context->error_msg)
-        free ((void *)context->error_msg);
+        free((void*)context->error_msg);
 
     context->error_msg = NULL;
-
 
     return -1;
 }

@@ -17,16 +17,15 @@
  *
  * See the README file for information on usage and redistribution.  */
 
-
 #include "Imaging.h"
 
-int
-ImagingRawEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
-{
+int ImagingRawEncode(Imaging im,
+                     ImagingCodecState state,
+                     UINT8* buf,
+                     int bytes) {
     UINT8* ptr;
 
     if (!state->state) {
-
         /* The "count" field holds the stride, if specified.  Fix
            things up so "bytes" is the full size, and "count" the
            packed size */
@@ -47,13 +46,12 @@ ImagingRawEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
         /* The "ystep" field specifies the orientation */
 
         if (state->ystep < 0) {
-            state->y = state->ysize-1;
+            state->y = state->ysize - 1;
             state->ystep = -1;
         } else
             state->ystep = 1;
 
         state->state = 1;
-
     }
 
     if (bytes < state->bytes) {
@@ -64,9 +62,10 @@ ImagingRawEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
     ptr = buf;
 
     while (bytes >= state->bytes) {
-
-        state->shuffle(ptr, (UINT8*) im->image[state->y + state->yoff] +
-                   state->xoff * im->pixelsize, state->xsize);
+        state->shuffle(ptr,
+                       (UINT8*)im->image[state->y + state->yoff] +
+                           state->xoff * im->pixelsize,
+                       state->xsize);
 
         if (state->bytes > state->count)
             /* zero-pad the buffer, if necessary */
@@ -81,9 +80,7 @@ ImagingRawEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
             state->errcode = IMAGING_CODEC_END;
             break;
         }
-
     }
 
     return ptr - buf;
-
 }

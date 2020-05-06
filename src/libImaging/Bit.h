@@ -1,7 +1,6 @@
 /* Bit.h */
 
 typedef struct {
-
     /* CONFIGURATION */
 
     /* Number of bits per pixel */

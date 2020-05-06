@@ -16,9 +16,7 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
-
 
 /* HISTOGRAM */
 /* --------------------------------------------------------------------
@@ -26,23 +24,19 @@
  * 256 slots per band in the input image.
  */
 
-void
-ImagingHistogramDelete(ImagingHistogram h)
-{
+void ImagingHistogramDelete(ImagingHistogram h) {
     if (h->histogram)
         free(h->histogram);
     free(h);
 }
 
-ImagingHistogram
-ImagingHistogramNew(Imaging im)
-{
+ImagingHistogram ImagingHistogramNew(Imaging im) {
     ImagingHistogram h;
 
     /* Create histogram descriptor */
     h = calloc(1, sizeof(struct ImagingHistogramInstance));
-    strncpy(h->mode, im->mode, IMAGING_MODE_LENGTH-1);
-    h->mode[IMAGING_MODE_LENGTH-1] = 0;
+    strncpy(h->mode, im->mode, IMAGING_MODE_LENGTH - 1);
+    h->mode[IMAGING_MODE_LENGTH - 1] = 0;
 
     h->bands = im->bands;
     h->histogram = calloc(im->pixelsize, 256 * sizeof(long));
@@ -50,9 +44,7 @@ ImagingHistogramNew(Imaging im)
     return h;
 }
 
-ImagingHistogram
-ImagingGetHistogram(Imaging im, Imaging imMask, void* minmax)
-{
+ImagingHistogram ImagingGetHistogram(Imaging im, Imaging imMask, void* minmax) {
     ImagingSectionCookie cookie;
     int x, y, i;
     ImagingHistogram h;
@@ -75,12 +67,12 @@ ImagingGetHistogram(Imaging im, Imaging imMask, void* minmax)
     if (imMask) {
         /* mask */
         if (im->image8) {
-                ImagingSectionEnter(&cookie);
+            ImagingSectionEnter(&cookie);
             for (y = 0; y < im->ysize; y++)
                 for (x = 0; x < im->xsize; x++)
                     if (imMask->image8[y][x] != 0)
-                    h->histogram[im->image8[y][x]]++;
-                    ImagingSectionLeave(&cookie);
+                        h->histogram[im->image8[y][x]]++;
+            ImagingSectionLeave(&cookie);
         } else { /* yes, we need the braces. C isn't Python! */
             if (im->type != IMAGING_TYPE_UINT8) {
                 ImagingHistogramDelete(h);
@@ -88,13 +80,13 @@ ImagingGetHistogram(Imaging im, Imaging imMask, void* minmax)
             }
             ImagingSectionEnter(&cookie);
             for (y = 0; y < im->ysize; y++) {
-                UINT8* in = (UINT8*) im->image32[y];
+                UINT8* in = (UINT8*)im->image32[y];
                 for (x = 0; x < im->xsize; x++)
                     if (imMask->image8[y][x] != 0) {
                         h->histogram[(*in++)]++;
-                        h->histogram[(*in++)+256]++;
-                        h->histogram[(*in++)+512]++;
-                        h->histogram[(*in++)+768]++;
+                        h->histogram[(*in++) + 256]++;
+                        h->histogram[(*in++) + 512]++;
+                        h->histogram[(*in++) + 768]++;
                     } else
                         in += 4;
             }
@@ -103,22 +95,22 @@ ImagingGetHistogram(Imaging im, Imaging imMask, void* minmax)
     } else {
         /* mask not given; process pixels in image */
         if (im->image8) {
-                ImagingSectionEnter(&cookie);
+            ImagingSectionEnter(&cookie);
             for (y = 0; y < im->ysize; y++)
                 for (x = 0; x < im->xsize; x++)
                     h->histogram[im->image8[y][x]]++;
-                    ImagingSectionLeave(&cookie);
+            ImagingSectionLeave(&cookie);
         } else {
             switch (im->type) {
                 case IMAGING_TYPE_UINT8:
                     ImagingSectionEnter(&cookie);
                     for (y = 0; y < im->ysize; y++) {
-                        UINT8* in = (UINT8*) im->image[y];
+                        UINT8* in = (UINT8*)im->image[y];
                         for (x = 0; x < im->xsize; x++) {
                             h->histogram[(*in++)]++;
-                            h->histogram[(*in++)+256]++;
-                            h->histogram[(*in++)+512]++;
-                            h->histogram[(*in++)+768]++;
+                            h->histogram[(*in++) + 256]++;
+                            h->histogram[(*in++) + 512]++;
+                            h->histogram[(*in++) + 768]++;
                         }
                     }
                     ImagingSectionLeave(&cookie);
@@ -139,7 +131,7 @@ ImagingGetHistogram(Imaging im, Imaging imMask, void* minmax)
                     for (y = 0; y < im->ysize; y++) {
                         INT32* in = im->image32[y];
                         for (x = 0; x < im->xsize; x++) {
-                            i = (int) (((*in++)-imin)*scale);
+                            i = (int)(((*in++) - imin) * scale);
                             if (i >= 0 && i < 256)
                                 h->histogram[i]++;
                         }
@@ -160,9 +152,9 @@ ImagingGetHistogram(Imaging im, Imaging imMask, void* minmax)
                     ImagingSectionEnter(&cookie);
                     scale = 255.0F / (fmax - fmin);
                     for (y = 0; y < im->ysize; y++) {
-                        FLOAT32* in = (FLOAT32*) im->image32[y];
+                        FLOAT32* in = (FLOAT32*)im->image32[y];
                         for (x = 0; x < im->xsize; x++) {
-                            i = (int) (((*in++)-fmin)*scale);
+                            i = (int)(((*in++) - fmin) * scale);
                             if (i >= 0 && i < 256)
                                 h->histogram[i]++;
                         }
