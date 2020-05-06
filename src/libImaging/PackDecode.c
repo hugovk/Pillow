@@ -13,13 +13,10 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
 
-int
-ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
-              UINT8* buf, Py_ssize_t bytes)
-{
+int ImagingPackbitsDecode(Imaging im, ImagingCodecState state, UINT8* buf,
+                          Py_ssize_t bytes) {
     UINT8 n;
     UINT8* ptr;
     int i;
@@ -27,21 +24,18 @@ ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
     ptr = buf;
 
     for (;;) {
-
-        if (bytes < 1)
-            return ptr - buf;
+        if (bytes < 1) return ptr - buf;
 
         if (ptr[0] & 0x80) {
-
             if (ptr[0] == 0x80) {
                 /* Nop */
-                ptr++; bytes--;
+                ptr++;
+                bytes--;
                 continue;
             }
 
             /* Run */
-            if (bytes < 2)
-                return ptr - buf;
+            if (bytes < 2) return ptr - buf;
 
             for (n = 257 - ptr[0]; n > 0; n--) {
                 if (state->x >= state->bytes) {
@@ -51,15 +45,14 @@ ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
                 state->buffer[state->x++] = ptr[1];
             }
 
-            ptr += 2; bytes -= 2;
+            ptr += 2;
+            bytes -= 2;
 
         } else {
-
             /* Literal */
-            n = ptr[0]+2;
+            n = ptr[0] + 2;
 
-            if (bytes < n)
-                return ptr - buf;
+            if (bytes < n) return ptr - buf;
 
             for (i = 1; i < n; i++) {
                 if (state->x >= state->bytes) {
@@ -69,16 +62,15 @@ ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
                 state->buffer[state->x++] = ptr[i];
             }
 
-            ptr += n; bytes -= n;
-
+            ptr += n;
+            bytes -= n;
         }
 
         if (state->x >= state->bytes) {
-
             /* Got a full line, unpack it */
-            state->shuffle((UINT8*) im->image[state->y + state->yoff] +
-                   state->xoff * im->pixelsize, state->buffer,
-                   state->xsize);
+            state->shuffle((UINT8*)im->image[state->y + state->yoff] +
+                               state->xoff * im->pixelsize,
+                           state->buffer, state->xsize);
 
             state->x = 0;
 
@@ -87,6 +79,5 @@ ImagingPackbitsDecode(Imaging im, ImagingCodecState state,
                 return -1;
             }
         }
-
     }
 }

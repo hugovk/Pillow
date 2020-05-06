@@ -34,10 +34,8 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
 #include <string.h>
-
 
 int ImagingNewCount = 0;
 
@@ -45,19 +43,18 @@ int ImagingNewCount = 0;
  * Standard image object.
  */
 
-Imaging
-ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
-{
+Imaging ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize,
+                                  int size) {
     Imaging im;
 
     /* linesize overflow check, roughly the current largest space req'd */
     if (xsize > (INT_MAX / 4) - 1) {
-        return (Imaging) ImagingError_MemoryError();
+        return (Imaging)ImagingError_MemoryError();
     }
 
-    im = (Imaging) calloc(1, size);
+    im = (Imaging)calloc(1, size);
     if (!im) {
-        return (Imaging) ImagingError_MemoryError();
+        return (Imaging)ImagingError_MemoryError();
     }
 
     /* Setup image descriptor */
@@ -115,8 +112,8 @@ ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
         im->linesize = xsize * 4;
         im->type = IMAGING_TYPE_INT32;
 
-    } else if (strcmp(mode, "I;16") == 0 || strcmp(mode, "I;16L") == 0 \
-                           || strcmp(mode, "I;16B") == 0 || strcmp(mode, "I;16N") == 0)  {
+    } else if (strcmp(mode, "I;16") == 0 || strcmp(mode, "I;16L") == 0 ||
+               strcmp(mode, "I;16B") == 0 || strcmp(mode, "I;16N") == 0) {
         /* EXPERIMENTAL */
         /* 16-bit raw integer images */
         im->bands = 1;
@@ -135,7 +132,7 @@ ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
         /* 15-bit reversed true colour */
         im->bands = 1;
         im->pixelsize = 2;
-        im->linesize = (xsize*2 + 3) & -4;
+        im->linesize = (xsize * 2 + 3) & -4;
         im->type = IMAGING_TYPE_SPECIAL;
 
     } else if (strcmp(mode, "BGR;16") == 0) {
@@ -143,7 +140,7 @@ ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
         /* 16-bit reversed true colour */
         im->bands = 1;
         im->pixelsize = 2;
-        im->linesize = (xsize*2 + 3) & -4;
+        im->linesize = (xsize * 2 + 3) & -4;
         im->type = IMAGING_TYPE_SPECIAL;
 
     } else if (strcmp(mode, "BGR;24") == 0) {
@@ -151,7 +148,7 @@ ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
         /* 24-bit reversed true colour */
         im->bands = 1;
         im->pixelsize = 3;
-        im->linesize = (xsize*3 + 3) & -4;
+        im->linesize = (xsize * 3 + 3) & -4;
         im->type = IMAGING_TYPE_SPECIAL;
 
     } else if (strcmp(mode, "BGR;32") == 0) {
@@ -159,7 +156,7 @@ ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
         /* 32-bit reversed true colour */
         im->bands = 1;
         im->pixelsize = 4;
-        im->linesize = (xsize*4 + 3) & -4;
+        im->linesize = (xsize * 4 + 3) & -4;
         im->type = IMAGING_TYPE_SPECIAL;
 
     } else if (strcmp(mode, "RGBX") == 0) {
@@ -204,7 +201,7 @@ ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
 
     } else {
         free(im);
-        return (Imaging) ImagingError_ValueError("unrecognized image mode");
+        return (Imaging)ImagingError_ValueError("unrecognized image mode");
     }
 
     /* Setup image descriptor */
@@ -212,21 +209,23 @@ ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
 
     /* Pointer array (allocate at least one line, to avoid MemoryError
        exceptions on platforms where calloc(0, x) returns NULL) */
-    im->image = (char **) calloc((ysize > 0) ? ysize : 1, sizeof(void *));
+    im->image = (char **)calloc((ysize > 0) ? ysize : 1, sizeof(void *));
 
-    if ( ! im->image) {
+    if (!im->image) {
         free(im);
-        return (Imaging) ImagingError_MemoryError();
+        return (Imaging)ImagingError_MemoryError();
     }
 
     /* Initialize alias pointers to pixel data. */
     switch (im->pixelsize) {
-    case 1: case 2: case 3:
-        im->image8 = (UINT8 **) im->image;
-        break;
-    case 4:
-        im->image32 = (INT32 **) im->image;
-        break;
+        case 1:
+        case 2:
+        case 3:
+            im->image8 = (UINT8 **)im->image;
+            break;
+        case 4:
+            im->image32 = (INT32 **)im->image;
+            break;
     }
 
     ImagingDefaultArena.stats_new_count += 1;
@@ -234,31 +233,22 @@ ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
     return im;
 }
 
-Imaging
-ImagingNewPrologue(const char *mode, int xsize, int ysize)
-{
-    return ImagingNewPrologueSubtype(
-        mode, xsize, ysize, sizeof(struct ImagingMemoryInstance));
+Imaging ImagingNewPrologue(const char *mode, int xsize, int ysize) {
+    return ImagingNewPrologueSubtype(mode, xsize, ysize,
+                                     sizeof(struct ImagingMemoryInstance));
 }
 
-void
-ImagingDelete(Imaging im)
-{
-    if (!im)
-        return;
+void ImagingDelete(Imaging im) {
+    if (!im) return;
 
-    if (im->palette)
-        ImagingPaletteDelete(im->palette);
+    if (im->palette) ImagingPaletteDelete(im->palette);
 
-    if (im->destroy)
-        im->destroy(im);
+    if (im->destroy) im->destroy(im);
 
-    if (im->image)
-        free(im->image);
+    if (im->image) free(im->image);
 
     free(im);
 }
-
 
 /* Array Storage Type */
 /* ------------------ */
@@ -267,17 +257,19 @@ ImagingDelete(Imaging im)
 #define IMAGING_PAGE_SIZE (4096)
 
 struct ImagingMemoryArena ImagingDefaultArena = {
-    1,                   // alignment
-    16*1024*1024,        // block_size
-    0,                   // blocks_max
-    0,                   // blocks_cached
-    NULL,                // blocks_pool
-    0, 0, 0, 0, 0        // Stats
+    1,                 // alignment
+    16 * 1024 * 1024,  // block_size
+    0,                 // blocks_max
+    0,                 // blocks_cached
+    NULL,              // blocks_pool
+    0,
+    0,
+    0,
+    0,
+    0  // Stats
 };
 
-int
-ImagingMemorySetBlocksMax(ImagingMemoryArena arena, int blocks_max)
-{
+int ImagingMemorySetBlocksMax(ImagingMemoryArena arena, int blocks_max) {
     void *p;
     /* Free already cached blocks */
     ImagingMemoryClearCache(arena, blocks_max);
@@ -286,15 +278,16 @@ ImagingMemorySetBlocksMax(ImagingMemoryArena arena, int blocks_max)
         free(arena->blocks_pool);
         arena->blocks_pool = NULL;
     } else if (arena->blocks_pool != NULL) {
-        p = realloc(arena->blocks_pool, sizeof(*arena->blocks_pool) * blocks_max);
-        if ( ! p) {
+        p = realloc(arena->blocks_pool,
+                    sizeof(*arena->blocks_pool) * blocks_max);
+        if (!p) {
             // Leave previous blocks_max value
             return 0;
         }
         arena->blocks_pool = p;
     } else {
         arena->blocks_pool = calloc(sizeof(*arena->blocks_pool), blocks_max);
-        if ( ! arena->blocks_pool) {
+        if (!arena->blocks_pool) {
             return 0;
         }
     }
@@ -303,9 +296,7 @@ ImagingMemorySetBlocksMax(ImagingMemoryArena arena, int blocks_max)
     return 1;
 }
 
-void
-ImagingMemoryClearCache(ImagingMemoryArena arena, int new_size)
-{
+void ImagingMemoryClearCache(ImagingMemoryArena arena, int new_size) {
     while (arena->blocks_cached > new_size) {
         arena->blocks_cached -= 1;
         free(arena->blocks_pool[arena->blocks_cached].ptr);
@@ -313,9 +304,8 @@ ImagingMemoryClearCache(ImagingMemoryArena arena, int new_size)
     }
 }
 
-ImagingMemoryBlock
-memory_get_block(ImagingMemoryArena arena, int requested_size, int dirty)
-{
+ImagingMemoryBlock memory_get_block(ImagingMemoryArena arena,
+                                    int requested_size, int dirty) {
     ImagingMemoryBlock block = {NULL, 0};
 
     if (arena->blocks_cached > 0) {
@@ -323,16 +313,16 @@ memory_get_block(ImagingMemoryArena arena, int requested_size, int dirty)
         arena->blocks_cached -= 1;
         block = arena->blocks_pool[arena->blocks_cached];
         // Reallocate if needed
-        if (block.size != requested_size){
+        if (block.size != requested_size) {
             block.ptr = realloc(block.ptr, requested_size);
         }
-        if ( ! block.ptr) {
+        if (!block.ptr) {
             // Can't allocate, free previous pointer (it is still valid)
             free(arena->blocks_pool[arena->blocks_cached].ptr);
             arena->stats_freed_blocks += 1;
             return block;
         }
-        if ( ! dirty) {
+        if (!dirty) {
             memset(block.ptr, 0, requested_size);
         }
         arena->stats_reused_blocks += 1;
@@ -351,10 +341,8 @@ memory_get_block(ImagingMemoryArena arena, int requested_size, int dirty)
     return block;
 }
 
-void
-memory_return_block(ImagingMemoryArena arena, ImagingMemoryBlock block)
-{
-    if (arena->blocks_cached < arena->blocks_max)  {
+void memory_return_block(ImagingMemoryArena arena, ImagingMemoryBlock block) {
+    if (arena->blocks_cached < arena->blocks_max) {
         // Reduce block size
         if (block.size > arena->block_size) {
             block.size = arena->block_size;
@@ -368,24 +356,19 @@ memory_return_block(ImagingMemoryArena arena, ImagingMemoryBlock block)
     }
 }
 
-
-static void
-ImagingDestroyArray(Imaging im)
-{
+static void ImagingDestroyArray(Imaging im) {
     int y = 0;
 
     if (im->blocks) {
         while (im->blocks[y].ptr) {
-            memory_return_block(&ImagingDefaultArena,  im->blocks[y]);
+            memory_return_block(&ImagingDefaultArena, im->blocks[y]);
             y += 1;
         }
         free(im->blocks);
     }
 }
 
-Imaging
-ImagingAllocateArray(Imaging im, int dirty, int block_size)
-{
+Imaging ImagingAllocateArray(Imaging im, int dirty, int block_size) {
     int y, line_in_block, current_block;
     ImagingMemoryArena arena = &ImagingDefaultArena;
     ImagingMemoryBlock block = {NULL, 0};
@@ -393,22 +376,23 @@ ImagingAllocateArray(Imaging im, int dirty, int block_size)
     char *aligned_ptr = NULL;
 
     /* 0-width or 0-height image. No need to do anything */
-    if ( ! im->linesize || ! im->ysize) {
+    if (!im->linesize || !im->ysize) {
         return im;
     }
 
-    aligned_linesize = (im->linesize + arena->alignment - 1) & -arena->alignment;
+    aligned_linesize =
+        (im->linesize + arena->alignment - 1) & -arena->alignment;
     lines_per_block = (block_size - (arena->alignment - 1)) / aligned_linesize;
-    if (lines_per_block == 0)
-        lines_per_block = 1;
+    if (lines_per_block == 0) lines_per_block = 1;
     blocks_count = (im->ysize + lines_per_block - 1) / lines_per_block;
     // printf("NEW size: %dx%d, ls: %d, lpb: %d, blocks: %d\n",
-    //        im->xsize, im->ysize, aligned_linesize, lines_per_block, blocks_count);
+    //        im->xsize, im->ysize, aligned_linesize, lines_per_block,
+    //        blocks_count);
 
     /* One extra pointer is always NULL */
     im->blocks = calloc(sizeof(*im->blocks), blocks_count + 1);
-    if ( ! im->blocks) {
-        return (Imaging) ImagingError_MemoryError();
+    if (!im->blocks) {
+        return (Imaging)ImagingError_MemoryError();
     }
 
     /* Allocate image as an array of lines */
@@ -421,17 +405,18 @@ ImagingAllocateArray(Imaging im, int dirty, int block_size)
             if (lines_remaining > im->ysize - y) {
                 lines_remaining = im->ysize - y;
             }
-            required = lines_remaining * aligned_linesize + arena->alignment - 1;
+            required =
+                lines_remaining * aligned_linesize + arena->alignment - 1;
             block = memory_get_block(arena, required, dirty);
-            if ( ! block.ptr) {
+            if (!block.ptr) {
                 ImagingDestroyArray(im);
-                return (Imaging) ImagingError_MemoryError();
+                return (Imaging)ImagingError_MemoryError();
             }
             im->blocks[current_block] = block;
             /* Bulletproof code from libc _int_memalign */
-            aligned_ptr = (char *)(
-                ((size_t) (block.ptr + arena->alignment - 1)) &
-                -((Py_ssize_t) arena->alignment));
+            aligned_ptr =
+                (char *)(((size_t)(block.ptr + arena->alignment - 1)) &
+                         -((Py_ssize_t)arena->alignment));
         }
 
         im->image[y] = aligned_ptr + aligned_linesize * line_in_block;
@@ -449,41 +434,34 @@ ImagingAllocateArray(Imaging im, int dirty, int block_size)
     return im;
 }
 
-
 /* Block Storage Type */
 /* ------------------ */
 /* Allocate image as a single block. */
 
-static void
-ImagingDestroyBlock(Imaging im)
-{
-    if (im->block)
-        free(im->block);
+static void ImagingDestroyBlock(Imaging im) {
+    if (im->block) free(im->block);
 }
 
-Imaging
-ImagingAllocateBlock(Imaging im)
-{
+Imaging ImagingAllocateBlock(Imaging im) {
     Py_ssize_t y, i;
 
     /* overflow check for malloc */
-    if (im->linesize &&
-        im->ysize > INT_MAX / im->linesize) {
-        return (Imaging) ImagingError_MemoryError();
+    if (im->linesize && im->ysize > INT_MAX / im->linesize) {
+        return (Imaging)ImagingError_MemoryError();
     }
 
     if (im->ysize * im->linesize <= 0) {
         /* some platforms return NULL for malloc(0); this fix
            prevents MemoryError on zero-sized images on such
            platforms */
-        im->block = (char *) malloc(1);
+        im->block = (char *)malloc(1);
     } else {
         /* malloc check ok, overflow check above */
-        im->block = (char *) calloc(im->ysize, im->linesize);
+        im->block = (char *)calloc(im->ysize, im->linesize);
     }
 
-    if ( ! im->block) {
-        return (Imaging) ImagingError_MemoryError();
+    if (!im->block) {
+        return (Imaging)ImagingError_MemoryError();
     }
 
     for (y = i = 0; y < im->ysize; y++) {
@@ -500,18 +478,15 @@ ImagingAllocateBlock(Imaging im)
  * Create a new, internally allocated, image.
  */
 
-Imaging
-ImagingNewInternal(const char* mode, int xsize, int ysize, int dirty)
-{
+Imaging ImagingNewInternal(const char *mode, int xsize, int ysize, int dirty) {
     Imaging im;
 
     if (xsize < 0 || ysize < 0) {
-        return (Imaging) ImagingError_ValueError("bad image size");
+        return (Imaging)ImagingError_ValueError("bad image size");
     }
 
     im = ImagingNewPrologue(mode, xsize, ysize);
-    if ( ! im)
-        return NULL;
+    if (!im) return NULL;
 
     if (ImagingAllocateArray(im, dirty, ImagingDefaultArena.block_size)) {
         return im;
@@ -528,30 +503,23 @@ ImagingNewInternal(const char* mode, int xsize, int ysize, int dirty)
     return NULL;
 }
 
-Imaging
-ImagingNew(const char* mode, int xsize, int ysize)
-{
+Imaging ImagingNew(const char *mode, int xsize, int ysize) {
     return ImagingNewInternal(mode, xsize, ysize, 0);
 }
 
-Imaging
-ImagingNewDirty(const char* mode, int xsize, int ysize)
-{
+Imaging ImagingNewDirty(const char *mode, int xsize, int ysize) {
     return ImagingNewInternal(mode, xsize, ysize, 1);
 }
 
-Imaging
-ImagingNewBlock(const char* mode, int xsize, int ysize)
-{
+Imaging ImagingNewBlock(const char *mode, int xsize, int ysize) {
     Imaging im;
 
     if (xsize < 0 || ysize < 0) {
-        return (Imaging) ImagingError_ValueError("bad image size");
+        return (Imaging)ImagingError_ValueError("bad image size");
     }
 
     im = ImagingNewPrologue(mode, xsize, ysize);
-    if ( ! im)
-        return NULL;
+    if (!im) return NULL;
 
     if (ImagingAllocateBlock(im)) {
         return im;
@@ -561,34 +529,27 @@ ImagingNewBlock(const char* mode, int xsize, int ysize)
     return NULL;
 }
 
-Imaging
-ImagingNew2Dirty(const char* mode, Imaging imOut, Imaging imIn)
-{
+Imaging ImagingNew2Dirty(const char *mode, Imaging imOut, Imaging imIn) {
     /* allocate or validate output image */
 
     if (imOut) {
         /* make sure images match */
-        if (strcmp(imOut->mode, mode) != 0
-            || imOut->xsize != imIn->xsize
-            || imOut->ysize != imIn->ysize) {
+        if (strcmp(imOut->mode, mode) != 0 || imOut->xsize != imIn->xsize ||
+            imOut->ysize != imIn->ysize) {
             return ImagingError_Mismatch();
         }
     } else {
         /* create new image */
         imOut = ImagingNewDirty(mode, imIn->xsize, imIn->ysize);
-        if (!imOut)
-            return NULL;
+        if (!imOut) return NULL;
     }
 
     return imOut;
 }
 
-void
-ImagingCopyPalette(Imaging destination, Imaging source)
-{
+void ImagingCopyPalette(Imaging destination, Imaging source) {
     if (source->palette) {
-        if (destination->palette)
-            ImagingPaletteDelete(destination->palette);
+        if (destination->palette) ImagingPaletteDelete(destination->palette);
         destination->palette = ImagingPaletteDuplicate(source->palette);
     }
 }

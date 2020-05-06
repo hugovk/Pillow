@@ -15,36 +15,28 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
 
-
-Imaging
-ImagingCrop(Imaging imIn, int sx0, int sy0, int sx1, int sy1)
-{
+Imaging ImagingCrop(Imaging imIn, int sx0, int sy0, int sx1, int sy1) {
     Imaging imOut;
     int xsize, ysize;
     int dx0, dy0, dx1, dy1;
     INT32 zero = 0;
 
-    if (!imIn)
-        return (Imaging) ImagingError_ModeError();
+    if (!imIn) return (Imaging)ImagingError_ModeError();
 
     xsize = sx1 - sx0;
-    if (xsize < 0)
-        xsize = 0;
+    if (xsize < 0) xsize = 0;
     ysize = sy1 - sy0;
-    if (ysize < 0)
-        ysize = 0;
+    if (ysize < 0) ysize = 0;
 
     imOut = ImagingNewDirty(imIn->mode, xsize, ysize);
-    if (!imOut)
-        return NULL;
+    if (!imOut) return NULL;
 
     ImagingCopyPalette(imOut, imIn);
 
     if (sx0 < 0 || sy0 < 0 || sx1 > imIn->xsize || sy1 > imIn->ysize)
-        (void) ImagingFill(imOut, &zero);
+        (void)ImagingFill(imOut, &zero);
 
     dx0 = -sx0;
     dy0 = -sy0;

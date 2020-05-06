@@ -4,17 +4,13 @@
 #include <assert.h>
 #include <string.h>
 
-
-static int comparePixels(const UINT8* buf, int x, int bytesPerPixel)
-{
+static int comparePixels(const UINT8* buf, int x, int bytesPerPixel) {
     buf += x * bytesPerPixel;
     return memcmp(buf, buf + bytesPerPixel, bytesPerPixel) == 0;
 }
 
-
-int
-ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
-{
+int ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8* buf,
+                        int bytes) {
     UINT8* dst;
     int bytesPerPixel;
 
@@ -46,8 +42,7 @@ ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
             assert(state->x <= state->xsize);
 
             /* Make sure we have space for the descriptor. */
-            if (bytes < 1)
-                break;
+            if (bytes < 1) break;
 
             if (state->x == state->xsize) {
                 state->x = 0;
@@ -60,11 +55,10 @@ ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
             }
 
             if (state->x == 0)
-                state->shuffle(
-                    state->buffer,
-                    (UINT8*)im->image[state->y + state->yoff]
-                        + state->xoff * im->pixelsize,
-                    state->xsize);
+                state->shuffle(state->buffer,
+                               (UINT8*)im->image[state->y + state->yoff] +
+                                   state->xoff * im->pixelsize,
+                               state->xsize);
 
             row = state->buffer;
 
@@ -87,8 +81,7 @@ ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
                  */
                 maxLookup = state->x + 126;
                 /* A packet must not span multiple rows. */
-                if (maxLookup > state->xsize - 1)
-                    maxLookup = state->xsize - 1;
+                if (maxLookup > state->xsize - 1) maxLookup = state->xsize - 1;
 
                 if (isRaw) {
                     while (state->x < maxLookup)
@@ -132,17 +125,13 @@ ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
         assert(state->x > 0);
         assert(state->count <= state->x * bytesPerPixel);
 
-        if (bytes == 0)
-            break;
+        if (bytes == 0) break;
 
         flushCount = state->count;
-        if (flushCount > bytes)
-            flushCount = bytes;
+        if (flushCount > bytes) flushCount = bytes;
 
-        memcpy(
-            dst,
-            state->buffer + (state->x * bytesPerPixel - state->count),
-            flushCount);
+        memcpy(dst, state->buffer + (state->x * bytesPerPixel - state->count),
+               flushCount);
         dst += flushCount;
         bytes -= flushCount;
 

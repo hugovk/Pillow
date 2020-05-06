@@ -20,91 +20,76 @@
 #define RLE_COPY_FLAG 0x80
 #define RLE_MAX_RUN 0x7f
 
-static void read4B(UINT32* dest, UINT8* buf)
-{
+static void read4B(UINT32* dest, UINT8* buf) {
     *dest = (UINT32)((buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]);
 }
 
-static int expandrow(UINT8* dest, UINT8* src, int n, int z, int xsize)
-{
+static int expandrow(UINT8* dest, UINT8* src, int n, int z, int xsize) {
     UINT8 pixel, count;
     int x = 0;
 
-    for (;n > 0; n--)
-    {
+    for (; n > 0; n--) {
         pixel = *src++;
-        if (n == 1 && pixel != 0)
-            return n;
+        if (n == 1 && pixel != 0) return n;
         count = pixel & RLE_MAX_RUN;
-        if (!count)
-            return count;
+        if (!count) return count;
         if (x + count > xsize) {
             return -1;
         }
         x += count;
         if (pixel & RLE_COPY_FLAG) {
-            while(count--) {
+            while (count--) {
                 *dest = *src++;
                 dest += z;
             }
 
-        }
-        else {
+        } else {
             pixel = *src++;
             while (count--) {
                 *dest = pixel;
                 dest += z;
             }
         }
-
     }
     return 0;
 }
 
-static int expandrow2(UINT8* dest, const UINT8* src, int n, int z, int xsize)
-{
+static int expandrow2(UINT8* dest, const UINT8* src, int n, int z, int xsize) {
     UINT8 pixel, count;
 
     int x = 0;
 
-    for (;n > 0; n--)
-    {
+    for (; n > 0; n--) {
         pixel = src[1];
-        src+=2;
-        if (n == 1 && pixel != 0)
-            return n;
+        src += 2;
+        if (n == 1 && pixel != 0) return n;
         count = pixel & RLE_MAX_RUN;
-        if (!count)
-            return count;
+        if (!count) return count;
         if (x + count > xsize) {
             return -1;
         }
         x += count;
         if (pixel & RLE_COPY_FLAG) {
-            while(count--) {
+            while (count--) {
                 memcpy(dest, src, 2);
                 src += 2;
                 dest += z * 2;
             }
-        }
-        else {
+        } else {
             while (count--) {
                 memcpy(dest, src, 2);
                 dest += z * 2;
             }
-            src+=2;
+            src += 2;
         }
     }
     return 0;
 }
 
-
-int
-ImagingSgiRleDecode(Imaging im, ImagingCodecState state,
-            UINT8* buf, Py_ssize_t bytes)
-{
-    UINT8 *ptr;
-    SGISTATE *c;
+int ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8* buf,
+                        Py_ssize_t bytes) {
+    UINT8* ptr;
+    SGISTATE* c;
     int err = 0;
     int status;
 
@@ -120,7 +105,6 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state,
     _imaging_seek_pyFd(state->fd, SGI_HEADER_SIZE, SEEK_SET);
     _imaging_read_pyFd(state->fd, (char*)ptr, c->bufsize);
 
-
     /* decoder initialization */
     state->count = 0;
     state->y = 0;
@@ -130,8 +114,7 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state,
         state->ystep = 1;
     }
 
-    if (im->xsize > INT_MAX / im->bands ||
-        im->ysize > INT_MAX / im->bands) {
+    if (im->xsize > INT_MAX / im->bands || im->ysize > INT_MAX / im->bands) {
         err = IMAGING_CODEC_MEMORY;
         goto sgi_finish_decode;
     }
@@ -144,26 +127,25 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state,
     c->tablen = im->bands * im->ysize;
     c->starttab = calloc(c->tablen, sizeof(UINT32));
     c->lengthtab = calloc(c->tablen, sizeof(UINT32));
-    if (!state->buffer ||
-        !c->starttab ||
-        !c->lengthtab) {
+    if (!state->buffer || !c->starttab || !c->lengthtab) {
         err = IMAGING_CODEC_MEMORY;
         goto sgi_finish_decode;
     }
     /* populate offsets table */
-    for (c->tabindex = 0, c->bufindex = 0; c->tabindex < c->tablen; c->tabindex++, c->bufindex+=4)
+    for (c->tabindex = 0, c->bufindex = 0; c->tabindex < c->tablen;
+         c->tabindex++, c->bufindex += 4)
         read4B(&c->starttab[c->tabindex], &ptr[c->bufindex]);
     /* populate lengths table */
-    for (c->tabindex = 0, c->bufindex = c->tablen * sizeof(UINT32); c->tabindex < c->tablen; c->tabindex++, c->bufindex+=4)
+    for (c->tabindex = 0, c->bufindex = c->tablen * sizeof(UINT32);
+         c->tabindex < c->tablen; c->tabindex++, c->bufindex += 4)
         read4B(&c->lengthtab[c->tabindex], &ptr[c->bufindex]);
 
     state->count += c->tablen * sizeof(UINT32) * 2;
 
     /* read compressed rows */
-    for (c->rowno = 0; c->rowno < im->ysize; c->rowno++, state->y += state->ystep)
-    {
-        for (c->channo = 0; c->channo < im->bands; c->channo++)
-        {
+    for (c->rowno = 0; c->rowno < im->ysize;
+         c->rowno++, state->y += state->ystep) {
+        for (c->channo = 0; c->channo < im->bands; c->channo++) {
             c->rleoffset = c->starttab[c->rowno + c->channo * im->ysize];
             c->rlelength = c->lengthtab[c->rowno + c->channo * im->ysize];
             c->rleoffset -= SGI_HEADER_SIZE;
@@ -174,11 +156,14 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state,
             }
 
             /* row decompression */
-            if (c->bpc ==1) {
-                status = expandrow(&state->buffer[c->channo], &ptr[c->rleoffset], c->rlelength, im->bands, im->xsize);
-            }
-            else {
-                status = expandrow2(&state->buffer[c->channo * 2], &ptr[c->rleoffset], c->rlelength, im->bands, im->xsize);
+            if (c->bpc == 1) {
+                status =
+                    expandrow(&state->buffer[c->channo], &ptr[c->rleoffset],
+                              c->rlelength, im->bands, im->xsize);
+            } else {
+                status = expandrow2(&state->buffer[c->channo * 2],
+                                    &ptr[c->rleoffset], c->rlelength, im->bands,
+                                    im->xsize);
             }
             if (status == -1) {
                 state->errcode = IMAGING_CODEC_OVERRUN;
@@ -192,17 +177,16 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state,
 
         /* store decompressed data in image */
         state->shuffle((UINT8*)im->image[state->y], state->buffer, im->xsize);
-
     }
 
     c->bufsize++;
 
-sgi_finish_decode: ;
+sgi_finish_decode:;
 
     free(c->starttab);
     free(c->lengthtab);
     free(ptr);
-    if (err != 0){
+    if (err != 0) {
         return err;
     }
     return state->count - c->bufsize;
