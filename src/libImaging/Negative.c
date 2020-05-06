@@ -16,9 +16,7 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
-
 
 Imaging
 ImagingNegative(Imaging im)
@@ -27,7 +25,7 @@ ImagingNegative(Imaging im)
     int x, y;
 
     if (!im)
-        return (Imaging) ImagingError_ModeError();
+        return (Imaging)ImagingError_ModeError();
 
     imOut = ImagingNewDirty(im->mode, im->xsize, im->ysize);
     if (!imOut)
@@ -39,4 +37,3 @@ ImagingNegative(Imaging im)
 
     return imOut;
 }
-

@@ -1,6 +1,7 @@
 /* Raw.h */
 
-typedef struct {
+typedef struct
+{
 
     /* CONFIGURATION */
 

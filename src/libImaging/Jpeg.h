@@ -12,31 +12,32 @@
 
 #include <setjmp.h>
 
-
-typedef struct {
-    struct jpeg_error_mgr pub;    /* "public" fields */
-    jmp_buf setjmp_buffer;        /* for return to caller */
+typedef struct
+{
+    struct jpeg_error_mgr pub; /* "public" fields */
+    jmp_buf setjmp_buffer;     /* for return to caller */
 } JPEGERROR;
-
 
 /* -------------------------------------------------------------------- */
 /* Decoder                                                              */
 
-typedef struct {
+typedef struct
+{
     struct jpeg_source_mgr pub;
     int skip;
 } JPEGSOURCE;
 
-typedef struct {
+typedef struct
+{
 
     /* CONFIGURATION */
 
     /* Jpeg file mode (empty if not known) */
-    char jpegmode[8+1];
+    char jpegmode[8 + 1];
 
     /* Converter output mode (input to the shuffler).  If empty,
        convert conversions are disabled */
-    char rawmode[8+1];
+    char rawmode[8 + 1];
 
     /* If set, trade quality for speed */
     int draft;
@@ -54,16 +55,17 @@ typedef struct {
 
 } JPEGSTATE;
 
-
 /* -------------------------------------------------------------------- */
 /* Encoder                                                              */
 
-typedef struct {
+typedef struct
+{
     struct jpeg_destination_mgr pub;
     /* might add something some other day */
 } JPEGDESTINATION;
 
-typedef struct {
+typedef struct
+{
 
     /* CONFIGURATION */
 
@@ -89,16 +91,17 @@ typedef struct {
     int subsampling;
 
     /* Converter input mode (input to the shuffler) */
-    char rawmode[8+1];
+    char rawmode[8 + 1];
 
     /* Custom quantization tables () */
-    unsigned int *qtables;
+    unsigned int* qtables;
 
     /* in factors of DCTSIZE2 */
     int qtablesLen;
 
     /* Extra data (to be injected after header) */
-    char* extra; int extra_size;
+    char* extra;
+    int extra_size;
 
     /* PRIVATE CONTEXT (set by encoder) */
 
@@ -110,7 +113,7 @@ typedef struct {
 
     int extra_offset;
 
-    int rawExifLen;   /* EXIF data length */
+    int rawExifLen; /* EXIF data length */
     char* rawExif;  /* EXIF buffer pointer */
 
 } JPEGENCODERSTATE;

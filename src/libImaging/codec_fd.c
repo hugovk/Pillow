@@ -1,15 +1,14 @@
 #include "Python.h"
 #include "Imaging.h"
 
-
 Py_ssize_t
-_imaging_read_pyFd(PyObject *fd, char* dest, Py_ssize_t bytes)
+_imaging_read_pyFd(PyObject* fd, char* dest, Py_ssize_t bytes)
 {
     /* dest should be a buffer bytes long, returns length of read
        -1 on error */
 
-    PyObject *result;
-    char *buffer;
+    PyObject* result;
+    char* buffer;
     Py_ssize_t length;
     int bytes_result;
 
@@ -29,18 +28,17 @@ _imaging_read_pyFd(PyObject *fd, char* dest, Py_ssize_t bytes)
     Py_DECREF(result);
     return length;
 
- err:
+err:
     Py_DECREF(result);
     return -1;
-
 }
 
 Py_ssize_t
-_imaging_write_pyFd(PyObject *fd, char* src, Py_ssize_t bytes)
+_imaging_write_pyFd(PyObject* fd, char* src, Py_ssize_t bytes)
 {
 
-    PyObject *result;
-    PyObject *byteObj;
+    PyObject* result;
+    PyObject* byteObj;
 
     byteObj = PyBytes_FromStringAndSize(src, bytes);
     result = PyObject_CallMethod(fd, "write", "O", byteObj);
@@ -49,25 +47,23 @@ _imaging_write_pyFd(PyObject *fd, char* src, Py_ssize_t bytes)
     Py_DECREF(result);
 
     return bytes;
-
 }
 
 int
-_imaging_seek_pyFd(PyObject *fd, Py_ssize_t offset, int whence)
+_imaging_seek_pyFd(PyObject* fd, Py_ssize_t offset, int whence)
 {
-    PyObject *result;
+    PyObject* result;
 
     result = PyObject_CallMethod(fd, "seek", "ni", offset, whence);
 
     Py_DECREF(result);
     return 0;
-
 }
 
 Py_ssize_t
-_imaging_tell_pyFd(PyObject *fd)
+_imaging_tell_pyFd(PyObject* fd)
 {
-    PyObject *result;
+    PyObject* result;
     Py_ssize_t location;
 
     result = PyObject_CallMethod(fd, "tell", NULL);

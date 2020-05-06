@@ -71,41 +71,40 @@ ImagingFind(const char* name)
     if (!id)
         return NULL;
 
-    return (Imaging) id;
+    return (Imaging)id;
 }
 
-
 static int
-PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
-               int argc, const char **argv)
+PyImagingPhotoPut(ClientData clientdata,
+                  Tcl_Interp* interp,
+                  int argc,
+                  const char** argv)
 {
     Imaging im;
     Tk_PhotoHandle photo;
     Tk_PhotoImageBlock block;
 
     if (argc != 3) {
-        TCL_APPEND_RESULT(interp, "usage: ", argv[0],
-                         " destPhoto srcImage", (char *) NULL);
+        TCL_APPEND_RESULT(
+            interp, "usage: ", argv[0], " destPhoto srcImage", (char*)NULL);
         return TCL_ERROR;
     }
 
     /* get Tcl PhotoImage handle */
     photo = TK_FIND_PHOTO(interp, argv[1]);
     if (photo == NULL) {
-        TCL_APPEND_RESULT(
-            interp, "destination photo must exist", (char *) NULL
-            );
+        TCL_APPEND_RESULT(interp, "destination photo must exist", (char*)NULL);
         return TCL_ERROR;
     }
 
     /* get PIL Image handle */
     im = ImagingFind(argv[2]);
     if (!im) {
-        TCL_APPEND_RESULT(interp, "bad name", (char*) NULL);
+        TCL_APPEND_RESULT(interp, "bad name", (char*)NULL);
         return TCL_ERROR;
     }
     if (!im->block) {
-        TCL_APPEND_RESULT(interp, "bad display memory", (char*) NULL);
+        TCL_APPEND_RESULT(interp, "bad display memory", (char*)NULL);
         return TCL_ERROR;
     }
 
@@ -124,34 +123,47 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp* interp,
         else
             block.offset[3] = 0; /* no alpha */
     } else {
-        TCL_APPEND_RESULT(interp, "Bad mode", (char*) NULL);
+        TCL_APPEND_RESULT(interp, "Bad mode", (char*)NULL);
         return TCL_ERROR;
     }
 
     block.width = im->xsize;
     block.height = im->ysize;
     block.pitch = im->linesize;
-    block.pixelPtr = (unsigned char*) im->block;
+    block.pixelPtr = (unsigned char*)im->block;
 
     if (TK_LT_85) { /* Tk 8.4 */
-        TK_PHOTO_PUT_BLOCK_84(photo, &block, 0, 0, block.width, block.height,
-                TK_PHOTO_COMPOSITE_SET);
+        TK_PHOTO_PUT_BLOCK_84(photo,
+                              &block,
+                              0,
+                              0,
+                              block.width,
+                              block.height,
+                              TK_PHOTO_COMPOSITE_SET);
         if (strcmp(im->mode, "RGBA") == 0)
             /* Tk workaround: we need apply ToggleComplexAlphaIfNeeded */
             /* (fixed in Tk 8.5a3) */
             TK_PHOTO_SET_SIZE_84(photo, block.width, block.height);
     } else {
         /* Tk >=8.5 */
-        TK_PHOTO_PUT_BLOCK_85(interp, photo, &block, 0, 0, block.width,
-                block.height, TK_PHOTO_COMPOSITE_SET);
+        TK_PHOTO_PUT_BLOCK_85(interp,
+                              photo,
+                              &block,
+                              0,
+                              0,
+                              block.width,
+                              block.height,
+                              TK_PHOTO_COMPOSITE_SET);
     }
 
     return TCL_OK;
 }
 
 static int
-PyImagingPhotoGet(ClientData clientdata, Tcl_Interp* interp,
-               int argc, const char **argv)
+PyImagingPhotoGet(ClientData clientdata,
+                  Tcl_Interp* interp,
+                  int argc,
+                  const char** argv)
 {
     Imaging im;
     Tk_PhotoHandle photo;
@@ -159,24 +171,22 @@ PyImagingPhotoGet(ClientData clientdata, Tcl_Interp* interp,
     int x, y, z;
 
     if (argc != 3) {
-        TCL_APPEND_RESULT(interp, "usage: ", argv[0],
-                         " srcPhoto destImage", (char *) NULL);
+        TCL_APPEND_RESULT(
+            interp, "usage: ", argv[0], " srcPhoto destImage", (char*)NULL);
         return TCL_ERROR;
     }
 
     /* get Tcl PhotoImage handle */
     photo = TK_FIND_PHOTO(interp, argv[1]);
     if (photo == NULL) {
-        TCL_APPEND_RESULT(
-            interp, "source photo must exist", (char *) NULL
-            );
+        TCL_APPEND_RESULT(interp, "source photo must exist", (char*)NULL);
         return TCL_ERROR;
     }
 
     /* get PIL Image handle */
     im = ImagingFind(argv[2]);
     if (!im) {
-        TCL_APPEND_RESULT(interp, "bad name", (char*) NULL);
+        TCL_APPEND_RESULT(interp, "bad name", (char*)NULL);
         return TCL_ERROR;
     }
 
@@ -185,7 +195,7 @@ PyImagingPhotoGet(ClientData clientdata, Tcl_Interp* interp,
     for (y = 0; y < block.height; y++) {
         UINT8* out = (UINT8*)im->image32[y];
         for (x = 0; x < block.pitch; x += block.pixelSize) {
-            for (z=0; z < block.pixelSize; z++) {
+            for (z = 0; z < block.pixelSize; z++) {
                 int offset = block.offset[z];
                 out[x + offset] = block.pixelPtr[y * block.pitch + x + offset];
             }
@@ -195,14 +205,19 @@ PyImagingPhotoGet(ClientData clientdata, Tcl_Interp* interp,
     return TCL_OK;
 }
 
-
 void
 TkImaging_Init(Tcl_Interp* interp)
 {
-    TCL_CREATE_COMMAND(interp, "PyImagingPhoto", PyImagingPhotoPut,
-                      (ClientData) 0, (Tcl_CmdDeleteProc*) NULL);
-    TCL_CREATE_COMMAND(interp, "PyImagingPhotoGet", PyImagingPhotoGet,
-                      (ClientData) 0, (Tcl_CmdDeleteProc*) NULL);
+    TCL_CREATE_COMMAND(interp,
+                       "PyImagingPhoto",
+                       PyImagingPhotoPut,
+                       (ClientData)0,
+                       (Tcl_CmdDeleteProc*)NULL);
+    TCL_CREATE_COMMAND(interp,
+                       "PyImagingPhotoGet",
+                       PyImagingPhotoGet,
+                       (ClientData)0,
+                       (Tcl_CmdDeleteProc*)NULL);
 }
 
 /*
@@ -227,13 +242,14 @@ TkImaging_Init(Tcl_Interp* interp)
 
 #define TKINTER_PKG "tkinter"
 
-FARPROC _dfunc(HMODULE lib_handle, const char *func_name)
+FARPROC
+_dfunc(HMODULE lib_handle, const char* func_name)
 {
     /*
      * Load function `func_name` from `lib_handle`.
      * Set Python exception if we can't find `func_name` in `lib_handle`.
      * Returns function pointer or NULL if not present.
-    */
+     */
 
     char message[100];
 
@@ -245,7 +261,8 @@ FARPROC _dfunc(HMODULE lib_handle, const char *func_name)
     return func;
 }
 
-int get_tcl(HMODULE hMod)
+int
+get_tcl(HMODULE hMod)
 {
     /*
      * Try to fill Tcl global vars with function pointers. Return 0 for no
@@ -253,15 +270,18 @@ int get_tcl(HMODULE hMod)
      * functions found.
      */
 
-    if ((TCL_CREATE_COMMAND = (Tcl_CreateCommand_t)
-        GetProcAddress(hMod, "Tcl_CreateCommand")) == NULL) {
+    if ((TCL_CREATE_COMMAND = (Tcl_CreateCommand_t)GetProcAddress(
+             hMod, "Tcl_CreateCommand")) == NULL) {
         return 0; /* Maybe not Tcl module */
     }
-    return ((TCL_APPEND_RESULT = (Tcl_AppendResult_t) _dfunc(hMod,
-            "Tcl_AppendResult")) == NULL) ? -1 : 1;
+    return ((TCL_APPEND_RESULT =
+                 (Tcl_AppendResult_t)_dfunc(hMod, "Tcl_AppendResult")) == NULL)
+               ? -1
+               : 1;
 }
 
-int get_tk(HMODULE hMod)
+int
+get_tk(HMODULE hMod)
 {
     /*
      * Try to fill Tk global vars with function pointers. Return 0 for no
@@ -270,25 +290,32 @@ int get_tk(HMODULE hMod)
      */
 
     FARPROC func = GetProcAddress(hMod, "Tk_PhotoPutBlock");
-    if (func == NULL) {  /* Maybe not Tk module */
+    if (func == NULL) { /* Maybe not Tk module */
         return 0;
     }
-    if ((TK_PHOTO_GET_IMAGE = (Tk_PhotoGetImage_t)
-                _dfunc(hMod, "Tk_PhotoGetImage")) == NULL) { return -1; };
-    if ((TK_FIND_PHOTO = (Tk_FindPhoto_t)
-                _dfunc(hMod, "Tk_FindPhoto")) == NULL) { return -1; };
+    if ((TK_PHOTO_GET_IMAGE =
+             (Tk_PhotoGetImage_t)_dfunc(hMod, "Tk_PhotoGetImage")) == NULL) {
+        return -1;
+    };
+    if ((TK_FIND_PHOTO = (Tk_FindPhoto_t)_dfunc(hMod, "Tk_FindPhoto")) ==
+        NULL) {
+        return -1;
+    };
     TK_LT_85 = GetProcAddress(hMod, "Tk_PhotoPutBlock_Panic") == NULL;
     /* Tk_PhotoPutBlock_Panic defined as of 8.5.0 */
     if (TK_LT_85) {
-        TK_PHOTO_PUT_BLOCK_84 = (Tk_PhotoPutBlock_84_t) func;
-        return ((TK_PHOTO_SET_SIZE_84 = (Tk_PhotoSetSize_84_t)
-                    _dfunc(hMod, "Tk_PhotoSetSize")) == NULL) ? -1 : 1;
+        TK_PHOTO_PUT_BLOCK_84 = (Tk_PhotoPutBlock_84_t)func;
+        return ((TK_PHOTO_SET_SIZE_84 = (Tk_PhotoSetSize_84_t)_dfunc(
+                     hMod, "Tk_PhotoSetSize")) == NULL)
+                   ? -1
+                   : 1;
     }
-    TK_PHOTO_PUT_BLOCK_85 = (Tk_PhotoPutBlock_85_t) func;
+    TK_PHOTO_PUT_BLOCK_85 = (Tk_PhotoPutBlock_85_t)func;
     return 1;
 }
 
-int load_tkinter_funcs(void)
+int
+load_tkinter_funcs(void)
 {
     /*
      * Load Tcl and Tk functions by searching all modules in current process.
@@ -303,7 +330,7 @@ int load_tkinter_funcs(void)
     int found_tk = 0;
 
     /* First load tkinter module to make sure libraries are loaded */
-    PyObject *pModule = PyImport_ImportModule(TKINTER_PKG);
+    PyObject* pModule = PyImport_ImportModule(TKINTER_PKG);
     if (pModule == NULL) {
         return 1;
     }
@@ -341,7 +368,7 @@ int load_tkinter_funcs(void)
     return 1;
 }
 
-#else  /* not Windows */
+#else /* not Windows */
 
 /*
  * On Unix, we can get the Tcl and Tk symbols from the tkinter module, because
@@ -350,7 +377,8 @@ int load_tkinter_funcs(void)
  */
 
 /* From module __file__ attribute to char *string for dlopen. */
-char *fname2char(PyObject *fname)
+char*
+fname2char(PyObject* fname)
 {
     PyObject* bytes;
     bytes = PyUnicode_EncodeFSDefault(fname);
@@ -362,7 +390,8 @@ char *fname2char(PyObject *fname)
 
 #include <dlfcn.h>
 
-void *_dfunc(void *lib_handle, const char *func_name)
+void*
+_dfunc(void* lib_handle, const char* func_name)
 {
     /*
      * Load function `func_name` from `lib_handle`.
@@ -375,40 +404,49 @@ void *_dfunc(void *lib_handle, const char *func_name)
     dlerror();
     func = dlsym(lib_handle, func_name);
     if (func == NULL) {
-        const char *error = dlerror();
+        const char* error = dlerror();
         PyErr_SetString(PyExc_RuntimeError, error);
     }
     return func;
 }
 
-int _func_loader(void *lib)
+int
+_func_loader(void* lib)
 {
     /*
      * Fill global function pointers from dynamic lib.
      * Return 1 if any pointer is NULL, 0 otherwise.
      */
 
-    if ((TCL_CREATE_COMMAND = (Tcl_CreateCommand_t)
-            _dfunc(lib, "Tcl_CreateCommand")) == NULL) { return 1; }
-    if ((TCL_APPEND_RESULT = (Tcl_AppendResult_t) _dfunc(lib,
-                "Tcl_AppendResult")) == NULL) { return 1; }
-    if ((TK_PHOTO_GET_IMAGE = (Tk_PhotoGetImage_t)
-                _dfunc(lib, "Tk_PhotoGetImage")) == NULL) { return 1; }
-    if ((TK_FIND_PHOTO = (Tk_FindPhoto_t)
-                _dfunc(lib, "Tk_FindPhoto")) == NULL) { return 1; }
+    if ((TCL_CREATE_COMMAND =
+             (Tcl_CreateCommand_t)_dfunc(lib, "Tcl_CreateCommand")) == NULL) {
+        return 1;
+    }
+    if ((TCL_APPEND_RESULT =
+             (Tcl_AppendResult_t)_dfunc(lib, "Tcl_AppendResult")) == NULL) {
+        return 1;
+    }
+    if ((TK_PHOTO_GET_IMAGE =
+             (Tk_PhotoGetImage_t)_dfunc(lib, "Tk_PhotoGetImage")) == NULL) {
+        return 1;
+    }
+    if ((TK_FIND_PHOTO = (Tk_FindPhoto_t)_dfunc(lib, "Tk_FindPhoto")) == NULL) {
+        return 1;
+    }
     /* Tk_PhotoPutBlock_Panic defined as of 8.5.0 */
     TK_LT_85 = (dlsym(lib, "Tk_PhotoPutBlock_Panic") == NULL);
     if (TK_LT_85) {
-        return (((TK_PHOTO_PUT_BLOCK_84 = (Tk_PhotoPutBlock_84_t)
-                        _dfunc(lib, "Tk_PhotoPutBlock")) == NULL) ||
-                ((TK_PHOTO_SET_SIZE_84 = (Tk_PhotoSetSize_84_t)
-                  _dfunc(lib, "Tk_PhotoSetSize")) == NULL));
+        return (((TK_PHOTO_PUT_BLOCK_84 = (Tk_PhotoPutBlock_84_t)_dfunc(
+                      lib, "Tk_PhotoPutBlock")) == NULL) ||
+                ((TK_PHOTO_SET_SIZE_84 = (Tk_PhotoSetSize_84_t)_dfunc(
+                      lib, "Tk_PhotoSetSize")) == NULL));
     }
-    return ((TK_PHOTO_PUT_BLOCK_85 = (Tk_PhotoPutBlock_85_t)
-                _dfunc(lib, "Tk_PhotoPutBlock")) == NULL);
+    return ((TK_PHOTO_PUT_BLOCK_85 = (Tk_PhotoPutBlock_85_t)_dfunc(
+                 lib, "Tk_PhotoPutBlock")) == NULL);
 }
 
-int load_tkinter_funcs(void)
+int
+load_tkinter_funcs(void)
 {
     /*
      * Load tkinter global funcs from tkinter compiled module.
@@ -417,7 +455,7 @@ int load_tkinter_funcs(void)
 
     int ret = -1;
     void *main_program, *tkinter_lib;
-    char *tkinter_libname;
+    char* tkinter_libname;
     PyObject *pModule = NULL, *pString = NULL;
 
     /* Try loading from the main program namespace first */
@@ -445,7 +483,7 @@ int load_tkinter_funcs(void)
     tkinter_lib = dlopen(tkinter_libname, RTLD_LAZY);
     if (tkinter_lib == NULL) {
         PyErr_SetString(PyExc_RuntimeError,
-                "Cannot dlopen tkinter module file");
+                        "Cannot dlopen tkinter module file");
         goto exit;
     }
     ret = _func_loader(tkinter_lib);

@@ -15,10 +15,9 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
 
-#ifdef  HAVE_LIBZ
+#ifdef HAVE_LIBZ
 
 #include "Zip.h"
 
@@ -30,7 +29,8 @@ static const int ROW_INCREMENT[] = { 8, 8, 8, 4, 4, 2, 2 };
 
 /* Get the length in bytes of a scanline in the pass specified,
  * for interlaced images */
-static int get_row_len(ImagingCodecState state, int pass)
+static int
+get_row_len(ImagingCodecState state, int pass)
 {
     int row_len = (state->xsize + OFFSET[pass]) / COL_INCREMENT[pass];
     return ((row_len * state->bits) + 7) / 8;
@@ -41,9 +41,12 @@ static int get_row_len(ImagingCodecState state, int pass)
 /* -------------------------------------------------------------------- */
 
 int
-ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t bytes)
+ImagingZipDecode(Imaging im,
+                 ImagingCodecState state,
+                 UINT8* buf,
+                 Py_ssize_t bytes)
 {
-    ZIPSTATE* context = (ZIPSTATE*) state->context;
+    ZIPSTATE* context = (ZIPSTATE*)state->context;
     int err;
     int n;
     UINT8* ptr;
@@ -65,8 +68,8 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
            prefix, and allocate a buffer to hold the previous line */
         free(state->buffer);
         /* malloc check ok, overflow checked above */
-        state->buffer = (UINT8*) malloc(state->bytes+1);
-        context->previous = (UINT8*) malloc(state->bytes+1);
+        state->buffer = (UINT8*)malloc(state->bytes + 1);
+        context->previous = (UINT8*)malloc(state->bytes + 1);
         if (!state->buffer || !context->previous) {
             state->errcode = IMAGING_CODEC_MEMORY;
             return -1;
@@ -75,12 +78,12 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
         context->last_output = 0;
 
         /* Initialize to black */
-        memset(context->previous, 0, state->bytes+1);
+        memset(context->previous, 0, state->bytes + 1);
 
         /* Setup decompression context */
-        context->z_stream.zalloc = (alloc_func) NULL;
-        context->z_stream.zfree = (free_func) NULL;
-        context->z_stream.opaque = (voidpf) NULL;
+        context->z_stream.zalloc = (alloc_func)NULL;
+        context->z_stream.zfree = (free_func)NULL;
+        context->z_stream.opaque = (voidpf)NULL;
 
         err = inflateInit(&context->z_stream);
         if (err < 0) {
@@ -97,7 +100,6 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
 
         /* Ready to decode */
         state->state = 1;
-
     }
 
     if (context->interlaced) {
@@ -142,68 +144,68 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
 
         /* Apply predictor */
         switch (context->mode) {
-        case ZIP_PNG:
-            switch (state->buffer[0]) {
-            case 0:
-                break;
-            case 1:
-                /* prior */
-                bpp = (state->bits + 7) / 8;
-                for (i = bpp+1; i <= row_len; i++)
-                    state->buffer[i] += state->buffer[i-bpp];
-                break;
-            case 2:
-                /* up */
-                for (i = 1; i <= row_len; i++)
-                    state->buffer[i] += context->previous[i];
-                break;
-            case 3:
-                /* average */
-                bpp = (state->bits + 7) / 8;
-                for (i = 1; i <= bpp; i++)
-                    state->buffer[i] += context->previous[i]/2;
-                for (; i <= row_len; i++)
-                    state->buffer[i] +=
-                        (state->buffer[i-bpp] + context->previous[i])/2;
-                break;
-            case 4:
-                /* paeth filtering */
-                bpp = (state->bits + 7) / 8;
-                for (i = 1; i <= bpp; i++)
-                    state->buffer[i] += context->previous[i];
-                for (; i <= row_len; i++) {
-                    int a, b, c;
-                    int pa, pb, pc;
+            case ZIP_PNG:
+                switch (state->buffer[0]) {
+                    case 0:
+                        break;
+                    case 1:
+                        /* prior */
+                        bpp = (state->bits + 7) / 8;
+                        for (i = bpp + 1; i <= row_len; i++)
+                            state->buffer[i] += state->buffer[i - bpp];
+                        break;
+                    case 2:
+                        /* up */
+                        for (i = 1; i <= row_len; i++)
+                            state->buffer[i] += context->previous[i];
+                        break;
+                    case 3:
+                        /* average */
+                        bpp = (state->bits + 7) / 8;
+                        for (i = 1; i <= bpp; i++)
+                            state->buffer[i] += context->previous[i] / 2;
+                        for (; i <= row_len; i++)
+                            state->buffer[i] += (state->buffer[i - bpp] +
+                                                 context->previous[i]) /
+                                                2;
+                        break;
+                    case 4:
+                        /* paeth filtering */
+                        bpp = (state->bits + 7) / 8;
+                        for (i = 1; i <= bpp; i++)
+                            state->buffer[i] += context->previous[i];
+                        for (; i <= row_len; i++) {
+                            int a, b, c;
+                            int pa, pb, pc;
 
-                    /* fetch pixels */
-                    a = state->buffer[i-bpp];
-                    b = context->previous[i];
-                    c = context->previous[i-bpp];
+                            /* fetch pixels */
+                            a = state->buffer[i - bpp];
+                            b = context->previous[i];
+                            c = context->previous[i - bpp];
 
-                    /* distances to surrounding pixels */
-                    pa = abs(b - c);
-                    pb = abs(a - c);
-                    pc = abs(a + b - 2*c);
+                            /* distances to surrounding pixels */
+                            pa = abs(b - c);
+                            pb = abs(a - c);
+                            pc = abs(a + b - 2 * c);
 
-                    /* pick predictor with the shortest distance */
-                    state->buffer[i] +=
-                        (pa <= pb && pa <= pc) ? a : (pb <= pc) ? b : c;
-
+                            /* pick predictor with the shortest distance */
+                            state->buffer[i] +=
+                                (pa <= pb && pa <= pc) ? a : (pb <= pc) ? b : c;
+                        }
+                        break;
+                    default:
+                        state->errcode = IMAGING_CODEC_UNKNOWN;
+                        free(context->previous);
+                        context->previous = NULL;
+                        inflateEnd(&context->z_stream);
+                        return -1;
                 }
                 break;
-            default:
-                state->errcode = IMAGING_CODEC_UNKNOWN;
-                free(context->previous);
-                context->previous = NULL;
-                inflateEnd(&context->z_stream);
-                return -1;
-            }
-            break;
-        case ZIP_TIFF_PREDICTOR:
-            bpp = (state->bits + 7) / 8;
-            for (i = bpp+1; i <= row_len; i++)
-                state->buffer[i] += state->buffer[i-bpp];
-            break;
+            case ZIP_TIFF_PREDICTOR:
+                bpp = (state->bits + 7) / 8;
+                for (i = bpp + 1; i <= row_len; i++)
+                    state->buffer[i] += state->buffer[i - bpp];
+                break;
         }
 
         /* Stuff data into the image */
@@ -212,20 +214,24 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
             if (state->bits >= 8) {
                 /* Stuff pixels in their correct location, one by one */
                 for (i = 0; i < row_len; i += ((state->bits + 7) / 8)) {
-                    state->shuffle((UINT8*) im->image[state->y] +
-                                   col * im->pixelsize,
-                                   state->buffer + context->prefix + i, 1);
+                    state->shuffle((UINT8*)im->image[state->y] +
+                                       col * im->pixelsize,
+                                   state->buffer + context->prefix + i,
+                                   1);
                     col += COL_INCREMENT[context->pass];
                 }
             } else {
                 /* Handle case with more than a pixel in each byte */
-                int row_bits = ((state->xsize + OFFSET[context->pass])
-                        / COL_INCREMENT[context->pass]) * state->bits;
+                int row_bits = ((state->xsize + OFFSET[context->pass]) /
+                                COL_INCREMENT[context->pass]) *
+                               state->bits;
                 for (i = 0; i < row_bits; i += state->bits) {
                     UINT8 byte = *(state->buffer + context->prefix + (i / 8));
                     byte <<= (i % 8);
-                    state->shuffle((UINT8*) im->image[state->y] +
-                                   col * im->pixelsize, &byte, 1);
+                    state->shuffle((UINT8*)im->image[state->y] +
+                                       col * im->pixelsize,
+                                   &byte,
+                                   1);
                     col += COL_INCREMENT[context->pass];
                 }
             }
@@ -242,11 +248,11 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
                 row_len = get_row_len(state, context->pass);
                 /* Since we're moving to the "first" line, the previous line
                  * should be black to make filters work correctly */
-                memset(state->buffer, 0, state->bytes+1);
+                memset(state->buffer, 0, state->bytes + 1);
             }
         } else {
-            state->shuffle((UINT8*) im->image[state->y + state->yoff] +
-                           state->xoff * im->pixelsize,
+            state->shuffle((UINT8*)im->image[state->y + state->yoff] +
+                               state->xoff * im->pixelsize,
                            state->buffer + context->prefix,
                            state->xsize);
             state->y++;
@@ -265,26 +271,24 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
             context->previous = NULL;
             inflateEnd(&context->z_stream);
             return -1; /* end of file (errcode=0) */
-
         }
 
         /* Swap buffer pointers */
         ptr = state->buffer;
         state->buffer = context->previous;
         context->previous = ptr;
-
     }
 
     return bytes; /* consumed all of it */
-
 }
 
-
-int ImagingZipDecodeCleanup(ImagingCodecState state){
+int
+ImagingZipDecodeCleanup(ImagingCodecState state)
+{
     /* called to free the decompression engine when the decode terminates
        due to a corrupt or truncated image
     */
-    ZIPSTATE* context = (ZIPSTATE*) state->context;
+    ZIPSTATE* context = (ZIPSTATE*)state->context;
 
     /* Clean up */
     if (context->previous) {

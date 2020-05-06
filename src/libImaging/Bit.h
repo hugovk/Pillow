@@ -1,6 +1,7 @@
 /* Bit.h */
 
-typedef struct {
+typedef struct
+{
 
     /* CONFIGURATION */
 

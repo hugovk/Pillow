@@ -23,17 +23,19 @@
 #include "Imaging.h"
 
 /* compatibility wrappers (defined in _imaging.c) */
-extern int PyImaging_CheckBuffer(PyObject* buffer);
-extern int PyImaging_GetBuffer(PyObject* buffer, Py_buffer *view);
+extern int
+PyImaging_CheckBuffer(PyObject* buffer);
+extern int
+PyImaging_GetBuffer(PyObject* buffer, Py_buffer* view);
 
 /* -------------------------------------------------------------------- */
 /* Standard mapper */
 
-typedef struct {
-    PyObject_HEAD
-    char* base;
-    int   size;
-    int   offset;
+typedef struct
+{
+    PyObject_HEAD char* base;
+    int size;
+    int offset;
 #ifdef _WIN32
     HANDLE hFile;
     HANDLE hMap;
@@ -45,7 +47,7 @@ static PyTypeObject ImagingMapperType;
 ImagingMapperObject*
 PyImaging_MapperNew(const char* filename, int readonly)
 {
-    ImagingMapperObject *mapper;
+    ImagingMapperObject* mapper;
 
     if (PyType_Ready(&ImagingMapperType) < 0)
         return NULL;
@@ -59,26 +61,24 @@ PyImaging_MapperNew(const char* filename, int readonly)
 
 #ifdef _WIN32
     mapper->hFile = (HANDLE)-1;
-    mapper->hMap  = (HANDLE)-1;
+    mapper->hMap = (HANDLE)-1;
 
     /* FIXME: currently supports readonly mappings only */
-    mapper->hFile = CreateFile(
-        filename,
-        GENERIC_READ,
-        FILE_SHARE_READ,
-        NULL, OPEN_EXISTING,
-        FILE_ATTRIBUTE_NORMAL,
-        NULL);
+    mapper->hFile = CreateFile(filename,
+                               GENERIC_READ,
+                               FILE_SHARE_READ,
+                               NULL,
+                               OPEN_EXISTING,
+                               FILE_ATTRIBUTE_NORMAL,
+                               NULL);
     if (mapper->hFile == (HANDLE)-1) {
         PyErr_SetString(PyExc_OSError, "cannot open file");
         Py_DECREF(mapper);
         return NULL;
     }
 
-    mapper->hMap = CreateFileMapping(
-        mapper->hFile, NULL,
-        PAGE_READONLY,
-        0, 0, NULL);
+    mapper->hMap =
+        CreateFileMapping(mapper->hFile, NULL, PAGE_READONLY, 0, 0, NULL);
     if (mapper->hMap == (HANDLE)-1) {
         CloseHandle(mapper->hFile);
         PyErr_SetString(PyExc_OSError, "cannot map file");
@@ -86,10 +86,7 @@ PyImaging_MapperNew(const char* filename, int readonly)
         return NULL;
     }
 
-    mapper->base = (char*) MapViewOfFile(
-        mapper->hMap,
-        FILE_MAP_READ,
-        0, 0, 0);
+    mapper->base = (char*)MapViewOfFile(mapper->hMap, FILE_MAP_READ, 0, 0, 0);
 
     mapper->size = GetFileSize(mapper->hFile, 0);
 #endif
@@ -173,7 +170,8 @@ mapping_seek(ImagingMapperObject* mapper, PyObject* args)
 /* -------------------------------------------------------------------- */
 /* map entire image */
 
-extern PyObject*PyImagingNew(Imaging im);
+extern PyObject*
+PyImagingNew(Imaging im);
 
 static void
 ImagingDestroyMap(Imaging im)
@@ -192,8 +190,8 @@ mapping_readimage(ImagingMapperObject* mapper, PyObject* args)
     int ysize;
     int stride;
     int orientation;
-    if (!PyArg_ParseTuple(args, "s(ii)ii", &mode, &xsize, &ysize,
-                          &stride, &orientation))
+    if (!PyArg_ParseTuple(
+            args, "s(ii)ii", &mode, &xsize, &ysize, &stride, &orientation))
         return NULL;
 
     if (stride <= 0) {
@@ -223,7 +221,8 @@ mapping_readimage(ImagingMapperObject* mapper, PyObject* args)
             im->image[y] = mapper->base + mapper->offset + y * stride;
     else
         for (y = 0; y < ysize; y++)
-            im->image[ysize-y-1] = mapper->base + mapper->offset + y * stride;
+            im->image[ysize - y - 1] =
+                mapper->base + mapper->offset + y * stride;
 
     im->destroy = ImagingDestroyMap;
 
@@ -234,45 +233,44 @@ mapping_readimage(ImagingMapperObject* mapper, PyObject* args)
 
 static struct PyMethodDef methods[] = {
     /* standard file interface */
-    {"read", (PyCFunction)mapping_read, 1},
-    {"seek", (PyCFunction)mapping_seek, 1},
+    { "read", (PyCFunction)mapping_read, 1 },
+    { "seek", (PyCFunction)mapping_seek, 1 },
     /* extensions */
-    {"readimage", (PyCFunction)mapping_readimage, 1},
-    {NULL, NULL} /* sentinel */
+    { "readimage", (PyCFunction)mapping_readimage, 1 },
+    { NULL, NULL } /* sentinel */
 };
 
 static PyTypeObject ImagingMapperType = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        "ImagingMapper",                /*tp_name*/
-        sizeof(ImagingMapperObject),    /*tp_size*/
-        0,                              /*tp_itemsize*/
-        /* methods */
-        (destructor)mapping_dealloc,    /*tp_dealloc*/
-        0,                              /*tp_print*/
-    0,                          /*tp_getattr*/
-    0,                          /*tp_setattr*/
-    0,                          /*tp_compare*/
-    0,                          /*tp_repr*/
-    0,                          /*tp_as_number */
-    0,                          /*tp_as_sequence */
-    0,                          /*tp_as_mapping */
-    0,                          /*tp_hash*/
-    0,                          /*tp_call*/
-    0,                          /*tp_str*/
-    0,                          /*tp_getattro*/
-    0,                          /*tp_setattro*/
-    0,                          /*tp_as_buffer*/
-    Py_TPFLAGS_DEFAULT,         /*tp_flags*/
-    0,                          /*tp_doc*/
-    0,                          /*tp_traverse*/
-    0,                          /*tp_clear*/
-    0,                          /*tp_richcompare*/
-    0,                          /*tp_weaklistoffset*/
-    0,                          /*tp_iter*/
-    0,                          /*tp_iternext*/
-    methods,                    /*tp_methods*/
-    0,                          /*tp_members*/
-    0,                          /*tp_getset*/
+    PyVarObject_HEAD_INIT(NULL, 0) "ImagingMapper", /*tp_name*/
+    sizeof(ImagingMapperObject),                    /*tp_size*/
+    0,                                              /*tp_itemsize*/
+    /* methods */
+    (destructor)mapping_dealloc, /*tp_dealloc*/
+    0,                           /*tp_print*/
+    0,                           /*tp_getattr*/
+    0,                           /*tp_setattr*/
+    0,                           /*tp_compare*/
+    0,                           /*tp_repr*/
+    0,                           /*tp_as_number */
+    0,                           /*tp_as_sequence */
+    0,                           /*tp_as_mapping */
+    0,                           /*tp_hash*/
+    0,                           /*tp_call*/
+    0,                           /*tp_str*/
+    0,                           /*tp_getattro*/
+    0,                           /*tp_setattro*/
+    0,                           /*tp_as_buffer*/
+    Py_TPFLAGS_DEFAULT,          /*tp_flags*/
+    0,                           /*tp_doc*/
+    0,                           /*tp_traverse*/
+    0,                           /*tp_clear*/
+    0,                           /*tp_richcompare*/
+    0,                           /*tp_weaklistoffset*/
+    0,                           /*tp_iter*/
+    0,                           /*tp_iternext*/
+    methods,                     /*tp_methods*/
+    0,                           /*tp_members*/
+    0,                           /*tp_getset*/
 };
 
 PyObject*
@@ -282,13 +280,14 @@ PyImaging_Mapper(PyObject* self, PyObject* args)
     if (!PyArg_ParseTuple(args, "s", &filename))
         return NULL;
 
-    return (PyObject*) PyImaging_MapperNew(filename, 1);
+    return (PyObject*)PyImaging_MapperNew(filename, 1);
 }
 
 /* -------------------------------------------------------------------- */
 /* Buffer mapper */
 
-typedef struct ImagingBufferInstance {
+typedef struct ImagingBufferInstance
+{
     struct ImagingMemoryInstance im;
     PyObject* target;
     Py_buffer view;
@@ -297,7 +296,7 @@ typedef struct ImagingBufferInstance {
 static void
 mapping_destroy_buffer(Imaging im)
 {
-    ImagingBufferInstance* buffer = (ImagingBufferInstance*) im;
+    ImagingBufferInstance* buffer = (ImagingBufferInstance*)im;
 
     PyBuffer_Release(&buffer->view);
     Py_XDECREF(buffer->target);
@@ -318,8 +317,16 @@ PyImaging_MapBuffer(PyObject* self, PyObject* args)
     int stride;
     int ystep;
 
-    if (!PyArg_ParseTuple(args, "O(ii)sn(sii)", &target, &xsize, &ysize,
-                          &codec, &offset, &mode, &stride, &ystep))
+    if (!PyArg_ParseTuple(args,
+                          "O(ii)sn(sii)",
+                          &target,
+                          &xsize,
+                          &ysize,
+                          &codec,
+                          &offset,
+                          &mode,
+                          &stride,
+                          &ystep))
         return NULL;
 
     if (!PyImaging_CheckBuffer(target)) {
@@ -341,7 +348,7 @@ PyImaging_MapBuffer(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    size = (Py_ssize_t) ysize * stride;
+    size = (Py_ssize_t)ysize * stride;
 
     if (offset > PY_SSIZE_T_MAX - size) {
         PyErr_SetString(PyExc_MemoryError, "Integer overflow in offset");
@@ -376,14 +383,13 @@ PyImaging_MapBuffer(PyObject* self, PyObject* args)
             im->image[y] = (char*)view.buf + offset + y * stride;
     else
         for (y = 0; y < ysize; y++)
-            im->image[ysize-y-1] = (char*)view.buf + offset + y * stride;
+            im->image[ysize - y - 1] = (char*)view.buf + offset + y * stride;
 
     im->destroy = mapping_destroy_buffer;
 
     Py_INCREF(target);
-    ((ImagingBufferInstance*) im)->target = target;
-    ((ImagingBufferInstance*) im)->view = view;
+    ((ImagingBufferInstance*)im)->target = target;
+    ((ImagingBufferInstance*)im)->view = view;
 
     return PyImagingNew(im);
 }
-

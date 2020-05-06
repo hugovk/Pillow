@@ -27,7 +27,14 @@
 #define FIRST_CODE 258
 #define LAST_CODE 511
 
-enum { INIT, ENCODE, ENCODE_EOF, FLUSH, EXIT };
+enum
+{
+    INIT,
+    ENCODE,
+    ENCODE_EOF,
+    FLUSH,
+    EXIT
+};
 
 /* to make things a little less complicated, we use a simple output
    queue to hold completed blocks.  the following inlined function
@@ -35,7 +42,7 @@ enum { INIT, ENCODE, ENCODE_EOF, FLUSH, EXIT };
    necessary. */
 
 static inline int
-emit(GIFENCODERSTATE *context, int byte)
+emit(GIFENCODERSTATE* context, int byte)
 {
     /* write a byte to the output buffer */
 
@@ -71,7 +78,6 @@ emit(GIFENCODERSTATE *context, int byte)
         block->next = NULL;
 
         context->block = block;
-
     }
 
     /* write new byte to block */
@@ -83,56 +89,58 @@ emit(GIFENCODERSTATE *context, int byte)
 /* write a code word to the current block.  this is a macro to make
    sure it's inlined on all platforms */
 
-#define EMIT(code) {\
-    context->bitbuffer |= ((INT32) (code)) << context->bitcount;\
-    context->bitcount += 9;\
-    while (context->bitcount >= 8) {\
-        if (!emit(context, (UINT8) context->bitbuffer)) {\
-            state->errcode = IMAGING_CODEC_MEMORY;\
-            return 0;\
-        }\
-        context->bitbuffer >>= 8;\
-        context->bitcount -= 8;\
-    }\
-}
+#define EMIT(code)                                                             \
+    {                                                                          \
+        context->bitbuffer |= ((INT32)(code)) << context->bitcount;            \
+        context->bitcount += 9;                                                \
+        while (context->bitcount >= 8) {                                       \
+            if (!emit(context, (UINT8)context->bitbuffer)) {                   \
+                state->errcode = IMAGING_CODEC_MEMORY;                         \
+                return 0;                                                      \
+            }                                                                  \
+            context->bitbuffer >>= 8;                                          \
+            context->bitcount -= 8;                                            \
+        }                                                                      \
+    }
 
 /* write a run.  we use a combination of literals and combinations of
    literals.  this can give quite decent compression for images with
    long stretches of identical pixels.  but remember: if you want
    really good compression, use another file format. */
 
-#define EMIT_RUN(label) {\
-label:\
-    while (context->count > 0) {\
-        int run = 2;\
-        EMIT(context->last);\
-        context->count--;\
-        if (state->count++ == LAST_CODE) {\
-            EMIT(CLEAR_CODE);\
-            state->count = FIRST_CODE;\
-            goto label;\
-        }\
-        while (context->count >= run) {\
-            EMIT(state->count - 1);\
-            context->count -= run;\
-            run++;\
-            if (state->count++ == LAST_CODE) {\
-                EMIT(CLEAR_CODE);\
-                state->count = FIRST_CODE;\
-                goto label;\
-            }\
-        }\
-        if (context->count > 1) {\
-            EMIT(state->count - 1 - (run - context->count));\
-            context->count = 0;\
-            if (state->count++ == LAST_CODE) {\
-                EMIT(CLEAR_CODE);\
-                state->count = FIRST_CODE;\
-            }\
-            break;\
-        }\
-    }\
-}
+#define EMIT_RUN(label)                                                        \
+    {                                                                          \
+    label:                                                                     \
+        while (context->count > 0) {                                           \
+            int run = 2;                                                       \
+            EMIT(context->last);                                               \
+            context->count--;                                                  \
+            if (state->count++ == LAST_CODE) {                                 \
+                EMIT(CLEAR_CODE);                                              \
+                state->count = FIRST_CODE;                                     \
+                goto label;                                                    \
+            }                                                                  \
+            while (context->count >= run) {                                    \
+                EMIT(state->count - 1);                                        \
+                context->count -= run;                                         \
+                run++;                                                         \
+                if (state->count++ == LAST_CODE) {                             \
+                    EMIT(CLEAR_CODE);                                          \
+                    state->count = FIRST_CODE;                                 \
+                    goto label;                                                \
+                }                                                              \
+            }                                                                  \
+            if (context->count > 1) {                                          \
+                EMIT(state->count - 1 - (run - context->count));               \
+                context->count = 0;                                            \
+                if (state->count++ == LAST_CODE) {                             \
+                    EMIT(CLEAR_CODE);                                          \
+                    state->count = FIRST_CODE;                                 \
+                }                                                              \
+                break;                                                         \
+            }                                                                  \
+        }                                                                      \
+    }
 
 int
 ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
@@ -141,7 +149,7 @@ ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
     int this;
 
     GIFENCODERBLOCK* block;
-    GIFENCODERSTATE *context = (GIFENCODERSTATE*) state->context;
+    GIFENCODERSTATE* context = (GIFENCODERSTATE*)state->context;
 
     if (!state->state) {
 
@@ -162,7 +170,6 @@ ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
         /* sanity check */
         if (state->xsize <= 0 || state->ysize <= 0)
             state->state = ENCODE_EOF;
-
     }
 
     ptr = buf;
@@ -189,11 +196,10 @@ ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
                     }
 
                     /* get another line of data */
-                    state->shuffle(
-                        state->buffer,
-                        (UINT8*) im->image[state->y + state->yoff] +
-                        state->xoff * im->pixelsize, state->xsize
-                    );
+                    state->shuffle(state->buffer,
+                                   (UINT8*)im->image[state->y + state->yoff] +
+                                       state->xoff * im->pixelsize,
+                                   state->xsize);
 
                     state->x = 0;
 
@@ -226,7 +232,6 @@ ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
                                 /* just make sure we don't loop forever */
                                 context->interlace = 0;
                         }
-
                 }
 
                 this = state->buffer[state->x++];
@@ -240,7 +245,6 @@ ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
                 }
                 break;
 
-
             case ENCODE_EOF:
 
                 /* write the final run */
@@ -251,7 +255,7 @@ ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
 
                 /* empty the bit buffer */
                 while (context->bitcount > 0) {
-                    if (!emit(context, (UINT8) context->bitbuffer)) {
+                    if (!emit(context, (UINT8)context->bitbuffer)) {
                         state->errcode = IMAGING_CODEC_MEMORY;
                         return 0;
                     }
@@ -279,42 +283,40 @@ ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8* buf, int bytes)
             case EXIT:
             case FLUSH:
 
-                    while (context->flush) {
+                while (context->flush) {
 
-                        /* get a block from the flush queue */
-                        block = context->flush;
+                    /* get a block from the flush queue */
+                    block = context->flush;
 
-                        if (block->size > 0) {
+                    if (block->size > 0) {
 
-                            /* make sure it fits into the output buffer */
-                            if (bytes < block->size+1)
-                                return ptr - buf;
+                        /* make sure it fits into the output buffer */
+                        if (bytes < block->size + 1)
+                            return ptr - buf;
 
-                            ptr[0] = block->size;
-                            memcpy(ptr+1, block->data, block->size);
+                        ptr[0] = block->size;
+                        memcpy(ptr + 1, block->data, block->size);
 
-                            ptr += block->size+1;
-                            bytes -= block->size+1;
-
-                        }
-
-                        context->flush = block->next;
-
-                        if (context->free)
-                            free(context->free);
-                        context->free = block;
-
+                        ptr += block->size + 1;
+                        bytes -= block->size + 1;
                     }
 
-                    if (state->state == EXIT) {
-                        /* this was the last block! */
-                        if (context->free)
-                            free(context->free);
-                        state->errcode = IMAGING_CODEC_END;
-                        return ptr - buf;
-                    }
+                    context->flush = block->next;
 
-                    state->state = ENCODE;
-                    break;
-    }
+                    if (context->free)
+                        free(context->free);
+                    context->free = block;
+                }
+
+                if (state->state == EXIT) {
+                    /* this was the last block! */
+                    if (context->free)
+                        free(context->free);
+                    state->errcode = IMAGING_CODEC_END;
+                    return ptr - buf;
+                }
+
+                state->state = ENCODE;
+                break;
+        }
 }

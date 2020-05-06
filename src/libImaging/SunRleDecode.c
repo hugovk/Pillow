@@ -15,12 +15,13 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
 
-
 int
-ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t bytes)
+ImagingSunRleDecode(Imaging im,
+                    ImagingCodecState state,
+                    UINT8* buf,
+                    Py_ssize_t bytes)
 {
     int n;
     UINT8* ptr;
@@ -40,7 +41,6 @@ ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t 
                 break;
 
             n = ptr[1];
-
 
             if (n == 0) {
 
@@ -81,7 +81,7 @@ ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t 
                 n += 1;
 
                 if (state->x + n > state->bytes) {
-                    extra_bytes = n;  /* full value */
+                    extra_bytes = n; /* full value */
                     n = state->bytes - state->x;
                     extra_bytes -= n;
                     extra_data = ptr[2];
@@ -91,7 +91,6 @@ ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t 
 
                 ptr += 3;
                 bytes -= 3;
-
             }
 
         } else {
@@ -103,7 +102,6 @@ ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t 
 
             ptr += 1;
             bytes -= 1;
-
         }
 
         for (;;) {
@@ -112,8 +110,9 @@ ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t 
             if (state->x >= state->bytes) {
 
                 /* Got a full line, unpack it */
-                state->shuffle((UINT8*) im->image[state->y + state->yoff] +
-                               state->xoff * im->pixelsize, state->buffer,
+                state->shuffle((UINT8*)im->image[state->y + state->yoff] +
+                                   state->xoff * im->pixelsize,
+                               state->buffer,
                                state->xsize);
 
                 state->x = 0;

@@ -9,7 +9,6 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
 
 /* use Tests/make_hash.py to calculate these values */
@@ -23,7 +22,7 @@ hash(const char* mode)
 {
     UINT32 i = ACCESS_TABLE_HASH;
     while (*mode)
-        i = ((i<<5) + i) ^ (UINT8) *mode++;
+        i = ((i << 5) + i) ^ (UINT8)*mode++;
     return i % ACCESS_TABLE_SIZE;
 }
 
@@ -33,8 +32,11 @@ add_item(const char* mode)
     UINT32 i = hash(mode);
     /* printf("hash %s => %d\n", mode, i); */
     if (access_table[i].mode && strcmp(access_table[i].mode, mode) != 0) {
-        fprintf(stderr, "AccessInit: hash collision: %d for both %s and %s\n",
-                i, mode, access_table[i].mode);
+        fprintf(stderr,
+                "AccessInit: hash collision: %d for both %s and %s\n",
+                i,
+                mode,
+                access_table[i].mode);
         exit(1);
     }
     access_table[i].mode = mode;
@@ -52,7 +54,7 @@ line_8(Imaging im, int x, int y)
 static void*
 line_16(Imaging im, int x, int y)
 {
-    return &im->image8[y][x+x];
+    return &im->image8[y][x + x];
 }
 
 static void*
@@ -73,7 +75,7 @@ get_pixel(Imaging im, int x, int y, void* color)
     if (im->image8) {
         out[0] = im->image8[y][x];
     } else {
-        UINT8* p = (UINT8*) &im->image32[y][x];
+        UINT8* p = (UINT8*)&im->image32[y][x];
         if (im->type == IMAGING_TYPE_UINT8 && im->bands == 2) {
             out[0] = p[0];
             out[1] = p[3];
@@ -93,9 +95,9 @@ get_pixel_8(Imaging im, int x, int y, void* color)
 static void
 get_pixel_16L(Imaging im, int x, int y, void* color)
 {
-    UINT8* in = (UINT8*) &im->image[y][x+x];
+    UINT8* in = (UINT8*)&im->image[y][x + x];
 #ifdef WORDS_BIGENDIAN
-    UINT16 out = in[0] + (in[1]<<8);
+    UINT16 out = in[0] + (in[1] << 8);
     memcpy(color, &out, sizeof(out));
 #else
     memcpy(color, in, sizeof(UINT16));
@@ -105,11 +107,11 @@ get_pixel_16L(Imaging im, int x, int y, void* color)
 static void
 get_pixel_16B(Imaging im, int x, int y, void* color)
 {
-    UINT8* in = (UINT8*) &im->image[y][x+x];
+    UINT8* in = (UINT8*)&im->image[y][x + x];
 #ifdef WORDS_BIGENDIAN
     memcpy(color, in, sizeof(UINT16));
 #else
-    UINT16 out = in[1] + (in[0]<<8);
+    UINT16 out = in[1] + (in[0] << 8);
     memcpy(color, &out, sizeof(out));
 #endif
 }
@@ -123,9 +125,9 @@ get_pixel_32(Imaging im, int x, int y, void* color)
 static void
 get_pixel_32L(Imaging im, int x, int y, void* color)
 {
-    UINT8* in = (UINT8*) &im->image[y][x*4];
+    UINT8* in = (UINT8*)&im->image[y][x * 4];
 #ifdef WORDS_BIGENDIAN
-    INT32 out = in[0] + (in[1]<<8) + (in[2]<<16) + (in[3]<<24);
+    INT32 out = in[0] + (in[1] << 8) + (in[2] << 16) + (in[3] << 24);
     memcpy(color, &out, sizeof(out));
 #else
     memcpy(color, in, sizeof(INT32));
@@ -135,11 +137,11 @@ get_pixel_32L(Imaging im, int x, int y, void* color)
 static void
 get_pixel_32B(Imaging im, int x, int y, void* color)
 {
-    UINT8* in = (UINT8*) &im->image[y][x*4];
+    UINT8* in = (UINT8*)&im->image[y][x * 4];
 #ifdef WORDS_BIGENDIAN
     memcpy(color, in, sizeof(INT32));
 #else
-    INT32 out = in[3] + (in[2]<<8) + (in[1]<<16) + (in[0]<<24);
+    INT32 out = in[3] + (in[2] << 8) + (in[1] << 16) + (in[0] << 24);
     memcpy(color, &out, sizeof(out));
 #endif
 }
@@ -150,7 +152,7 @@ static void
 put_pixel(Imaging im, int x, int y, const void* color)
 {
     if (im->image8)
-        im->image8[y][x] = *((UINT8*) color);
+        im->image8[y][x] = *((UINT8*)color);
     else
         memcpy(&im->image32[y][x], color, sizeof(INT32));
 }
@@ -158,20 +160,20 @@ put_pixel(Imaging im, int x, int y, const void* color)
 static void
 put_pixel_8(Imaging im, int x, int y, const void* color)
 {
-    im->image8[y][x] = *((UINT8*) color);
+    im->image8[y][x] = *((UINT8*)color);
 }
 
 static void
 put_pixel_16L(Imaging im, int x, int y, const void* color)
 {
-    memcpy(&im->image8[y][x+x], color, 2);
+    memcpy(&im->image8[y][x + x], color, 2);
 }
 
 static void
 put_pixel_16B(Imaging im, int x, int y, const void* color)
 {
     const char* in = color;
-    UINT8* out = (UINT8*) &im->image8[y][x+x];
+    UINT8* out = (UINT8*)&im->image8[y][x + x];
     out[0] = in[1];
     out[1] = in[0];
 }
@@ -179,14 +181,14 @@ put_pixel_16B(Imaging im, int x, int y, const void* color)
 static void
 put_pixel_32L(Imaging im, int x, int y, const void* color)
 {
-    memcpy(&im->image8[y][x*4], color, 4);
+    memcpy(&im->image8[y][x * 4], color, 4);
 }
 
 static void
 put_pixel_32B(Imaging im, int x, int y, const void* color)
 {
     const char* in = color;
-    UINT8* out = (UINT8*) &im->image8[y][x*4];
+    UINT8* out = (UINT8*)&im->image8[y][x * 4];
     out[0] = in[3];
     out[1] = in[2];
     out[2] = in[1];
@@ -202,11 +204,12 @@ put_pixel_32(Imaging im, int x, int y, const void* color)
 void
 ImagingAccessInit()
 {
-#define ADD(mode_, line_, get_pixel_, put_pixel_)       \
-    { ImagingAccess access = add_item(mode_);           \
-        access->line = line_;                           \
-        access->get_pixel = get_pixel_;                 \
-        access->put_pixel = put_pixel_;                 \
+#define ADD(mode_, line_, get_pixel_, put_pixel_)                              \
+    {                                                                          \
+        ImagingAccess access = add_item(mode_);                                \
+        access->line = line_;                                                  \
+        access->get_pixel = get_pixel_;                                        \
+        access->put_pixel = put_pixel_;                                        \
     }
 
     /* populate access table */
@@ -244,6 +247,4 @@ ImagingAccessNew(Imaging im)
 
 void
 _ImagingAccessDelete(Imaging im, ImagingAccess access)
-{
-
-}
+{}

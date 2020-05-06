@@ -15,9 +15,7 @@
  * See the README file for details on usage and redistribution.
  */
 
-
 #include "Imaging.h"
-
 
 static Imaging
 _copy(Imaging imOut, Imaging imIn)
@@ -26,7 +24,7 @@ _copy(Imaging imOut, Imaging imIn)
     int y;
 
     if (!imIn)
-        return (Imaging) ImagingError_ValueError(NULL);
+        return (Imaging)ImagingError_ValueError(NULL);
 
     imOut = ImagingNew2Dirty(imIn->mode, imOut, imIn);
     if (!imOut)

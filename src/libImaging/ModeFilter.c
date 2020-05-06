@@ -26,7 +26,7 @@ ImagingModeFilter(Imaging im, int size)
     int histogram[256];
 
     if (!im || im->bands != 1 || im->type != IMAGING_TYPE_UINT8)
-        return (Imaging) ImagingError_ModeError();
+        return (Imaging)ImagingError_ModeError();
 
     imOut = ImagingNewDirty(im->mode, im->xsize, im->ysize);
     if (!imOut)
@@ -60,16 +60,14 @@ ImagingModeFilter(Imaging im, int size)
             for (i = 1; i < 256; i++)
                 if (histogram[i] > maxcount) {
                     maxcount = histogram[i];
-                    maxpixel = (UINT8) i;
+                    maxpixel = (UINT8)i;
                 }
 
             if (maxcount > 2)
                 out[x] = maxpixel;
             else
                 out[x] = IMAGING_PIXEL_L(im, x, y);
-
         }
-
     }
 
     ImagingCopyPalette(imOut, im);
