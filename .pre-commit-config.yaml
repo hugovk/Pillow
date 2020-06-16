@@ -8,6 +8,11 @@ repos:
         files: \.py$
         types: []
 
+  - repo: https://github.com/asottile/seed-isort-config
+    rev: ae09e01635e596c87bd9ca33565a65134200881c  # frozen: v2.2.0
+    hooks:
+      - id: seed-isort-config
+
   - repo: https://github.com/timothycrosley/isort
     rev: 7c29dd9d55161704cfc45998c6f5c2c43d39264b  # frozen: 4.3.21
     hooks:
