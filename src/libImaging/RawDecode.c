@@ -13,22 +13,20 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
 
 #include "Raw.h"
 
-
 int
-ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t bytes)
+ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
+                 Py_ssize_t bytes)
 {
     enum { LINE = 1, SKIP };
-    RAWSTATE* rawstate = state->context;
+    RAWSTATE *rawstate = state->context;
 
-    UINT8* ptr;
+    UINT8 *ptr;
 
     if (state->state == 0) {
-
         /* Initialize context variables */
 
         /* get size of image data and padding */
@@ -39,28 +37,27 @@ ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
                 state->errcode = IMAGING_CODEC_CONFIG;
                 return -1;
             }
-        } else {
+        }
+        else {
             rawstate->skip = 0;
         }
 
         /* check image orientation */
         if (state->ystep < 0) {
-            state->y = state->ysize-1;
+            state->y = state->ysize - 1;
             state->ystep = -1;
-        } else {
+        }
+        else {
             state->ystep = 1;
         }
 
         state->state = LINE;
-
     }
 
     ptr = buf;
 
     for (;;) {
-
         if (state->state == SKIP) {
-
             /* Skip padding between lines */
 
             if (bytes < rawstate->skip) {
@@ -71,7 +68,6 @@ ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
             bytes -= rawstate->skip;
 
             state->state = LINE;
-
         }
 
         if (bytes < state->bytes) {
@@ -79,8 +75,9 @@ ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
         }
 
         /* Unpack data */
-        state->shuffle((UINT8*) im->image[state->y + state->yoff] +
-                   state->xoff * im->pixelsize, ptr, state->xsize);
+        state->shuffle((UINT8 *)im->image[state->y + state->yoff] +
+                           state->xoff * im->pixelsize,
+                       ptr, state->xsize);
 
         ptr += state->bytes;
         bytes -= state->bytes;
@@ -93,7 +90,5 @@ ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8* buf, Py_ssize_t byt
         }
 
         state->state = SKIP;
-
     }
-
 }

@@ -15,9 +15,7 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
-
 
 Imaging
 ImagingCrop(Imaging imIn, int sx0, int sy0, int sx1, int sy1)
@@ -28,7 +26,7 @@ ImagingCrop(Imaging imIn, int sx0, int sy0, int sx1, int sy1)
     INT32 zero = 0;
 
     if (!imIn) {
-        return (Imaging) ImagingError_ModeError();
+        return (Imaging)ImagingError_ModeError();
     }
 
     xsize = sx1 - sx0;
@@ -48,7 +46,7 @@ ImagingCrop(Imaging imIn, int sx0, int sy0, int sx1, int sy1)
     ImagingCopyPalette(imOut, imIn);
 
     if (sx0 < 0 || sy0 < 0 || sx1 > imIn->xsize || sy1 > imIn->ysize) {
-        (void) ImagingFill(imOut, &zero);
+        (void)ImagingFill(imOut, &zero);
     }
 
     dx0 = -sx0;

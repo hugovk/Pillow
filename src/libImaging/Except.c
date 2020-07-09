@@ -19,9 +19,7 @@
  * See the README file for information on usage and redistribution.
  */
 
-
 #include "Imaging.h"
-
 
 /* exception state */
 
@@ -70,13 +68,13 @@ ImagingError_Clear(void)
 /* thread state */
 
 void
-ImagingSectionEnter(ImagingSectionCookie* cookie)
+ImagingSectionEnter(ImagingSectionCookie *cookie)
 {
     /* pass */
 }
 
 void
-ImagingSectionLeave(ImagingSectionCookie* cookie)
+ImagingSectionLeave(ImagingSectionCookie *cookie)
 {
     /* pass */
 }

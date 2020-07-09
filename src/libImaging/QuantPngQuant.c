@@ -18,15 +18,10 @@
 #include "libimagequant.h"
 
 int
-quantize_pngquant(
-    Pixel *pixelData,
-    unsigned int width,
-    unsigned int height,
-    uint32_t quantPixels,
-    Pixel **palette,
-    uint32_t *paletteLength,
-    uint32_t **quantizedPixels,
-    int withAlpha)
+quantize_pngquant(Pixel *pixelData, unsigned int width, unsigned int height,
+                  uint32_t quantPixels, Pixel **palette,
+                  uint32_t *paletteLength, uint32_t **quantizedPixels,
+                  int withAlpha)
 {
     int result = 0;
     liq_image *image = NULL;
@@ -41,23 +36,25 @@ quantize_pngquant(
 
     /* configure pngquant */
     attr = liq_attr_create();
-    if (!attr) { goto err; }
+    if (!attr) {
+        goto err;
+    }
     if (quantPixels) {
         liq_set_max_colors(attr, quantPixels);
     }
 
     /* prepare input image */
-    image = liq_image_create_rgba(
-        attr,
-        pixelData,
-        width,
-        height,
-        0.45455 /* gamma */);
-    if (!image) { goto err; }
+    image = liq_image_create_rgba(attr, pixelData, width, height,
+                                  0.45455 /* gamma */);
+    if (!image) {
+        goto err;
+    }
 
     /* quantize the image */
     remap = liq_quantize_image(attr, image);
-    if (!remap) { goto err; }
+    if (!remap) {
+        goto err;
+    }
     liq_set_output_gamma(remap, 0.45455);
     liq_set_dithering_level(remap, 1);
 
@@ -65,7 +62,9 @@ quantize_pngquant(
     const liq_palette *l_palette = liq_get_palette(remap);
     *paletteLength = l_palette->count;
     *palette = malloc(sizeof(Pixel) * l_palette->count);
-    if (!*palette) { goto err; }
+    if (!*palette) {
+        goto err;
+    }
     for (i = 0; i < l_palette->count; i++) {
         (*palette)[i].c.b = l_palette->entries[i].b;
         (*palette)[i].c.g = l_palette->entries[i].g;
@@ -75,19 +74,26 @@ quantize_pngquant(
 
     /* write output pixels (pngquant uses char array) */
     charMatrix = malloc(width * height);
-    if (!charMatrix) { goto err; }
-    charMatrixRows = malloc(height * sizeof(unsigned char*));
-    if (!charMatrixRows) { goto err; }
+    if (!charMatrix) {
+        goto err;
+    }
+    charMatrixRows = malloc(height * sizeof(unsigned char *));
+    if (!charMatrixRows) {
+        goto err;
+    }
     for (y = 0; y < height; y++) {
         charMatrixRows[y] = &charMatrix[y * width];
     }
-    if (LIQ_OK != liq_write_remapped_image_rows(remap, image, charMatrixRows)) {
+    if (LIQ_OK !=
+        liq_write_remapped_image_rows(remap, image, charMatrixRows)) {
         goto err;
     }
 
     /* transcribe output pixels (pillow uses uint32_t array) */
     *quantizedPixels = malloc(sizeof(uint32_t) * width * height);
-    if (!*quantizedPixels) { goto err; }
+    if (!*quantizedPixels) {
+        goto err;
+    }
     for (i = 0; i < width * height; i++) {
         (*quantizedPixels)[i] = charMatrix[i];
     }
@@ -106,19 +112,20 @@ err:
     }
     free(charMatrix);
     free(charMatrixRows);
-    if (!result)  {
+    if (!result) {
         free(*quantizedPixels);
         free(*palette);
     }
     return result;
 }
 
-const char*
+const char *
 ImagingImageQuantVersion(void)
 {
     static char version[20];
     int number = liq_version();
-    sprintf(version, "%d.%d.%d", number / 10000, (number / 100) % 100, number % 100);
+    sprintf(version, "%d.%d.%d", number / 10000, (number / 100) % 100,
+            number % 100);
     return version;
 }
 
