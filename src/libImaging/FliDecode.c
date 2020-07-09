@@ -18,8 +18,7 @@
 
 #define I16(ptr) ((ptr)[0] + ((ptr)[1] << 8))
 
-#define I32(ptr) \
-    ((ptr)[0] + ((ptr)[1] << 8) + ((ptr)[2] << 16) + ((ptr)[3] << 24))
+#define I32(ptr) ((ptr)[0] + ((ptr)[1] << 8) + ((ptr)[2] << 16) + ((ptr)[3] << 24))
 
 #define ERR_IF_DATA_OOB(offset)                 \
     if ((data + (offset)) > ptr + bytes) {      \
@@ -28,8 +27,7 @@
     }
 
 int
-ImagingFliDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
-                 Py_ssize_t bytes)
+ImagingFliDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
 {
     UINT8 *ptr;
     int framesize;

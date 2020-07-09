@@ -133,8 +133,7 @@ bool
 raqm_set_freetype_face(raqm_t *rq, FT_Face face);
 
 bool
-raqm_set_freetype_face_range(raqm_t *rq, FT_Face face, size_t start,
-                             size_t len);
+raqm_set_freetype_face_range(raqm_t *rq, FT_Face face, size_t start, size_t len);
 
 bool
 raqm_set_freetype_load_flags(raqm_t *rq, int flags);

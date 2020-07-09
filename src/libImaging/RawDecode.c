@@ -18,8 +18,7 @@
 #include "Raw.h"
 
 int
-ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
-                 Py_ssize_t bytes)
+ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
 {
     enum { LINE = 1, SKIP };
     RAWSTATE *rawstate = state->context;
@@ -75,9 +74,9 @@ ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
         }
 
         /* Unpack data */
-        state->shuffle((UINT8 *)im->image[state->y + state->yoff] +
-                           state->xoff * im->pixelsize,
-                       ptr, state->xsize);
+        state->shuffle(
+            (UINT8 *)im->image[state->y + state->yoff] + state->xoff * im->pixelsize,
+            ptr, state->xsize);
 
         ptr += state->bytes;
         bytes -= state->bytes;

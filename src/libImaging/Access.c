@@ -33,8 +33,8 @@ add_item(const char *mode)
     UINT32 i = hash(mode);
     /* printf("hash %s => %d\n", mode, i); */
     if (access_table[i].mode && strcmp(access_table[i].mode, mode) != 0) {
-        fprintf(stderr, "AccessInit: hash collision: %d for both %s and %s\n",
-                i, mode, access_table[i].mode);
+        fprintf(stderr, "AccessInit: hash collision: %d for both %s and %s\n", i, mode,
+                access_table[i].mode);
         exit(1);
     }
     access_table[i].mode = mode;
@@ -241,8 +241,7 @@ ImagingAccess
 ImagingAccessNew(Imaging im)
 {
     ImagingAccess access = &access_table[hash(im->mode)];
-    if (im->mode[0] != access->mode[0] ||
-        strcmp(im->mode, access->mode) != 0) {
+    if (im->mode[0] != access->mode[0] || strcmp(im->mode, access->mode) != 0) {
         return NULL;
     }
     return access;

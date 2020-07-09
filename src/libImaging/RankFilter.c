@@ -86,31 +86,28 @@ MakeRankFunction(UINT8) MakeRankFunction(INT32) MakeRankFunction(FLOAT32)
         return (Imaging)ImagingError_ValueError("bad rank value");
     }
 
-    imOut =
-        ImagingNew(im->mode, im->xsize - 2 * margin, im->ysize - 2 * margin);
+    imOut = ImagingNew(im->mode, im->xsize - 2 * margin, im->ysize - 2 * margin);
     if (!imOut) {
         return NULL;
     }
 
     /* malloc check ok, checked above */
-#define RANK_BODY(type)                                         \
-    do {                                                        \
-        type *buf = malloc(size2 * sizeof(type));               \
-        if (!buf) {                                             \
-            goto nomemory;                                      \
-        }                                                       \
-        for (y = 0; y < imOut->ysize; y++) {                    \
-            for (x = 0; x < imOut->xsize; x++) {                \
-                for (i = 0; i < size; i++) {                    \
-                    memcpy(buf + i * size,                      \
-                           &IMAGING_PIXEL_##type(im, x, y + i), \
-                           size * sizeof(type));                \
-                }                                               \
-                IMAGING_PIXEL_##type(imOut, x, y) =             \
-                    Rank##type(buf, size2, rank);               \
-            }                                                   \
-        }                                                       \
-        free(buf);                                              \
+#define RANK_BODY(type)                                                           \
+    do {                                                                          \
+        type *buf = malloc(size2 * sizeof(type));                                 \
+        if (!buf) {                                                               \
+            goto nomemory;                                                        \
+        }                                                                         \
+        for (y = 0; y < imOut->ysize; y++) {                                      \
+            for (x = 0; x < imOut->xsize; x++) {                                  \
+                for (i = 0; i < size; i++) {                                      \
+                    memcpy(buf + i * size, &IMAGING_PIXEL_##type(im, x, y + i),   \
+                           size * sizeof(type));                                  \
+                }                                                                 \
+                IMAGING_PIXEL_##type(imOut, x, y) = Rank##type(buf, size2, rank); \
+            }                                                                     \
+        }                                                                         \
+        free(buf);                                                                \
     } while (0)
 
     if (im->image8) {

@@ -13,8 +13,7 @@ division_UINT32(int divider, int result_bits)
 }
 
 void
-ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale,
-                 int yscale)
+ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale)
 {
     /* The most general implementation for any xscale and yscale
      */
@@ -63,8 +62,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     for (yy = yy_from; yy < yy_from + yscale - 1; yy += 2) {
                         UINT8 *line0 = (UINT8 *)imIn->image[yy];
                         UINT8 *line1 = (UINT8 *)imIn->image[yy + 1];
-                        for (xx = xx_from; xx < xx_from + xscale - 1;
-                             xx += 2) {
+                        for (xx = xx_from; xx < xx_from + xscale - 1; xx += 2) {
                             ss0 += line0[xx * 4 + 0] + line0[xx * 4 + 4] +
                                    line1[xx * 4 + 0] + line1[xx * 4 + 4];
                             ss3 += line0[xx * 4 + 3] + line0[xx * 4 + 7] +
@@ -77,8 +75,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     }
                     if (yscale & 0x01) {
                         UINT8 *line = (UINT8 *)imIn->image[yy];
-                        for (xx = xx_from; xx < xx_from + xscale - 1;
-                             xx += 2) {
+                        for (xx = xx_from; xx < xx_from + xscale - 1; xx += 2) {
                             ss0 += line[xx * 4 + 0] + line[xx * 4 + 4];
                             ss3 += line[xx * 4 + 3] + line[xx * 4 + 7];
                         }
@@ -100,8 +97,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     for (yy = yy_from; yy < yy_from + yscale - 1; yy += 2) {
                         UINT8 *line0 = (UINT8 *)imIn->image[yy];
                         UINT8 *line1 = (UINT8 *)imIn->image[yy + 1];
-                        for (xx = xx_from; xx < xx_from + xscale - 1;
-                             xx += 2) {
+                        for (xx = xx_from; xx < xx_from + xscale - 1; xx += 2) {
                             ss0 += line0[xx * 4 + 0] + line0[xx * 4 + 4] +
                                    line1[xx * 4 + 0] + line1[xx * 4 + 4];
                             ss1 += line0[xx * 4 + 1] + line0[xx * 4 + 5] +
@@ -117,8 +113,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     }
                     if (yscale & 0x01) {
                         UINT8 *line = (UINT8 *)imIn->image[yy];
-                        for (xx = xx_from; xx < xx_from + xscale - 1;
-                             xx += 2) {
+                        for (xx = xx_from; xx < xx_from + xscale - 1; xx += 2) {
                             ss0 += line[xx * 4 + 0] + line[xx * 4 + 4];
                             ss1 += line[xx * 4 + 1] + line[xx * 4 + 5];
                             ss2 += line[xx * 4 + 2] + line[xx * 4 + 6];
@@ -129,8 +124,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale,
                             ss2 += line[xx * 4 + 2];
                         }
                     }
-                    v = MAKE_UINT32((ss0 * multiplier) >> 24,
-                                    (ss1 * multiplier) >> 24,
+                    v = MAKE_UINT32((ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
                                     (ss2 * multiplier) >> 24, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
@@ -143,8 +137,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     for (yy = yy_from; yy < yy_from + yscale - 1; yy += 2) {
                         UINT8 *line0 = (UINT8 *)imIn->image[yy];
                         UINT8 *line1 = (UINT8 *)imIn->image[yy + 1];
-                        for (xx = xx_from; xx < xx_from + xscale - 1;
-                             xx += 2) {
+                        for (xx = xx_from; xx < xx_from + xscale - 1; xx += 2) {
                             ss0 += line0[xx * 4 + 0] + line0[xx * 4 + 4] +
                                    line1[xx * 4 + 0] + line1[xx * 4 + 4];
                             ss1 += line0[xx * 4 + 1] + line0[xx * 4 + 5] +
@@ -163,8 +156,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     }
                     if (yscale & 0x01) {
                         UINT8 *line = (UINT8 *)imIn->image[yy];
-                        for (xx = xx_from; xx < xx_from + xscale - 1;
-                             xx += 2) {
+                        for (xx = xx_from; xx < xx_from + xscale - 1; xx += 2) {
                             ss0 += line[xx * 4 + 0] + line[xx * 4 + 4];
                             ss1 += line[xx * 4 + 1] + line[xx * 4 + 5];
                             ss2 += line[xx * 4 + 2] + line[xx * 4 + 6];
@@ -177,9 +169,8 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale,
                             ss3 += line[xx * 4 + 3];
                         }
                     }
-                    v = MAKE_UINT32(
-                        (ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
-                        (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
+                    v = MAKE_UINT32((ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
+                                    (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
             }
@@ -258,8 +249,7 @@ ImagingReduce1xN(Imaging imOut, Imaging imIn, int box[4], int yscale)
                         ss1 += line[xx * 4 + 1];
                         ss2 += line[xx * 4 + 2];
                     }
-                    v = MAKE_UINT32((ss0 * multiplier) >> 24,
-                                    (ss1 * multiplier) >> 24,
+                    v = MAKE_UINT32((ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
                                     (ss2 * multiplier) >> 24, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
@@ -284,9 +274,8 @@ ImagingReduce1xN(Imaging imOut, Imaging imIn, int box[4], int yscale)
                         ss2 += line[xx * 4 + 2];
                         ss3 += line[xx * 4 + 3];
                     }
-                    v = MAKE_UINT32(
-                        (ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
-                        (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
+                    v = MAKE_UINT32((ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
+                                    (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
             }
@@ -358,8 +347,7 @@ ImagingReduceNx1(Imaging imOut, Imaging imIn, int box[4], int xscale)
                         ss1 += line[xx * 4 + 1];
                         ss2 += line[xx * 4 + 2];
                     }
-                    v = MAKE_UINT32((ss0 * multiplier) >> 24,
-                                    (ss1 * multiplier) >> 24,
+                    v = MAKE_UINT32((ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
                                     (ss2 * multiplier) >> 24, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
@@ -381,9 +369,8 @@ ImagingReduceNx1(Imaging imOut, Imaging imIn, int box[4], int xscale)
                         ss2 += line[xx * 4 + 2];
                         ss3 += line[xx * 4 + 3];
                     }
-                    v = MAKE_UINT32(
-                        (ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
-                        (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
+                    v = MAKE_UINT32((ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
+                                    (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
             }
@@ -424,8 +411,7 @@ ImagingReduce1x2(Imaging imOut, Imaging imIn, int box[4])
                     UINT32 v;
                     ss0 = line0[xx * 4 + 0] + line1[xx * 4 + 0];
                     ss3 = line0[xx * 4 + 3] + line1[xx * 4 + 3];
-                    v = MAKE_UINT32((ss0 + amend) >> 1, 0, 0,
-                                    (ss3 + amend) >> 1);
+                    v = MAKE_UINT32((ss0 + amend) >> 1, 0, 0, (ss3 + amend) >> 1);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
             }
@@ -489,8 +475,7 @@ ImagingReduce2x1(Imaging imOut, Imaging imIn, int box[4])
                     UINT32 v;
                     ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4];
                     ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7];
-                    v = MAKE_UINT32((ss0 + amend) >> 1, 0, 0,
-                                    (ss3 + amend) >> 1);
+                    v = MAKE_UINT32((ss0 + amend) >> 1, 0, 0, (ss3 + amend) >> 1);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
             }
@@ -540,8 +525,7 @@ ImagingReduce2x2(Imaging imOut, Imaging imIn, int box[4])
             UINT8 *line1 = (UINT8 *)imIn->image8[yy + 1];
             for (x = 0; x < box[2] / xscale; x++) {
                 int xx = box[0] + x * xscale;
-                ss0 = line0[xx + 0] + line0[xx + 1] + line1[xx + 0] +
-                      line1[xx + 1];
+                ss0 = line0[xx + 0] + line0[xx + 1] + line1[xx + 0] + line1[xx + 1];
                 imOut->image8[y][x] = (ss0 + amend) >> 2;
             }
         }
@@ -555,12 +539,11 @@ ImagingReduce2x2(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line1[xx * 4 + 0] + line1[xx * 4 + 4];
-                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] +
-                          line1[xx * 4 + 3] + line1[xx * 4 + 7];
-                    v = MAKE_UINT32((ss0 + amend) >> 2, 0, 0,
-                                    (ss3 + amend) >> 2);
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line1[xx * 4 + 0] +
+                          line1[xx * 4 + 4];
+                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] + line1[xx * 4 + 3] +
+                          line1[xx * 4 + 7];
+                    v = MAKE_UINT32((ss0 + amend) >> 2, 0, 0, (ss3 + amend) >> 2);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
             }
@@ -568,12 +551,12 @@ ImagingReduce2x2(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line1[xx * 4 + 0] + line1[xx * 4 + 4];
-                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] +
-                          line1[xx * 4 + 1] + line1[xx * 4 + 5];
-                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] +
-                          line1[xx * 4 + 2] + line1[xx * 4 + 6];
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line1[xx * 4 + 0] +
+                          line1[xx * 4 + 4];
+                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] + line1[xx * 4 + 1] +
+                          line1[xx * 4 + 5];
+                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] + line1[xx * 4 + 2] +
+                          line1[xx * 4 + 6];
                     v = MAKE_UINT32((ss0 + amend) >> 2, (ss1 + amend) >> 2,
                                     (ss2 + amend) >> 2, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
@@ -583,14 +566,14 @@ ImagingReduce2x2(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line1[xx * 4 + 0] + line1[xx * 4 + 4];
-                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] +
-                          line1[xx * 4 + 1] + line1[xx * 4 + 5];
-                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] +
-                          line1[xx * 4 + 2] + line1[xx * 4 + 6];
-                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] +
-                          line1[xx * 4 + 3] + line1[xx * 4 + 7];
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line1[xx * 4 + 0] +
+                          line1[xx * 4 + 4];
+                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] + line1[xx * 4 + 1] +
+                          line1[xx * 4 + 5];
+                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] + line1[xx * 4 + 2] +
+                          line1[xx * 4 + 6];
+                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] + line1[xx * 4 + 3] +
+                          line1[xx * 4 + 7];
                     v = MAKE_UINT32((ss0 + amend) >> 2, (ss1 + amend) >> 2,
                                     (ss2 + amend) >> 2, (ss3 + amend) >> 2);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
@@ -634,10 +617,8 @@ ImagingReduce1x3(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line1[xx * 4 + 0] +
-                          line2[xx * 4 + 0];
-                    ss3 = line0[xx * 4 + 3] + line1[xx * 4 + 3] +
-                          line2[xx * 4 + 3];
+                    ss0 = line0[xx * 4 + 0] + line1[xx * 4 + 0] + line2[xx * 4 + 0];
+                    ss3 = line0[xx * 4 + 3] + line1[xx * 4 + 3] + line2[xx * 4 + 3];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24, 0, 0,
                                     ((ss3 + amend) * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
@@ -647,12 +628,9 @@ ImagingReduce1x3(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line1[xx * 4 + 0] +
-                          line2[xx * 4 + 0];
-                    ss1 = line0[xx * 4 + 1] + line1[xx * 4 + 1] +
-                          line2[xx * 4 + 1];
-                    ss2 = line0[xx * 4 + 2] + line1[xx * 4 + 2] +
-                          line2[xx * 4 + 2];
+                    ss0 = line0[xx * 4 + 0] + line1[xx * 4 + 0] + line2[xx * 4 + 0];
+                    ss1 = line0[xx * 4 + 1] + line1[xx * 4 + 1] + line2[xx * 4 + 1];
+                    ss2 = line0[xx * 4 + 2] + line1[xx * 4 + 2] + line2[xx * 4 + 2];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24,
                                     ((ss1 + amend) * multiplier) >> 24,
                                     ((ss2 + amend) * multiplier) >> 24, 0);
@@ -663,14 +641,10 @@ ImagingReduce1x3(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line1[xx * 4 + 0] +
-                          line2[xx * 4 + 0];
-                    ss1 = line0[xx * 4 + 1] + line1[xx * 4 + 1] +
-                          line2[xx * 4 + 1];
-                    ss2 = line0[xx * 4 + 2] + line1[xx * 4 + 2] +
-                          line2[xx * 4 + 2];
-                    ss3 = line0[xx * 4 + 3] + line1[xx * 4 + 3] +
-                          line2[xx * 4 + 3];
+                    ss0 = line0[xx * 4 + 0] + line1[xx * 4 + 0] + line2[xx * 4 + 0];
+                    ss1 = line0[xx * 4 + 1] + line1[xx * 4 + 1] + line2[xx * 4 + 1];
+                    ss2 = line0[xx * 4 + 2] + line1[xx * 4 + 2] + line2[xx * 4 + 2];
+                    ss3 = line0[xx * 4 + 3] + line1[xx * 4 + 3] + line2[xx * 4 + 3];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24,
                                     ((ss1 + amend) * multiplier) >> 24,
                                     ((ss2 + amend) * multiplier) >> 24,
@@ -712,10 +686,8 @@ ImagingReduce3x1(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8];
-                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] +
-                          line0[xx * 4 + 11];
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8];
+                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] + line0[xx * 4 + 11];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24, 0, 0,
                                     ((ss3 + amend) * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
@@ -725,12 +697,9 @@ ImagingReduce3x1(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8];
-                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] +
-                          line0[xx * 4 + 9];
-                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] +
-                          line0[xx * 4 + 10];
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8];
+                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] + line0[xx * 4 + 9];
+                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] + line0[xx * 4 + 10];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24,
                                     ((ss1 + amend) * multiplier) >> 24,
                                     ((ss2 + amend) * multiplier) >> 24, 0);
@@ -741,14 +710,10 @@ ImagingReduce3x1(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8];
-                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] +
-                          line0[xx * 4 + 9];
-                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] +
-                          line0[xx * 4 + 10];
-                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] +
-                          line0[xx * 4 + 11];
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8];
+                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] + line0[xx * 4 + 9];
+                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] + line0[xx * 4 + 10];
+                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] + line0[xx * 4 + 11];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24,
                                     ((ss1 + amend) * multiplier) >> 24,
                                     ((ss2 + amend) * multiplier) >> 24,
@@ -779,9 +744,9 @@ ImagingReduce3x3(Imaging imOut, Imaging imIn, int box[4])
             UINT8 *line2 = (UINT8 *)imIn->image8[yy + 2];
             for (x = 0; x < box[2] / xscale; x++) {
                 int xx = box[0] + x * xscale;
-                ss0 = line0[xx + 0] + line0[xx + 1] + line0[xx + 2] +
-                      line1[xx + 0] + line1[xx + 1] + line1[xx + 2] +
-                      line2[xx + 0] + line2[xx + 1] + line2[xx + 2];
+                ss0 = line0[xx + 0] + line0[xx + 1] + line0[xx + 2] + line1[xx + 0] +
+                      line1[xx + 1] + line1[xx + 2] + line2[xx + 0] + line2[xx + 1] +
+                      line2[xx + 2];
                 imOut->image8[y][x] = ((ss0 + amend) * multiplier) >> 24;
             }
         }
@@ -796,16 +761,12 @@ ImagingReduce3x3(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8] + line1[xx * 4 + 0] +
-                          line1[xx * 4 + 4] + line1[xx * 4 + 8] +
-                          line2[xx * 4 + 0] + line2[xx * 4 + 4] +
-                          line2[xx * 4 + 8];
-                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] +
-                          line0[xx * 4 + 11] + line1[xx * 4 + 3] +
-                          line1[xx * 4 + 7] + line1[xx * 4 + 11] +
-                          line2[xx * 4 + 3] + line2[xx * 4 + 7] +
-                          line2[xx * 4 + 11];
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8] +
+                          line1[xx * 4 + 0] + line1[xx * 4 + 4] + line1[xx * 4 + 8] +
+                          line2[xx * 4 + 0] + line2[xx * 4 + 4] + line2[xx * 4 + 8];
+                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] + line0[xx * 4 + 11] +
+                          line1[xx * 4 + 3] + line1[xx * 4 + 7] + line1[xx * 4 + 11] +
+                          line2[xx * 4 + 3] + line2[xx * 4 + 7] + line2[xx * 4 + 11];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24, 0, 0,
                                     ((ss3 + amend) * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
@@ -815,21 +776,15 @@ ImagingReduce3x3(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8] + line1[xx * 4 + 0] +
-                          line1[xx * 4 + 4] + line1[xx * 4 + 8] +
-                          line2[xx * 4 + 0] + line2[xx * 4 + 4] +
-                          line2[xx * 4 + 8];
-                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] +
-                          line0[xx * 4 + 9] + line1[xx * 4 + 1] +
-                          line1[xx * 4 + 5] + line1[xx * 4 + 9] +
-                          line2[xx * 4 + 1] + line2[xx * 4 + 5] +
-                          line2[xx * 4 + 9];
-                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] +
-                          line0[xx * 4 + 10] + line1[xx * 4 + 2] +
-                          line1[xx * 4 + 6] + line1[xx * 4 + 10] +
-                          line2[xx * 4 + 2] + line2[xx * 4 + 6] +
-                          line2[xx * 4 + 10];
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8] +
+                          line1[xx * 4 + 0] + line1[xx * 4 + 4] + line1[xx * 4 + 8] +
+                          line2[xx * 4 + 0] + line2[xx * 4 + 4] + line2[xx * 4 + 8];
+                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] + line0[xx * 4 + 9] +
+                          line1[xx * 4 + 1] + line1[xx * 4 + 5] + line1[xx * 4 + 9] +
+                          line2[xx * 4 + 1] + line2[xx * 4 + 5] + line2[xx * 4 + 9];
+                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] + line0[xx * 4 + 10] +
+                          line1[xx * 4 + 2] + line1[xx * 4 + 6] + line1[xx * 4 + 10] +
+                          line2[xx * 4 + 2] + line2[xx * 4 + 6] + line2[xx * 4 + 10];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24,
                                     ((ss1 + amend) * multiplier) >> 24,
                                     ((ss2 + amend) * multiplier) >> 24, 0);
@@ -840,26 +795,18 @@ ImagingReduce3x3(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8] + line1[xx * 4 + 0] +
-                          line1[xx * 4 + 4] + line1[xx * 4 + 8] +
-                          line2[xx * 4 + 0] + line2[xx * 4 + 4] +
-                          line2[xx * 4 + 8];
-                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] +
-                          line0[xx * 4 + 9] + line1[xx * 4 + 1] +
-                          line1[xx * 4 + 5] + line1[xx * 4 + 9] +
-                          line2[xx * 4 + 1] + line2[xx * 4 + 5] +
-                          line2[xx * 4 + 9];
-                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] +
-                          line0[xx * 4 + 10] + line1[xx * 4 + 2] +
-                          line1[xx * 4 + 6] + line1[xx * 4 + 10] +
-                          line2[xx * 4 + 2] + line2[xx * 4 + 6] +
-                          line2[xx * 4 + 10];
-                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] +
-                          line0[xx * 4 + 11] + line1[xx * 4 + 3] +
-                          line1[xx * 4 + 7] + line1[xx * 4 + 11] +
-                          line2[xx * 4 + 3] + line2[xx * 4 + 7] +
-                          line2[xx * 4 + 11];
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8] +
+                          line1[xx * 4 + 0] + line1[xx * 4 + 4] + line1[xx * 4 + 8] +
+                          line2[xx * 4 + 0] + line2[xx * 4 + 4] + line2[xx * 4 + 8];
+                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] + line0[xx * 4 + 9] +
+                          line1[xx * 4 + 1] + line1[xx * 4 + 5] + line1[xx * 4 + 9] +
+                          line2[xx * 4 + 1] + line2[xx * 4 + 5] + line2[xx * 4 + 9];
+                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] + line0[xx * 4 + 10] +
+                          line1[xx * 4 + 2] + line1[xx * 4 + 6] + line1[xx * 4 + 10] +
+                          line2[xx * 4 + 2] + line2[xx * 4 + 6] + line2[xx * 4 + 10];
+                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] + line0[xx * 4 + 11] +
+                          line1[xx * 4 + 3] + line1[xx * 4 + 7] + line1[xx * 4 + 11] +
+                          line2[xx * 4 + 3] + line2[xx * 4 + 7] + line2[xx * 4 + 11];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24,
                                     ((ss1 + amend) * multiplier) >> 24,
                                     ((ss2 + amend) * multiplier) >> 24,
@@ -890,12 +837,10 @@ ImagingReduce4x4(Imaging imOut, Imaging imIn, int box[4])
             UINT8 *line3 = (UINT8 *)imIn->image8[yy + 3];
             for (x = 0; x < box[2] / xscale; x++) {
                 int xx = box[0] + x * xscale;
-                ss0 = line0[xx + 0] + line0[xx + 1] + line0[xx + 2] +
-                      line0[xx + 3] + line1[xx + 0] + line1[xx + 1] +
-                      line1[xx + 2] + line1[xx + 3] + line2[xx + 0] +
-                      line2[xx + 1] + line2[xx + 2] + line2[xx + 3] +
-                      line3[xx + 0] + line3[xx + 1] + line3[xx + 2] +
-                      line3[xx + 3];
+                ss0 = line0[xx + 0] + line0[xx + 1] + line0[xx + 2] + line0[xx + 3] +
+                      line1[xx + 0] + line1[xx + 1] + line1[xx + 2] + line1[xx + 3] +
+                      line2[xx + 0] + line2[xx + 1] + line2[xx + 2] + line2[xx + 3] +
+                      line3[xx + 0] + line3[xx + 1] + line3[xx + 2] + line3[xx + 3];
                 imOut->image8[y][x] = (ss0 + amend) >> 4;
             }
         }
@@ -911,24 +856,19 @@ ImagingReduce4x4(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8] + line0[xx * 4 + 12] +
-                          line1[xx * 4 + 0] + line1[xx * 4 + 4] +
-                          line1[xx * 4 + 8] + line1[xx * 4 + 12] +
-                          line2[xx * 4 + 0] + line2[xx * 4 + 4] +
-                          line2[xx * 4 + 8] + line2[xx * 4 + 12] +
-                          line3[xx * 4 + 0] + line3[xx * 4 + 4] +
-                          line3[xx * 4 + 8] + line3[xx * 4 + 12];
-                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] +
-                          line0[xx * 4 + 11] + line0[xx * 4 + 15] +
-                          line1[xx * 4 + 3] + line1[xx * 4 + 7] +
-                          line1[xx * 4 + 11] + line1[xx * 4 + 15] +
-                          line2[xx * 4 + 3] + line2[xx * 4 + 7] +
-                          line2[xx * 4 + 11] + line2[xx * 4 + 15] +
-                          line3[xx * 4 + 3] + line3[xx * 4 + 7] +
-                          line3[xx * 4 + 11] + line3[xx * 4 + 15];
-                    v = MAKE_UINT32((ss0 + amend) >> 4, 0, 0,
-                                    (ss3 + amend) >> 4);
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8] +
+                          line0[xx * 4 + 12] + line1[xx * 4 + 0] + line1[xx * 4 + 4] +
+                          line1[xx * 4 + 8] + line1[xx * 4 + 12] + line2[xx * 4 + 0] +
+                          line2[xx * 4 + 4] + line2[xx * 4 + 8] + line2[xx * 4 + 12] +
+                          line3[xx * 4 + 0] + line3[xx * 4 + 4] + line3[xx * 4 + 8] +
+                          line3[xx * 4 + 12];
+                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] + line0[xx * 4 + 11] +
+                          line0[xx * 4 + 15] + line1[xx * 4 + 3] + line1[xx * 4 + 7] +
+                          line1[xx * 4 + 11] + line1[xx * 4 + 15] + line2[xx * 4 + 3] +
+                          line2[xx * 4 + 7] + line2[xx * 4 + 11] + line2[xx * 4 + 15] +
+                          line3[xx * 4 + 3] + line3[xx * 4 + 7] + line3[xx * 4 + 11] +
+                          line3[xx * 4 + 15];
+                    v = MAKE_UINT32((ss0 + amend) >> 4, 0, 0, (ss3 + amend) >> 4);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
             }
@@ -936,30 +876,24 @@ ImagingReduce4x4(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8] + line0[xx * 4 + 12] +
-                          line1[xx * 4 + 0] + line1[xx * 4 + 4] +
-                          line1[xx * 4 + 8] + line1[xx * 4 + 12] +
-                          line2[xx * 4 + 0] + line2[xx * 4 + 4] +
-                          line2[xx * 4 + 8] + line2[xx * 4 + 12] +
-                          line3[xx * 4 + 0] + line3[xx * 4 + 4] +
-                          line3[xx * 4 + 8] + line3[xx * 4 + 12];
-                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] +
-                          line0[xx * 4 + 9] + line0[xx * 4 + 13] +
-                          line1[xx * 4 + 1] + line1[xx * 4 + 5] +
-                          line1[xx * 4 + 9] + line1[xx * 4 + 13] +
-                          line2[xx * 4 + 1] + line2[xx * 4 + 5] +
-                          line2[xx * 4 + 9] + line2[xx * 4 + 13] +
-                          line3[xx * 4 + 1] + line3[xx * 4 + 5] +
-                          line3[xx * 4 + 9] + line3[xx * 4 + 13];
-                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] +
-                          line0[xx * 4 + 10] + line0[xx * 4 + 14] +
-                          line1[xx * 4 + 2] + line1[xx * 4 + 6] +
-                          line1[xx * 4 + 10] + line1[xx * 4 + 14] +
-                          line2[xx * 4 + 2] + line2[xx * 4 + 6] +
-                          line2[xx * 4 + 10] + line2[xx * 4 + 14] +
-                          line3[xx * 4 + 2] + line3[xx * 4 + 6] +
-                          line3[xx * 4 + 10] + line3[xx * 4 + 14];
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8] +
+                          line0[xx * 4 + 12] + line1[xx * 4 + 0] + line1[xx * 4 + 4] +
+                          line1[xx * 4 + 8] + line1[xx * 4 + 12] + line2[xx * 4 + 0] +
+                          line2[xx * 4 + 4] + line2[xx * 4 + 8] + line2[xx * 4 + 12] +
+                          line3[xx * 4 + 0] + line3[xx * 4 + 4] + line3[xx * 4 + 8] +
+                          line3[xx * 4 + 12];
+                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] + line0[xx * 4 + 9] +
+                          line0[xx * 4 + 13] + line1[xx * 4 + 1] + line1[xx * 4 + 5] +
+                          line1[xx * 4 + 9] + line1[xx * 4 + 13] + line2[xx * 4 + 1] +
+                          line2[xx * 4 + 5] + line2[xx * 4 + 9] + line2[xx * 4 + 13] +
+                          line3[xx * 4 + 1] + line3[xx * 4 + 5] + line3[xx * 4 + 9] +
+                          line3[xx * 4 + 13];
+                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] + line0[xx * 4 + 10] +
+                          line0[xx * 4 + 14] + line1[xx * 4 + 2] + line1[xx * 4 + 6] +
+                          line1[xx * 4 + 10] + line1[xx * 4 + 14] + line2[xx * 4 + 2] +
+                          line2[xx * 4 + 6] + line2[xx * 4 + 10] + line2[xx * 4 + 14] +
+                          line3[xx * 4 + 2] + line3[xx * 4 + 6] + line3[xx * 4 + 10] +
+                          line3[xx * 4 + 14];
                     v = MAKE_UINT32((ss0 + amend) >> 4, (ss1 + amend) >> 4,
                                     (ss2 + amend) >> 4, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
@@ -969,38 +903,30 @@ ImagingReduce4x4(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8] + line0[xx * 4 + 12] +
-                          line1[xx * 4 + 0] + line1[xx * 4 + 4] +
-                          line1[xx * 4 + 8] + line1[xx * 4 + 12] +
-                          line2[xx * 4 + 0] + line2[xx * 4 + 4] +
-                          line2[xx * 4 + 8] + line2[xx * 4 + 12] +
-                          line3[xx * 4 + 0] + line3[xx * 4 + 4] +
-                          line3[xx * 4 + 8] + line3[xx * 4 + 12];
-                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] +
-                          line0[xx * 4 + 9] + line0[xx * 4 + 13] +
-                          line1[xx * 4 + 1] + line1[xx * 4 + 5] +
-                          line1[xx * 4 + 9] + line1[xx * 4 + 13] +
-                          line2[xx * 4 + 1] + line2[xx * 4 + 5] +
-                          line2[xx * 4 + 9] + line2[xx * 4 + 13] +
-                          line3[xx * 4 + 1] + line3[xx * 4 + 5] +
-                          line3[xx * 4 + 9] + line3[xx * 4 + 13];
-                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] +
-                          line0[xx * 4 + 10] + line0[xx * 4 + 14] +
-                          line1[xx * 4 + 2] + line1[xx * 4 + 6] +
-                          line1[xx * 4 + 10] + line1[xx * 4 + 14] +
-                          line2[xx * 4 + 2] + line2[xx * 4 + 6] +
-                          line2[xx * 4 + 10] + line2[xx * 4 + 14] +
-                          line3[xx * 4 + 2] + line3[xx * 4 + 6] +
-                          line3[xx * 4 + 10] + line3[xx * 4 + 14];
-                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] +
-                          line0[xx * 4 + 11] + line0[xx * 4 + 15] +
-                          line1[xx * 4 + 3] + line1[xx * 4 + 7] +
-                          line1[xx * 4 + 11] + line1[xx * 4 + 15] +
-                          line2[xx * 4 + 3] + line2[xx * 4 + 7] +
-                          line2[xx * 4 + 11] + line2[xx * 4 + 15] +
-                          line3[xx * 4 + 3] + line3[xx * 4 + 7] +
-                          line3[xx * 4 + 11] + line3[xx * 4 + 15];
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8] +
+                          line0[xx * 4 + 12] + line1[xx * 4 + 0] + line1[xx * 4 + 4] +
+                          line1[xx * 4 + 8] + line1[xx * 4 + 12] + line2[xx * 4 + 0] +
+                          line2[xx * 4 + 4] + line2[xx * 4 + 8] + line2[xx * 4 + 12] +
+                          line3[xx * 4 + 0] + line3[xx * 4 + 4] + line3[xx * 4 + 8] +
+                          line3[xx * 4 + 12];
+                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] + line0[xx * 4 + 9] +
+                          line0[xx * 4 + 13] + line1[xx * 4 + 1] + line1[xx * 4 + 5] +
+                          line1[xx * 4 + 9] + line1[xx * 4 + 13] + line2[xx * 4 + 1] +
+                          line2[xx * 4 + 5] + line2[xx * 4 + 9] + line2[xx * 4 + 13] +
+                          line3[xx * 4 + 1] + line3[xx * 4 + 5] + line3[xx * 4 + 9] +
+                          line3[xx * 4 + 13];
+                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] + line0[xx * 4 + 10] +
+                          line0[xx * 4 + 14] + line1[xx * 4 + 2] + line1[xx * 4 + 6] +
+                          line1[xx * 4 + 10] + line1[xx * 4 + 14] + line2[xx * 4 + 2] +
+                          line2[xx * 4 + 6] + line2[xx * 4 + 10] + line2[xx * 4 + 14] +
+                          line3[xx * 4 + 2] + line3[xx * 4 + 6] + line3[xx * 4 + 10] +
+                          line3[xx * 4 + 14];
+                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] + line0[xx * 4 + 11] +
+                          line0[xx * 4 + 15] + line1[xx * 4 + 3] + line1[xx * 4 + 7] +
+                          line1[xx * 4 + 11] + line1[xx * 4 + 15] + line2[xx * 4 + 3] +
+                          line2[xx * 4 + 7] + line2[xx * 4 + 11] + line2[xx * 4 + 15] +
+                          line3[xx * 4 + 3] + line3[xx * 4 + 7] + line3[xx * 4 + 11] +
+                          line3[xx * 4 + 15];
                     v = MAKE_UINT32((ss0 + amend) >> 4, (ss1 + amend) >> 4,
                                     (ss2 + amend) >> 4, (ss3 + amend) >> 4);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
@@ -1031,14 +957,12 @@ ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4])
             UINT8 *line4 = (UINT8 *)imIn->image8[yy + 4];
             for (x = 0; x < box[2] / xscale; x++) {
                 int xx = box[0] + x * xscale;
-                ss0 = line0[xx + 0] + line0[xx + 1] + line0[xx + 2] +
-                      line0[xx + 3] + line0[xx + 4] + line1[xx + 0] +
-                      line1[xx + 1] + line1[xx + 2] + line1[xx + 3] +
-                      line1[xx + 4] + line2[xx + 0] + line2[xx + 1] +
-                      line2[xx + 2] + line2[xx + 3] + line2[xx + 4] +
-                      line3[xx + 0] + line3[xx + 1] + line3[xx + 2] +
-                      line3[xx + 3] + line3[xx + 4] + line4[xx + 0] +
-                      line4[xx + 1] + line4[xx + 2] + line4[xx + 3] +
+                ss0 = line0[xx + 0] + line0[xx + 1] + line0[xx + 2] + line0[xx + 3] +
+                      line0[xx + 4] + line1[xx + 0] + line1[xx + 1] + line1[xx + 2] +
+                      line1[xx + 3] + line1[xx + 4] + line2[xx + 0] + line2[xx + 1] +
+                      line2[xx + 2] + line2[xx + 3] + line2[xx + 4] + line3[xx + 0] +
+                      line3[xx + 1] + line3[xx + 2] + line3[xx + 3] + line3[xx + 4] +
+                      line4[xx + 0] + line4[xx + 1] + line4[xx + 2] + line4[xx + 3] +
                       line4[xx + 4];
                 imOut->image8[y][x] = ((ss0 + amend) * multiplier) >> 24;
             }
@@ -1056,31 +980,23 @@ ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8] + line0[xx * 4 + 12] +
-                          line0[xx * 4 + 16] + line1[xx * 4 + 0] +
-                          line1[xx * 4 + 4] + line1[xx * 4 + 8] +
-                          line1[xx * 4 + 12] + line1[xx * 4 + 16] +
-                          line2[xx * 4 + 0] + line2[xx * 4 + 4] +
-                          line2[xx * 4 + 8] + line2[xx * 4 + 12] +
-                          line2[xx * 4 + 16] + line3[xx * 4 + 0] +
-                          line3[xx * 4 + 4] + line3[xx * 4 + 8] +
-                          line3[xx * 4 + 12] + line3[xx * 4 + 16] +
-                          line4[xx * 4 + 0] + line4[xx * 4 + 4] +
-                          line4[xx * 4 + 8] + line4[xx * 4 + 12] +
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8] +
+                          line0[xx * 4 + 12] + line0[xx * 4 + 16] + line1[xx * 4 + 0] +
+                          line1[xx * 4 + 4] + line1[xx * 4 + 8] + line1[xx * 4 + 12] +
+                          line1[xx * 4 + 16] + line2[xx * 4 + 0] + line2[xx * 4 + 4] +
+                          line2[xx * 4 + 8] + line2[xx * 4 + 12] + line2[xx * 4 + 16] +
+                          line3[xx * 4 + 0] + line3[xx * 4 + 4] + line3[xx * 4 + 8] +
+                          line3[xx * 4 + 12] + line3[xx * 4 + 16] + line4[xx * 4 + 0] +
+                          line4[xx * 4 + 4] + line4[xx * 4 + 8] + line4[xx * 4 + 12] +
                           line4[xx * 4 + 16];
-                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] +
-                          line0[xx * 4 + 11] + line0[xx * 4 + 15] +
-                          line0[xx * 4 + 19] + line1[xx * 4 + 3] +
-                          line1[xx * 4 + 7] + line1[xx * 4 + 11] +
-                          line1[xx * 4 + 15] + line1[xx * 4 + 19] +
-                          line2[xx * 4 + 3] + line2[xx * 4 + 7] +
-                          line2[xx * 4 + 11] + line2[xx * 4 + 15] +
-                          line2[xx * 4 + 19] + line3[xx * 4 + 3] +
-                          line3[xx * 4 + 7] + line3[xx * 4 + 11] +
-                          line3[xx * 4 + 15] + line3[xx * 4 + 19] +
-                          line4[xx * 4 + 3] + line4[xx * 4 + 7] +
-                          line4[xx * 4 + 11] + line4[xx * 4 + 15] +
+                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] + line0[xx * 4 + 11] +
+                          line0[xx * 4 + 15] + line0[xx * 4 + 19] + line1[xx * 4 + 3] +
+                          line1[xx * 4 + 7] + line1[xx * 4 + 11] + line1[xx * 4 + 15] +
+                          line1[xx * 4 + 19] + line2[xx * 4 + 3] + line2[xx * 4 + 7] +
+                          line2[xx * 4 + 11] + line2[xx * 4 + 15] + line2[xx * 4 + 19] +
+                          line3[xx * 4 + 3] + line3[xx * 4 + 7] + line3[xx * 4 + 11] +
+                          line3[xx * 4 + 15] + line3[xx * 4 + 19] + line4[xx * 4 + 3] +
+                          line4[xx * 4 + 7] + line4[xx * 4 + 11] + line4[xx * 4 + 15] +
                           line4[xx * 4 + 19];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24, 0, 0,
                                     ((ss3 + amend) * multiplier) >> 24);
@@ -1091,44 +1007,32 @@ ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8] + line0[xx * 4 + 12] +
-                          line0[xx * 4 + 16] + line1[xx * 4 + 0] +
-                          line1[xx * 4 + 4] + line1[xx * 4 + 8] +
-                          line1[xx * 4 + 12] + line1[xx * 4 + 16] +
-                          line2[xx * 4 + 0] + line2[xx * 4 + 4] +
-                          line2[xx * 4 + 8] + line2[xx * 4 + 12] +
-                          line2[xx * 4 + 16] + line3[xx * 4 + 0] +
-                          line3[xx * 4 + 4] + line3[xx * 4 + 8] +
-                          line3[xx * 4 + 12] + line3[xx * 4 + 16] +
-                          line4[xx * 4 + 0] + line4[xx * 4 + 4] +
-                          line4[xx * 4 + 8] + line4[xx * 4 + 12] +
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8] +
+                          line0[xx * 4 + 12] + line0[xx * 4 + 16] + line1[xx * 4 + 0] +
+                          line1[xx * 4 + 4] + line1[xx * 4 + 8] + line1[xx * 4 + 12] +
+                          line1[xx * 4 + 16] + line2[xx * 4 + 0] + line2[xx * 4 + 4] +
+                          line2[xx * 4 + 8] + line2[xx * 4 + 12] + line2[xx * 4 + 16] +
+                          line3[xx * 4 + 0] + line3[xx * 4 + 4] + line3[xx * 4 + 8] +
+                          line3[xx * 4 + 12] + line3[xx * 4 + 16] + line4[xx * 4 + 0] +
+                          line4[xx * 4 + 4] + line4[xx * 4 + 8] + line4[xx * 4 + 12] +
                           line4[xx * 4 + 16];
-                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] +
-                          line0[xx * 4 + 9] + line0[xx * 4 + 13] +
-                          line0[xx * 4 + 17] + line1[xx * 4 + 1] +
-                          line1[xx * 4 + 5] + line1[xx * 4 + 9] +
-                          line1[xx * 4 + 13] + line1[xx * 4 + 17] +
-                          line2[xx * 4 + 1] + line2[xx * 4 + 5] +
-                          line2[xx * 4 + 9] + line2[xx * 4 + 13] +
-                          line2[xx * 4 + 17] + line3[xx * 4 + 1] +
-                          line3[xx * 4 + 5] + line3[xx * 4 + 9] +
-                          line3[xx * 4 + 13] + line3[xx * 4 + 17] +
-                          line4[xx * 4 + 1] + line4[xx * 4 + 5] +
-                          line4[xx * 4 + 9] + line4[xx * 4 + 13] +
+                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] + line0[xx * 4 + 9] +
+                          line0[xx * 4 + 13] + line0[xx * 4 + 17] + line1[xx * 4 + 1] +
+                          line1[xx * 4 + 5] + line1[xx * 4 + 9] + line1[xx * 4 + 13] +
+                          line1[xx * 4 + 17] + line2[xx * 4 + 1] + line2[xx * 4 + 5] +
+                          line2[xx * 4 + 9] + line2[xx * 4 + 13] + line2[xx * 4 + 17] +
+                          line3[xx * 4 + 1] + line3[xx * 4 + 5] + line3[xx * 4 + 9] +
+                          line3[xx * 4 + 13] + line3[xx * 4 + 17] + line4[xx * 4 + 1] +
+                          line4[xx * 4 + 5] + line4[xx * 4 + 9] + line4[xx * 4 + 13] +
                           line4[xx * 4 + 17];
-                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] +
-                          line0[xx * 4 + 10] + line0[xx * 4 + 14] +
-                          line0[xx * 4 + 18] + line1[xx * 4 + 2] +
-                          line1[xx * 4 + 6] + line1[xx * 4 + 10] +
-                          line1[xx * 4 + 14] + line1[xx * 4 + 18] +
-                          line2[xx * 4 + 2] + line2[xx * 4 + 6] +
-                          line2[xx * 4 + 10] + line2[xx * 4 + 14] +
-                          line2[xx * 4 + 18] + line3[xx * 4 + 2] +
-                          line3[xx * 4 + 6] + line3[xx * 4 + 10] +
-                          line3[xx * 4 + 14] + line3[xx * 4 + 18] +
-                          line4[xx * 4 + 2] + line4[xx * 4 + 6] +
-                          line4[xx * 4 + 10] + line4[xx * 4 + 14] +
+                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] + line0[xx * 4 + 10] +
+                          line0[xx * 4 + 14] + line0[xx * 4 + 18] + line1[xx * 4 + 2] +
+                          line1[xx * 4 + 6] + line1[xx * 4 + 10] + line1[xx * 4 + 14] +
+                          line1[xx * 4 + 18] + line2[xx * 4 + 2] + line2[xx * 4 + 6] +
+                          line2[xx * 4 + 10] + line2[xx * 4 + 14] + line2[xx * 4 + 18] +
+                          line3[xx * 4 + 2] + line3[xx * 4 + 6] + line3[xx * 4 + 10] +
+                          line3[xx * 4 + 14] + line3[xx * 4 + 18] + line4[xx * 4 + 2] +
+                          line4[xx * 4 + 6] + line4[xx * 4 + 10] + line4[xx * 4 + 14] +
                           line4[xx * 4 + 18];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24,
                                     ((ss1 + amend) * multiplier) >> 24,
@@ -1140,57 +1044,41 @@ ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4])
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
-                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] +
-                          line0[xx * 4 + 8] + line0[xx * 4 + 12] +
-                          line0[xx * 4 + 16] + line1[xx * 4 + 0] +
-                          line1[xx * 4 + 4] + line1[xx * 4 + 8] +
-                          line1[xx * 4 + 12] + line1[xx * 4 + 16] +
-                          line2[xx * 4 + 0] + line2[xx * 4 + 4] +
-                          line2[xx * 4 + 8] + line2[xx * 4 + 12] +
-                          line2[xx * 4 + 16] + line3[xx * 4 + 0] +
-                          line3[xx * 4 + 4] + line3[xx * 4 + 8] +
-                          line3[xx * 4 + 12] + line3[xx * 4 + 16] +
-                          line4[xx * 4 + 0] + line4[xx * 4 + 4] +
-                          line4[xx * 4 + 8] + line4[xx * 4 + 12] +
+                    ss0 = line0[xx * 4 + 0] + line0[xx * 4 + 4] + line0[xx * 4 + 8] +
+                          line0[xx * 4 + 12] + line0[xx * 4 + 16] + line1[xx * 4 + 0] +
+                          line1[xx * 4 + 4] + line1[xx * 4 + 8] + line1[xx * 4 + 12] +
+                          line1[xx * 4 + 16] + line2[xx * 4 + 0] + line2[xx * 4 + 4] +
+                          line2[xx * 4 + 8] + line2[xx * 4 + 12] + line2[xx * 4 + 16] +
+                          line3[xx * 4 + 0] + line3[xx * 4 + 4] + line3[xx * 4 + 8] +
+                          line3[xx * 4 + 12] + line3[xx * 4 + 16] + line4[xx * 4 + 0] +
+                          line4[xx * 4 + 4] + line4[xx * 4 + 8] + line4[xx * 4 + 12] +
                           line4[xx * 4 + 16];
-                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] +
-                          line0[xx * 4 + 9] + line0[xx * 4 + 13] +
-                          line0[xx * 4 + 17] + line1[xx * 4 + 1] +
-                          line1[xx * 4 + 5] + line1[xx * 4 + 9] +
-                          line1[xx * 4 + 13] + line1[xx * 4 + 17] +
-                          line2[xx * 4 + 1] + line2[xx * 4 + 5] +
-                          line2[xx * 4 + 9] + line2[xx * 4 + 13] +
-                          line2[xx * 4 + 17] + line3[xx * 4 + 1] +
-                          line3[xx * 4 + 5] + line3[xx * 4 + 9] +
-                          line3[xx * 4 + 13] + line3[xx * 4 + 17] +
-                          line4[xx * 4 + 1] + line4[xx * 4 + 5] +
-                          line4[xx * 4 + 9] + line4[xx * 4 + 13] +
+                    ss1 = line0[xx * 4 + 1] + line0[xx * 4 + 5] + line0[xx * 4 + 9] +
+                          line0[xx * 4 + 13] + line0[xx * 4 + 17] + line1[xx * 4 + 1] +
+                          line1[xx * 4 + 5] + line1[xx * 4 + 9] + line1[xx * 4 + 13] +
+                          line1[xx * 4 + 17] + line2[xx * 4 + 1] + line2[xx * 4 + 5] +
+                          line2[xx * 4 + 9] + line2[xx * 4 + 13] + line2[xx * 4 + 17] +
+                          line3[xx * 4 + 1] + line3[xx * 4 + 5] + line3[xx * 4 + 9] +
+                          line3[xx * 4 + 13] + line3[xx * 4 + 17] + line4[xx * 4 + 1] +
+                          line4[xx * 4 + 5] + line4[xx * 4 + 9] + line4[xx * 4 + 13] +
                           line4[xx * 4 + 17];
-                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] +
-                          line0[xx * 4 + 10] + line0[xx * 4 + 14] +
-                          line0[xx * 4 + 18] + line1[xx * 4 + 2] +
-                          line1[xx * 4 + 6] + line1[xx * 4 + 10] +
-                          line1[xx * 4 + 14] + line1[xx * 4 + 18] +
-                          line2[xx * 4 + 2] + line2[xx * 4 + 6] +
-                          line2[xx * 4 + 10] + line2[xx * 4 + 14] +
-                          line2[xx * 4 + 18] + line3[xx * 4 + 2] +
-                          line3[xx * 4 + 6] + line3[xx * 4 + 10] +
-                          line3[xx * 4 + 14] + line3[xx * 4 + 18] +
-                          line4[xx * 4 + 2] + line4[xx * 4 + 6] +
-                          line4[xx * 4 + 10] + line4[xx * 4 + 14] +
+                    ss2 = line0[xx * 4 + 2] + line0[xx * 4 + 6] + line0[xx * 4 + 10] +
+                          line0[xx * 4 + 14] + line0[xx * 4 + 18] + line1[xx * 4 + 2] +
+                          line1[xx * 4 + 6] + line1[xx * 4 + 10] + line1[xx * 4 + 14] +
+                          line1[xx * 4 + 18] + line2[xx * 4 + 2] + line2[xx * 4 + 6] +
+                          line2[xx * 4 + 10] + line2[xx * 4 + 14] + line2[xx * 4 + 18] +
+                          line3[xx * 4 + 2] + line3[xx * 4 + 6] + line3[xx * 4 + 10] +
+                          line3[xx * 4 + 14] + line3[xx * 4 + 18] + line4[xx * 4 + 2] +
+                          line4[xx * 4 + 6] + line4[xx * 4 + 10] + line4[xx * 4 + 14] +
                           line4[xx * 4 + 18];
-                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] +
-                          line0[xx * 4 + 11] + line0[xx * 4 + 15] +
-                          line0[xx * 4 + 19] + line1[xx * 4 + 3] +
-                          line1[xx * 4 + 7] + line1[xx * 4 + 11] +
-                          line1[xx * 4 + 15] + line1[xx * 4 + 19] +
-                          line2[xx * 4 + 3] + line2[xx * 4 + 7] +
-                          line2[xx * 4 + 11] + line2[xx * 4 + 15] +
-                          line2[xx * 4 + 19] + line3[xx * 4 + 3] +
-                          line3[xx * 4 + 7] + line3[xx * 4 + 11] +
-                          line3[xx * 4 + 15] + line3[xx * 4 + 19] +
-                          line4[xx * 4 + 3] + line4[xx * 4 + 7] +
-                          line4[xx * 4 + 11] + line4[xx * 4 + 15] +
+                    ss3 = line0[xx * 4 + 3] + line0[xx * 4 + 7] + line0[xx * 4 + 11] +
+                          line0[xx * 4 + 15] + line0[xx * 4 + 19] + line1[xx * 4 + 3] +
+                          line1[xx * 4 + 7] + line1[xx * 4 + 11] + line1[xx * 4 + 15] +
+                          line1[xx * 4 + 19] + line2[xx * 4 + 3] + line2[xx * 4 + 7] +
+                          line2[xx * 4 + 11] + line2[xx * 4 + 15] + line2[xx * 4 + 19] +
+                          line3[xx * 4 + 3] + line3[xx * 4 + 7] + line3[xx * 4 + 11] +
+                          line3[xx * 4 + 15] + line3[xx * 4 + 19] + line4[xx * 4 + 3] +
+                          line4[xx * 4 + 7] + line4[xx * 4 + 11] + line4[xx * 4 + 15] +
                           line4[xx * 4 + 19];
                     v = MAKE_UINT32(((ss0 + amend) * multiplier) >> 24,
                                     ((ss1 + amend) * multiplier) >> 24,
@@ -1204,8 +1092,7 @@ ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4])
 }
 
 void
-ImagingReduceCorners(Imaging imOut, Imaging imIn, int box[4], int xscale,
-                     int yscale)
+ImagingReduceCorners(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale)
 {
     /* Fill the last row and the last column for any xscale and yscale.
      */
@@ -1223,8 +1110,7 @@ ImagingReduceCorners(Imaging imOut, Imaging imIn, int box[4], int xscale,
 
                 for (yy = yy_from; yy < yy_from + yscale; yy++) {
                     UINT8 *line = (UINT8 *)imIn->image8[yy];
-                    for (xx = box[0] + x * xscale; xx < box[0] + box[2];
-                         xx++) {
+                    for (xx = box[0] + x * xscale; xx < box[0] + box[2]; xx++) {
                         ss += line[xx + 0];
                     }
                 }
@@ -1277,17 +1163,15 @@ ImagingReduceCorners(Imaging imOut, Imaging imIn, int box[4], int xscale,
 
                 for (yy = yy_from; yy < yy_from + yscale; yy++) {
                     UINT8 *line = (UINT8 *)imIn->image[yy];
-                    for (xx = box[0] + x * xscale; xx < box[0] + box[2];
-                         xx++) {
+                    for (xx = box[0] + x * xscale; xx < box[0] + box[2]; xx++) {
                         ss0 += line[xx * 4 + 0];
                         ss1 += line[xx * 4 + 1];
                         ss2 += line[xx * 4 + 2];
                         ss3 += line[xx * 4 + 3];
                     }
                 }
-                v = MAKE_UINT32(
-                    (ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
-                    (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
+                v = MAKE_UINT32((ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
+                                (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
                 memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
             }
         }
@@ -1309,9 +1193,8 @@ ImagingReduceCorners(Imaging imOut, Imaging imIn, int box[4], int xscale,
                         ss3 += line[xx * 4 + 3];
                     }
                 }
-                v = MAKE_UINT32(
-                    (ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
-                    (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
+                v = MAKE_UINT32((ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
+                                (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
                 memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
             }
         }
@@ -1333,16 +1216,14 @@ ImagingReduceCorners(Imaging imOut, Imaging imIn, int box[4], int xscale,
                 }
             }
             v = MAKE_UINT32((ss0 * multiplier) >> 24, (ss1 * multiplier) >> 24,
-                            (ss2 * multiplier) >> 24,
-                            (ss3 * multiplier) >> 24);
+                            (ss2 * multiplier) >> 24, (ss3 * multiplier) >> 24);
             memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
         }
     }
 }
 
 void
-ImagingReduceNxN_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
-                       int yscale)
+ImagingReduceNxN_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale)
 {
     /* The most general implementation for any xscale and yscale
      */
@@ -1359,10 +1240,9 @@ ImagingReduceNxN_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     for (yy = yy_from; yy < yy_from + yscale - 1; yy += 2) {
                         INT32 *line0 = (INT32 *)imIn->image32[yy];
                         INT32 *line1 = (INT32 *)imIn->image32[yy + 1];
-                        for (xx = xx_from; xx < xx_from + xscale - 1;
-                             xx += 2) {
-                            ss += line0[xx + 0] + line0[xx + 1] +
-                                  line1[xx + 0] + line1[xx + 1];
+                        for (xx = xx_from; xx < xx_from + xscale - 1; xx += 2) {
+                            ss += line0[xx + 0] + line0[xx + 1] + line1[xx + 0] +
+                                  line1[xx + 1];
                         }
                         if (xscale & 0x01) {
                             ss += line0[xx + 0] + line1[xx + 0];
@@ -1370,8 +1250,7 @@ ImagingReduceNxN_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     }
                     if (yscale & 0x01) {
                         INT32 *line = (INT32 *)imIn->image32[yy];
-                        for (xx = xx_from; xx < xx_from + xscale - 1;
-                             xx += 2) {
+                        for (xx = xx_from; xx < xx_from + xscale - 1; xx += 2) {
                             ss += line[xx + 0] + line[xx + 1];
                         }
                         if (xscale & 0x01) {
@@ -1392,10 +1271,9 @@ ImagingReduceNxN_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     for (yy = yy_from; yy < yy_from + yscale - 1; yy += 2) {
                         FLOAT32 *line0 = (FLOAT32 *)imIn->image32[yy];
                         FLOAT32 *line1 = (FLOAT32 *)imIn->image32[yy + 1];
-                        for (xx = xx_from; xx < xx_from + xscale - 1;
-                             xx += 2) {
-                            ss += line0[xx + 0] + line0[xx + 1] +
-                                  line1[xx + 0] + line1[xx + 1];
+                        for (xx = xx_from; xx < xx_from + xscale - 1; xx += 2) {
+                            ss += line0[xx + 0] + line0[xx + 1] + line1[xx + 0] +
+                                  line1[xx + 1];
                         }
                         if (xscale & 0x01) {
                             ss += line0[xx + 0] + line1[xx + 0];
@@ -1403,8 +1281,7 @@ ImagingReduceNxN_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     }
                     if (yscale & 0x01) {
                         FLOAT32 *line = (FLOAT32 *)imIn->image32[yy];
-                        for (xx = xx_from; xx < xx_from + xscale - 1;
-                             xx += 2) {
+                        for (xx = xx_from; xx < xx_from + xscale - 1; xx += 2) {
                             ss += line[xx + 0] + line[xx + 1];
                         }
                         if (xscale & 0x01) {
@@ -1436,8 +1313,7 @@ ImagingReduceCorners_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     x = box[2] / xscale;
                     for (yy = yy_from; yy < yy_from + yscale; yy++) {
                         INT32 *line = (INT32 *)imIn->image32[yy];
-                        for (xx = box[0] + x * xscale; xx < box[0] + box[2];
-                             xx++) {
+                        for (xx = box[0] + x * xscale; xx < box[0] + box[2]; xx++) {
                             ss += line[xx + 0];
                         }
                     }
@@ -1450,8 +1326,7 @@ ImagingReduceCorners_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx_from = box[0] + x * xscale;
                     double ss = 0;
-                    for (yy = box[1] + y * yscale; yy < box[1] + box[3];
-                         yy++) {
+                    for (yy = box[1] + y * yscale; yy < box[1] + box[3]; yy++) {
                         INT32 *line = (INT32 *)imIn->image32[yy];
                         for (xx = xx_from; xx < xx_from + xscale; xx++) {
                             ss += line[xx + 0];
@@ -1461,15 +1336,13 @@ ImagingReduceCorners_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
                 }
             }
             if (box[2] % xscale && box[3] % yscale) {
-                double multiplier =
-                    1.0 / ((box[2] % xscale) * (box[3] % yscale));
+                double multiplier = 1.0 / ((box[2] % xscale) * (box[3] % yscale));
                 double ss = 0;
                 x = box[2] / xscale;
                 y = box[3] / yscale;
                 for (yy = box[1] + y * yscale; yy < box[1] + box[3]; yy++) {
                     INT32 *line = (INT32 *)imIn->image32[yy];
-                    for (xx = box[0] + x * xscale; xx < box[0] + box[2];
-                         xx++) {
+                    for (xx = box[0] + x * xscale; xx < box[0] + box[2]; xx++) {
                         ss += line[xx + 0];
                     }
                 }
@@ -1486,8 +1359,7 @@ ImagingReduceCorners_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
                     x = box[2] / xscale;
                     for (yy = yy_from; yy < yy_from + yscale; yy++) {
                         FLOAT32 *line = (FLOAT32 *)imIn->image32[yy];
-                        for (xx = box[0] + x * xscale; xx < box[0] + box[2];
-                             xx++) {
+                        for (xx = box[0] + x * xscale; xx < box[0] + box[2]; xx++) {
                             ss += line[xx + 0];
                         }
                     }
@@ -1500,8 +1372,7 @@ ImagingReduceCorners_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx_from = box[0] + x * xscale;
                     double ss = 0;
-                    for (yy = box[1] + y * yscale; yy < box[1] + box[3];
-                         yy++) {
+                    for (yy = box[1] + y * yscale; yy < box[1] + box[3]; yy++) {
                         FLOAT32 *line = (FLOAT32 *)imIn->image32[yy];
                         for (xx = xx_from; xx < xx_from + xscale; xx++) {
                             ss += line[xx + 0];
@@ -1511,15 +1382,13 @@ ImagingReduceCorners_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
                 }
             }
             if (box[2] % xscale && box[3] % yscale) {
-                double multiplier =
-                    1.0 / ((box[2] % xscale) * (box[3] % yscale));
+                double multiplier = 1.0 / ((box[2] % xscale) * (box[3] % yscale));
                 double ss = 0;
                 x = box[2] / xscale;
                 y = box[3] / yscale;
                 for (yy = box[1] + y * yscale; yy < box[1] + box[3]; yy++) {
                     FLOAT32 *line = (FLOAT32 *)imIn->image32[yy];
-                    for (xx = box[0] + x * xscale; xx < box[0] + box[2];
-                         xx++) {
+                    for (xx = box[0] + x * xscale; xx < box[0] + box[2]; xx++) {
                         ss += line[xx + 0];
                     }
                 }

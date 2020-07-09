@@ -83,8 +83,7 @@ _heap_test(Heap *h)
             printf("heap is bad\n");
             return 0;
         }
-        if (k * 2 + 1 <= h->heapcount &&
-            h->cf(h, h->heap[k], h->heap[k * 2 + 1]) < 0) {
+        if (k * 2 + 1 <= h->heapcount && h->cf(h, h->heap[k], h->heap[k * 2 + 1]) < 0) {
             printf("heap is bad\n");
             return 0;
         }

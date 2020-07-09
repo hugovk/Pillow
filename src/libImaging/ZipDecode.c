@@ -41,8 +41,7 @@ get_row_len(ImagingCodecState state, int pass)
 /* -------------------------------------------------------------------- */
 
 int
-ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
-                 Py_ssize_t bytes)
+ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
 {
     ZIPSTATE *context = (ZIPSTATE *)state->context;
     int err;
@@ -114,8 +113,7 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
     /* Decompress what we've got this far */
     while (context->z_stream.avail_in > 0) {
         context->z_stream.next_out = state->buffer + context->last_output;
-        context->z_stream.avail_out =
-            row_len + context->prefix - context->last_output;
+        context->z_stream.avail_out = row_len + context->prefix - context->last_output;
 
         err = inflate(&context->z_stream, Z_NO_FLUSH);
 
@@ -169,9 +167,8 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
                             state->buffer[i] += context->previous[i] / 2;
                         }
                         for (; i <= row_len; i++) {
-                            state->buffer[i] += (state->buffer[i - bpp] +
-                                                 context->previous[i]) /
-                                                2;
+                            state->buffer[i] +=
+                                (state->buffer[i - bpp] + context->previous[i]) / 2;
                         }
                         break;
                     case 4:
@@ -195,9 +192,8 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
                             pc = abs(a + b - 2 * c);
 
                             /* pick predictor with the shortest distance */
-                            state->buffer[i] += (pa <= pb && pa <= pc)
-                                                    ? a
-                                                    : (pb <= pc) ? b : c;
+                            state->buffer[i] +=
+                                (pa <= pb && pa <= pc) ? a : (pb <= pc) ? b : c;
                         }
                         break;
                     default:
@@ -222,9 +218,8 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
             if (state->bits >= 8) {
                 /* Stuff pixels in their correct location, one by one */
                 for (i = 0; i < row_len; i += ((state->bits + 7) / 8)) {
-                    state->shuffle(
-                        (UINT8 *)im->image[state->y] + col * im->pixelsize,
-                        state->buffer + context->prefix + i, 1);
+                    state->shuffle((UINT8 *)im->image[state->y] + col * im->pixelsize,
+                                   state->buffer + context->prefix + i, 1);
                     col += COL_INCREMENT[context->pass];
                 }
             }
@@ -236,9 +231,8 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
                 for (i = 0; i < row_bits; i += state->bits) {
                     UINT8 byte = *(state->buffer + context->prefix + (i / 8));
                     byte <<= (i % 8);
-                    state->shuffle(
-                        (UINT8 *)im->image[state->y] + col * im->pixelsize,
-                        &byte, 1);
+                    state->shuffle((UINT8 *)im->image[state->y] + col * im->pixelsize,
+                                   &byte, 1);
                     col += COL_INCREMENT[context->pass];
                 }
             }

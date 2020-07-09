@@ -57,16 +57,15 @@ HandleMuxError(WebPMuxError err, char *chunk)
 
     // Create the error message
     if (chunk == NULL) {
-        message_len = sprintf(message, "could not assemble chunks: %s",
-                              kErrorMessages[-err]);
+        message_len =
+            sprintf(message, "could not assemble chunks: %s", kErrorMessages[-err]);
     }
     else {
         message_len = sprintf(message, "could not set %.4s chunk: %s", chunk,
                               kErrorMessages[-err]);
     }
     if (message_len < 0) {
-        PyErr_SetString(PyExc_RuntimeError,
-                        "failed to construct error message");
+        PyErr_SetString(PyExc_RuntimeError, "failed to construct error message");
         return NULL;
     }
 
@@ -130,16 +129,14 @@ _anim_encoder_new(PyObject *self, PyObject *args)
     WebPAnimEncoderObject *encp = NULL;
     WebPAnimEncoder *enc = NULL;
 
-    if (!PyArg_ParseTuple(args, "iiIiiiiii", &width, &height, &bgcolor,
-                          &loop_count, &minimize_size, &kmin, &kmax,
-                          &allow_mixed, &verbose)) {
+    if (!PyArg_ParseTuple(args, "iiIiiiiii", &width, &height, &bgcolor, &loop_count,
+                          &minimize_size, &kmin, &kmax, &allow_mixed, &verbose)) {
         return NULL;
     }
 
     // Setup and configure the encoder's options (these are animation-specific)
     if (!WebPAnimEncoderOptionsInit(&enc_options)) {
-        PyErr_SetString(PyExc_RuntimeError,
-                        "failed to initialize encoder options");
+        PyErr_SetString(PyExc_RuntimeError, "failed to initialize encoder options");
         return NULL;
     }
     enc_options.anim_params.bgcolor = bgcolor;
@@ -199,9 +196,8 @@ _anim_encoder_add(PyObject *self, PyObject *args)
     WebPAnimEncoder *enc = encp->enc;
     WebPPicture *frame = &(encp->frame);
 
-    if (!PyArg_ParseTuple(args, "z#iiisifi", (char **)&rgb, &size, &timestamp,
-                          &width, &height, &mode, &lossless, &quality_factor,
-                          &method)) {
+    if (!PyArg_ParseTuple(args, "z#iiisifi", (char **)&rgb, &size, &timestamp, &width,
+                          &height, &mode, &lossless, &quality_factor, &method)) {
         return NULL;
     }
 
@@ -290,8 +286,7 @@ _anim_encoder_assemble(PyObject *self, PyObject *args)
 
         mux = WebPMuxCreate(&webp_data, 1);
         if (mux == NULL) {
-            PyErr_SetString(PyExc_RuntimeError,
-                            "could not re-mux to add metadata");
+            PyErr_SetString(PyExc_RuntimeError, "could not re-mux to add metadata");
             return NULL;
         }
         WebPDataClear(&webp_data);
@@ -423,8 +418,7 @@ _anim_decoder_get_chunk(PyObject *self, PyObject *args)
         Py_RETURN_NONE;
     }
 
-    ret = PyBytes_FromStringAndSize((const char *)iter.chunk.bytes,
-                                    iter.chunk.size);
+    ret = PyBytes_FromStringAndSize((const char *)iter.chunk.bytes, iter.chunk.size);
     WebPDemuxReleaseChunkIterator(&iter);
 
     return ret;
@@ -468,8 +462,7 @@ _anim_decoder_reset(PyObject *self)
 // WebPAnimEncoder methods
 static struct PyMethodDef _anim_encoder_methods[] = {
     {"add", (PyCFunction)_anim_encoder_add, METH_VARARGS, "add"},
-    {"assemble", (PyCFunction)_anim_encoder_assemble, METH_VARARGS,
-     "assemble"},
+    {"assemble", (PyCFunction)_anim_encoder_assemble, METH_VARARGS, "assemble"},
     {NULL, NULL} /* sentinel */
 };
 
@@ -510,8 +503,7 @@ static PyTypeObject WebPAnimEncoder_Type = {
 // WebPAnimDecoder methods
 static struct PyMethodDef _anim_decoder_methods[] = {
     {"get_info", (PyCFunction)_anim_decoder_get_info, METH_NOARGS, "get_info"},
-    {"get_chunk", (PyCFunction)_anim_decoder_get_chunk, METH_VARARGS,
-     "get_chunk"},
+    {"get_chunk", (PyCFunction)_anim_decoder_get_chunk, METH_VARARGS, "get_chunk"},
     {"get_next", (PyCFunction)_anim_decoder_get_next, METH_NOARGS, "get_next"},
     {"reset", (PyCFunction)_anim_decoder_reset, METH_NOARGS, "reset"},
     {NULL, NULL} /* sentinel */
@@ -584,10 +576,9 @@ WebPEncode_wrapper(PyObject *self, PyObject *args)
     WebPMemoryWriter writer;
     WebPPicture pic;
 
-    if (!PyArg_ParseTuple(args, "y#iiifss#is#s#", (char **)&rgb, &size, &width,
-                          &height, &lossless, &quality_factor, &mode,
-                          &icc_bytes, &icc_size, &method, &exif_bytes,
-                          &exif_size, &xmp_bytes, &xmp_size)) {
+    if (!PyArg_ParseTuple(args, "y#iiifss#is#s#", (char **)&rgb, &size, &width, &height,
+                          &lossless, &quality_factor, &mode, &icc_bytes, &icc_size,
+                          &method, &exif_bytes, &exif_size, &xmp_bytes, &xmp_size)) {
         return NULL;
     }
 
@@ -670,9 +661,8 @@ WebPEncode_wrapper(PyObject *self, PyObject *args)
         WebPMuxError err;
         int dbg = 0;
 
-        int copy_data =
-            0;  // value 1 indicates given data WILL be copied to the mux
-                // and value 0 indicates data will NOT be copied.
+        int copy_data = 0;  // value 1 indicates given data WILL be copied to the mux
+                            // and value 0 indicates data will NOT be copied.
 
         WebPMux *mux = WebPMuxNew();
         WebPMuxSetImage(mux, &image, copy_data);
@@ -740,8 +730,8 @@ WebPDecode_wrapper(PyObject *self, PyObject *args)
     PyBytesObject *webp_string;
     const uint8_t *webp;
     Py_ssize_t size;
-    PyObject *ret = Py_None, *bytes = NULL, *pymode = NULL,
-             *icc_profile = NULL, *exif = NULL;
+    PyObject *ret = Py_None, *bytes = NULL, *pymode = NULL, *icc_profile = NULL,
+             *exif = NULL;
     WebPDecoderConfig config;
     VP8StatusCode vp8_status_code = VP8_STATUS_OK;
     char *mode = "RGB";
@@ -790,11 +780,9 @@ WebPDecode_wrapper(PyObject *self, PyObject *args)
 
             vp8_status_code = WebPDecode(webp, size, &config);
 
-            if (WEBP_MUX_OK ==
-                WebPMuxGetChunk(mux, "ICCP", &icc_profile_data)) {
+            if (WEBP_MUX_OK == WebPMuxGetChunk(mux, "ICCP", &icc_profile_data)) {
                 icc_profile = PyBytes_FromStringAndSize(
-                    (const char *)icc_profile_data.bytes,
-                    icc_profile_data.size);
+                    (const char *)icc_profile_data.bytes, icc_profile_data.size);
             }
 
             if (WEBP_MUX_OK == WebPMuxGetChunk(mux, "EXIF", &exif_data)) {
@@ -824,9 +812,8 @@ WebPDecode_wrapper(PyObject *self, PyObject *args)
     }
 
     pymode = PyUnicode_FromString(mode);
-    ret = Py_BuildValue("SiiSSS", bytes, config.output.width,
-                        config.output.height, pymode,
-                        NULL == icc_profile ? Py_None : icc_profile,
+    ret = Py_BuildValue("SiiSSS", bytes, config.output.width, config.output.height,
+                        pymode, NULL == icc_profile ? Py_None : icc_profile,
                         NULL == exif ? Py_None : exif);
 
 end:
@@ -858,8 +845,8 @@ WebPDecoderVersion_str(void)
 {
     static char version[20];
     int version_number = WebPGetDecoderVersion();
-    sprintf(version, "%d.%d.%d", version_number >> 16,
-            (version_number >> 8) % 0x100, version_number % 0x100);
+    sprintf(version, "%d.%d.%d", version_number >> 16, (version_number >> 8) % 0x100,
+            version_number % 0x100);
     return version;
 }
 
@@ -890,8 +877,7 @@ static PyMethodDef webpMethods[] = {
 #endif
     {"WebPEncode", WebPEncode_wrapper, METH_VARARGS, "WebPEncode"},
     {"WebPDecode", WebPDecode_wrapper, METH_VARARGS, "WebPDecode"},
-    {"WebPDecoderVersion", WebPDecoderVersion_wrapper, METH_NOARGS,
-     "WebPVersion"},
+    {"WebPDecoderVersion", WebPDecoderVersion_wrapper, METH_NOARGS, "WebPVersion"},
     {"WebPDecoderBuggyAlpha", WebPDecoderBuggyAlpha_wrapper, METH_NOARGS,
      "WebPDecoderBuggyAlpha"},
     {NULL, NULL}};

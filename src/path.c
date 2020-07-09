@@ -221,8 +221,7 @@ PyPath_Flatten(PyObject *data, double **pxy)
             PyObject *op = PySequence_GetItem(data, i);
             if (!op) {
                 /* treat IndexError as end of sequence */
-                if (PyErr_Occurred() &&
-                    PyErr_ExceptionMatches(PyExc_IndexError)) {
+                if (PyErr_Occurred() && PyErr_ExceptionMatches(PyExc_IndexError)) {
                     PyErr_Clear();
                     break;
                 }
@@ -320,8 +319,7 @@ path_compact(PyPathObject *self, PyObject *args)
 
     /* remove bogus vertices */
     for (i = j = 1; i < self->count; i++) {
-        if (fabs(xy[j + j - 2] - xy[i + i]) +
-                fabs(xy[j + j - 1] - xy[i + i + 1]) >=
+        if (fabs(xy[j + j - 2] - xy[i + i]) + fabs(xy[j + j - 1] - xy[i + i + 1]) >=
             cityblock) {
             xy[j + j] = xy[i + i];
             xy[j + j + 1] = xy[i + i + 1];
@@ -455,8 +453,7 @@ path_setitem(PyPathObject *self, Py_ssize_t i, PyObject *op)
     double *xy;
 
     if (i < 0 || i >= self->count) {
-        PyErr_SetString(PyExc_IndexError,
-                        "path assignment index out of range");
+        PyErr_SetString(PyExc_IndexError, "path assignment index out of range");
         return -1;
     }
 
@@ -576,8 +573,7 @@ path_getattr_id(PyPathObject *self, void *closure)
     return Py_BuildValue("n", (Py_ssize_t)self->xy);
 }
 
-static struct PyGetSetDef getsetters[] = {{"id", (getter)path_getattr_id},
-                                          {NULL}};
+static struct PyGetSetDef getsetters[] = {{"id", (getter)path_getattr_id}, {NULL}};
 
 static PyObject *
 path_subscript(PyPathObject *self, PyObject *item)
@@ -594,8 +590,7 @@ path_subscript(PyPathObject *self, PyObject *item)
         int len = 4;
         Py_ssize_t start, stop, step, slicelength;
 
-        if (PySlice_GetIndicesEx(item, len, &start, &stop, &step,
-                                 &slicelength) < 0) {
+        if (PySlice_GetIndicesEx(item, len, &start, &stop, &step, &slicelength) < 0) {
             return NULL;
         }
 
@@ -612,8 +607,7 @@ path_subscript(PyPathObject *self, PyObject *item)
         }
     }
     else {
-        PyErr_Format(PyExc_TypeError,
-                     "Path indices must be integers, not %.200s",
+        PyErr_Format(PyExc_TypeError, "Path indices must be integers, not %.200s",
                      Py_TYPE(item)->tp_name);
         return NULL;
     }

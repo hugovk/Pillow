@@ -42,10 +42,8 @@
 
 #define C16N (out[0] = tmp[0], out[1] = tmp[1]);
 #define C16S (out[1] = tmp[0], out[0] = tmp[1]);
-#define C32N \
-    (out[0] = tmp[0], out[1] = tmp[1], out[2] = tmp[2], out[3] = tmp[3]);
-#define C32S \
-    (out[3] = tmp[0], out[2] = tmp[1], out[1] = tmp[2], out[0] = tmp[3]);
+#define C32N (out[0] = tmp[0], out[1] = tmp[1], out[2] = tmp[2], out[3] = tmp[3]);
+#define C32S (out[3] = tmp[0], out[2] = tmp[1], out[1] = tmp[2], out[0] = tmp[3]);
 #define C64N                                                             \
     (out[0] = tmp[0], out[1] = tmp[1], out[2] = tmp[2], out[3] = tmp[3], \
      out[4] = tmp[4], out[5] = tmp[5], out[6] = tmp[6], out[7] = tmp[7]);
@@ -189,8 +187,7 @@ static void
 packP2(UINT8 *out, const UINT8 *in, int pixels)
 {
     while (pixels >= 4) {
-        *out++ = (in[0] << 6) | ((in[1] & 3) << 4) | ((in[2] & 3) << 2) |
-                 (in[3] & 3);
+        *out++ = (in[0] << 6) | ((in[1] & 3) << 4) | ((in[2] & 3) << 2) | (in[3] & 3);
         in += 4;
         pixels -= 4;
     }

@@ -19,9 +19,8 @@
 
 int
 quantize_pngquant(Pixel *pixelData, unsigned int width, unsigned int height,
-                  uint32_t quantPixels, Pixel **palette,
-                  uint32_t *paletteLength, uint32_t **quantizedPixels,
-                  int withAlpha)
+                  uint32_t quantPixels, Pixel **palette, uint32_t *paletteLength,
+                  uint32_t **quantizedPixels, int withAlpha)
 {
     int result = 0;
     liq_image *image = NULL;
@@ -44,8 +43,7 @@ quantize_pngquant(Pixel *pixelData, unsigned int width, unsigned int height,
     }
 
     /* prepare input image */
-    image = liq_image_create_rgba(attr, pixelData, width, height,
-                                  0.45455 /* gamma */);
+    image = liq_image_create_rgba(attr, pixelData, width, height, 0.45455 /* gamma */);
     if (!image) {
         goto err;
     }
@@ -84,8 +82,7 @@ quantize_pngquant(Pixel *pixelData, unsigned int width, unsigned int height,
     for (y = 0; y < height; y++) {
         charMatrixRows[y] = &charMatrix[y * width];
     }
-    if (LIQ_OK !=
-        liq_write_remapped_image_rows(remap, image, charMatrixRows)) {
+    if (LIQ_OK != liq_write_remapped_image_rows(remap, image, charMatrixRows)) {
         goto err;
     }
 
@@ -124,8 +121,7 @@ ImagingImageQuantVersion(void)
 {
     static char version[20];
     int number = liq_version();
-    sprintf(version, "%d.%d.%d", number / 10000, (number / 100) % 100,
-            number % 100);
+    sprintf(version, "%d.%d.%d", number / 10000, (number / 100) % 100, number % 100);
     return version;
 }
 

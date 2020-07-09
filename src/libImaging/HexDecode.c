@@ -15,16 +15,14 @@
 
 #include "Imaging.h"
 
-#define HEX(v)                    \
-    ((v >= '0' && v <= '9')       \
-         ? v - '0'                \
-         : (v >= 'a' && v <= 'f') \
-               ? v - 'a' + 10     \
-               : (v >= 'A' && v <= 'F') ? v - 'A' + 10 : -1)
+#define HEX(v)                                   \
+    ((v >= '0' && v <= '9')                      \
+         ? v - '0'                               \
+         : (v >= 'a' && v <= 'f') ? v - 'a' + 10 \
+                                  : (v >= 'A' && v <= 'F') ? v - 'A' + 10 : -1)
 
 int
-ImagingHexDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
-                 Py_ssize_t bytes)
+ImagingHexDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
 {
     UINT8 *ptr;
     int a, b;

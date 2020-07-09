@@ -51,8 +51,8 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
         context->up = (UINT8 *)malloc(state->bytes + 1);
         context->average = (UINT8 *)malloc(state->bytes + 1);
         context->paeth = (UINT8 *)malloc(state->bytes + 1);
-        if (!state->buffer || !context->previous || !context->prior ||
-            !context->up || !context->average || !context->paeth) {
+        if (!state->buffer || !context->previous || !context->prior || !context->up ||
+            !context->average || !context->paeth) {
             free(context->paeth);
             free(context->average);
             free(context->up);
@@ -187,8 +187,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                            an image line is identical to the one above. */
                         if (sum > 0) {
                             for (i = 1, s = 0; i <= state->bytes; i++) {
-                                UINT8 v =
-                                    state->buffer[i] - context->previous[i];
+                                UINT8 v = state->buffer[i] - context->previous[i];
                                 context->up[i] = v;
                                 s += (v < 128) ? v : 256 - v;
                             }
@@ -206,8 +205,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                                 s += (v < 128) ? v : 256 - v;
                             }
                             for (; i <= state->bytes; i++) {
-                                UINT8 v =
-                                    state->buffer[i] - state->buffer[i - bpp];
+                                UINT8 v = state->buffer[i] - state->buffer[i - bpp];
                                 context->prior[i] = v;
                                 s += (v < 128) ? v : 256 - v;
                             }
@@ -221,16 +219,14 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                            so its only used with the optimize option) */
                         if (context->optimize && sum > 0) {
                             for (i = 1, s = 0; i <= bpp; i++) {
-                                UINT8 v = state->buffer[i] -
-                                          context->previous[i] / 2;
+                                UINT8 v = state->buffer[i] - context->previous[i] / 2;
                                 context->average[i] = v;
                                 s += (v < 128) ? v : 256 - v;
                             }
                             for (; i <= state->bytes; i++) {
-                                UINT8 v = state->buffer[i] -
-                                          (state->buffer[i - bpp] +
-                                           context->previous[i]) /
-                                              2;
+                                UINT8 v =
+                                    state->buffer[i] -
+                                    (state->buffer[i - bpp] + context->previous[i]) / 2;
                                 context->average[i] = v;
                                 s += (v < 128) ? v : 256 - v;
                             }
@@ -243,8 +239,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                         /* 4. Paeth */
                         if (sum > 0) {
                             for (i = 1, s = 0; i <= bpp; i++) {
-                                UINT8 v =
-                                    state->buffer[i] - context->previous[i];
+                                UINT8 v = state->buffer[i] - context->previous[i];
                                 context->paeth[i] = v;
                                 s += (v < 128) ? v : 256 - v;
                             }
@@ -265,9 +260,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
 
                                 /* pick predictor with the shortest distance */
                                 v = state->buffer[i] -
-                                    ((pa <= pb && pa <= pc)
-                                         ? a
-                                         : (pb <= pc) ? b : c);
+                                    ((pa <= pb && pa <= pc) ? a : (pb <= pc) ? b : c);
                                 context->paeth[i] = v;
                                 s += (v < 128) ? v : 256 - v;
                             }

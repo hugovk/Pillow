@@ -143,8 +143,7 @@ static PyObject *
 _outline_transform(OutlineObject *self, PyObject *args)
 {
     double a[6];
-    if (!PyArg_ParseTuple(args, "(dddddd)", a + 0, a + 1, a + 2, a + 3, a + 4,
-                          a + 5)) {
+    if (!PyArg_ParseTuple(args, "(dddddd)", a + 0, a + 1, a + 2, a + 3, a + 4, a + 5)) {
         return NULL;
     }
 

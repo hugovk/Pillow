@@ -39,8 +39,7 @@ ImagingConvertMatrix(Imaging im, const char *mode, float m[])
             UINT8 *out = (UINT8 *)imOut->image[y];
 
             for (x = 0; x < im->xsize; x++) {
-                float v =
-                    m[0] * in[0] + m[1] * in[1] + m[2] * in[2] + m[3] + 0.5;
+                float v = m[0] * in[0] + m[1] * in[1] + m[2] * in[2] + m[3] + 0.5;
                 out[x] = CLIPF(v);
                 in += 4;
             }
@@ -57,12 +56,9 @@ ImagingConvertMatrix(Imaging im, const char *mode, float m[])
             UINT8 *out = (UINT8 *)imOut->image[y];
 
             for (x = 0; x < im->xsize; x++) {
-                float v0 =
-                    m[0] * in[0] + m[1] * in[1] + m[2] * in[2] + m[3] + 0.5;
-                float v1 =
-                    m[4] * in[0] + m[5] * in[1] + m[6] * in[2] + m[7] + 0.5;
-                float v2 =
-                    m[8] * in[0] + m[9] * in[1] + m[10] * in[2] + m[11] + 0.5;
+                float v0 = m[0] * in[0] + m[1] * in[1] + m[2] * in[2] + m[3] + 0.5;
+                float v1 = m[4] * in[0] + m[5] * in[1] + m[6] * in[2] + m[7] + 0.5;
+                float v2 = m[8] * in[0] + m[9] * in[1] + m[10] * in[2] + m[11] + 0.5;
                 out[0] = CLIPF(v0);
                 out[1] = CLIPF(v1);
                 out[2] = CLIPF(v2);

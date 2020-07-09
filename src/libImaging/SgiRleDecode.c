@@ -102,8 +102,7 @@ expandrow2(UINT8 *dest, const UINT8 *src, int n, int z, int xsize)
 }
 
 int
-ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
-                    Py_ssize_t bytes)
+ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
 {
     UINT8 *ptr;
     SGISTATE *c;
@@ -163,8 +162,7 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
     state->count += c->tablen * sizeof(UINT32) * 2;
 
     /* read compressed rows */
-    for (c->rowno = 0; c->rowno < im->ysize;
-         c->rowno++, state->y += state->ystep) {
+    for (c->rowno = 0; c->rowno < im->ysize; c->rowno++, state->y += state->ystep) {
         for (c->channo = 0; c->channo < im->bands; c->channo++) {
             c->rleoffset = c->starttab[c->rowno + c->channo * im->ysize];
             c->rlelength = c->lengthtab[c->rowno + c->channo * im->ysize];
@@ -177,14 +175,12 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
 
             /* row decompression */
             if (c->bpc == 1) {
-                status =
-                    expandrow(&state->buffer[c->channo], &ptr[c->rleoffset],
-                              c->rlelength, im->bands, im->xsize);
+                status = expandrow(&state->buffer[c->channo], &ptr[c->rleoffset],
+                                   c->rlelength, im->bands, im->xsize);
             }
             else {
-                status = expandrow2(&state->buffer[c->channo * 2],
-                                    &ptr[c->rleoffset], c->rlelength,
-                                    im->bands, im->xsize);
+                status = expandrow2(&state->buffer[c->channo * 2], &ptr[c->rleoffset],
+                                    c->rlelength, im->bands, im->xsize);
             }
             if (status == -1) {
                 state->errcode = IMAGING_CODEC_OVERRUN;

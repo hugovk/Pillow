@@ -179,8 +179,7 @@ _hashtable_insert_node(HashTable *h, HashNode *node, int resize, int update,
 }
 
 static int
-_hashtable_insert(HashTable *h, HashKey_t key, HashVal_t val, int resize,
-                  int update)
+_hashtable_insert(HashTable *h, HashKey_t key, HashVal_t val, int resize, int update)
 {
     HashNode **n, *nv;
     HashNode *t;
@@ -219,8 +218,7 @@ _hashtable_insert(HashTable *h, HashKey_t key, HashVal_t val, int resize,
 }
 
 int
-hashtable_insert_or_update_computed(HashTable *h, HashKey_t key,
-                                    ComputeFunc newFunc,
+hashtable_insert_or_update_computed(HashTable *h, HashKey_t key, ComputeFunc newFunc,
                                     ComputeFunc existsFunc)
 {
     HashNode **n, *nv;

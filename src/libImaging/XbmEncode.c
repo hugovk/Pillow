@@ -38,10 +38,10 @@ ImagingXbmEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
     ptr = buf;
 
     while (bytes >= state->bytes) {
-        state->shuffle(state->buffer,
-                       (UINT8 *)im->image[state->y + state->yoff] +
-                           state->xoff * im->pixelsize,
-                       state->xsize);
+        state->shuffle(
+            state->buffer,
+            (UINT8 *)im->image[state->y + state->yoff] + state->xoff * im->pixelsize,
+            state->xsize);
 
         if (state->y < state->ysize - 1) {
             /* any line but the last */

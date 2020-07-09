@@ -167,8 +167,8 @@ create_pixel_hash(Pixel *pixelData, uint32_t nPixels)
     timer = timer3 = clock();
 #endif
     for (i = 0; i < nPixels; i++) {
-        if (!hashtable_insert_or_update_computed(
-                hash, pixelData[i], new_count_func, exists_count_func)) {
+        if (!hashtable_insert_or_update_computed(hash, pixelData[i], new_count_func,
+                                                 exists_count_func)) {
             ;
         }
         while (hashtable_get_count(hash) > MAX_HASH_ENTRIES) {
@@ -186,12 +186,10 @@ create_pixel_hash(Pixel *pixelData, uint32_t nPixels)
         }
     }
 #ifndef NO_OUTPUT
-    printf("inserts took %f sec\n",
-           (clock() - timer) / (double)CLOCKS_PER_SEC);
+    printf("inserts took %f sec\n", (clock() - timer) / (double)CLOCKS_PER_SEC);
 #endif
 #ifndef NO_OUTPUT
-    printf("total        %f sec\n",
-           (clock() - timer3) / (double)CLOCKS_PER_SEC);
+    printf("total        %f sec\n", (clock() - timer3) / (double)CLOCKS_PER_SEC);
 #endif
     return hash;
 }
@@ -237,8 +235,7 @@ compute_box_volume(BoxNode *b)
 }
 
 static void
-hash_to_list(const HashTable *h, const Pixel pixel, const uint32_t count,
-             void *u)
+hash_to_list(const HashTable *h, const Pixel pixel, const uint32_t count, void *u)
 {
     PixelHashData *d = (PixelHashData *)hashtable_get_user_data(h);
     PixelList **pl = (PixelList **)u;
@@ -352,9 +349,8 @@ box_heap_cmp(const Heap *h, const void *A, const void *B)
 #define LUMINANCE(p) (77 * (p)->c.r + 150 * (p)->c.g + 29 * (p)->c.b)
 
 static int
-splitlists(PixelList *h[3], PixelList *t[3], PixelList *nh[2][3],
-           PixelList *nt[2][3], uint32_t nCount[2], int axis,
-           uint32_t pixelCount)
+splitlists(PixelList *h[3], PixelList *t[3], PixelList *nh[2][3], PixelList *nt[2][3],
+           uint32_t nCount[2], int axis, uint32_t pixelCount)
 {
     uint32_t left;
 
@@ -384,20 +380,16 @@ splitlists(PixelList *h[3], PixelList *t[3], PixelList *nh[2][3],
                 printf("prev-list of axis %d does not end at head\n", _i);
                 exit(1);
             }
-            for (; _nextTest && _nextTest->prev[_i];
-                 _nextTest = _nextTest->prev[_i])
+            for (; _nextTest && _nextTest->prev[_i]; _nextTest = _nextTest->prev[_i])
                 ;
-            for (; _prevTest && _prevTest->next[_i];
-                 _prevTest = _prevTest->next[_i])
+            for (; _prevTest && _prevTest->next[_i]; _prevTest = _prevTest->next[_i])
                 ;
             if (_nextTest != h[_i]) {
-                printf("next-list of axis %d does not loop back to head\n",
-                       _i);
+                printf("next-list of axis %d does not loop back to head\n", _i);
                 exit(1);
             }
             if (_prevTest != t[_i]) {
-                printf("prev-list of axis %d does not loop back to tail\n",
-                       _i);
+                printf("prev-list of axis %d does not loop back to tail\n", _i);
                 exit(1);
             }
         }
@@ -406,8 +398,7 @@ splitlists(PixelList *h[3], PixelList *t[3], PixelList *nh[2][3],
                 _nextCount[_i] != _nextCount[_i - 1] ||
                 _prevCount[_i] != _nextCount[_i]) {
                 printf("{%d %d %d} {%d %d %d}\n", _prevCount[0], _prevCount[1],
-                       _prevCount[2], _nextCount[0], _nextCount[1],
-                       _nextCount[2]);
+                       _prevCount[2], _nextCount[0], _nextCount[1], _nextCount[2]);
                 exit(1);
             }
         }
@@ -442,8 +433,7 @@ splitlists(PixelList *h[3], PixelList *t[3], PixelList *nh[2][3],
         nCount[1] += c->count;
     }
     if (!nRight) {
-        for (c = t[axis], splitColourVal = t[axis]->p.a.v[axis]; c;
-             c = c->prev[axis]) {
+        for (c = t[axis], splitColourVal = t[axis]->p.a.v[axis]; c; c = c->prev[axis]) {
             if (splitColourVal != c->p.a.v[axis]) {
                 break;
             }
@@ -571,19 +561,15 @@ split(BoxNode *node)
             if (_prevTest != node->head[_i]) {
                 printf("prev-list of axis %d does not end at head\n", _i);
             }
-            for (; _nextTest && _nextTest->prev[_i];
-                 _nextTest = _nextTest->prev[_i])
+            for (; _nextTest && _nextTest->prev[_i]; _nextTest = _nextTest->prev[_i])
                 ;
-            for (; _prevTest && _prevTest->next[_i];
-                 _prevTest = _prevTest->next[_i])
+            for (; _prevTest && _prevTest->next[_i]; _prevTest = _prevTest->next[_i])
                 ;
             if (_nextTest != node->head[_i]) {
-                printf("next-list of axis %d does not loop back to head\n",
-                       _i);
+                printf("next-list of axis %d does not loop back to head\n", _i);
             }
             if (_prevTest != node->tail[_i]) {
-                printf("prev-list of axis %d does not loop back to tail\n",
-                       _i);
+                printf("prev-list of axis %d does not loop back to tail\n", _i);
             }
         }
         for (_i = 1; _i < 3; _i++) {
@@ -591,8 +577,7 @@ split(BoxNode *node)
                 _nextCount[_i] != _nextCount[_i - 1] ||
                 _prevCount[_i] != _nextCount[_i]) {
                 printf("{%d %d %d} {%d %d %d}\n", _prevCount[0], _prevCount[1],
-                       _prevCount[2], _nextCount[0], _nextCount[1],
-                       _nextCount[2]);
+                       _prevCount[2], _nextCount[0], _nextCount[1], _nextCount[2]);
             }
         }
     }
@@ -639,8 +624,7 @@ split(BoxNode *node)
         gl = left->tail[1]->p.c.g;
         bh = left->head[2]->p.c.b;
         bl = left->tail[2]->p.c.b;
-        printf("   left node  [%3d %3d %3d] [%3d %3d %3d]\n", rl, gl, bl, rh,
-               gh, bh);
+        printf("   left node  [%3d %3d %3d] [%3d %3d %3d]\n", rl, gl, bl, rh, gh, bh);
     }
     if (right->head[0]) {
         rh = right->head[0]->p.c.r;
@@ -649,8 +633,7 @@ split(BoxNode *node)
         gl = right->tail[1]->p.c.g;
         bh = right->head[2]->p.c.b;
         bl = right->tail[2]->p.c.b;
-        printf("   right node [%3d %3d %3d] [%3d %3d %3d]\n", rl, gl, bl, rh,
-               gh, bh);
+        printf("   right node [%3d %3d %3d] [%3d %3d %3d]\n", rl, gl, bl, rh, gh, bh);
     }
 #endif
     left->l = left->r = NULL;
@@ -758,8 +741,7 @@ annotate_hash_table(BoxNode *n, HashTable *h, uint32_t *box)
     PixelHashData *d = (PixelHashData *)hashtable_get_user_data(h);
     Pixel q;
     if (n->l && n->r) {
-        return annotate_hash_table(n->l, h, box) &&
-               annotate_hash_table(n->r, h, box);
+        return annotate_hash_table(n->l, h, box) && annotate_hash_table(n->r, h, box);
     }
     if (n->l || n->r) {
 #ifndef NO_OUTPUT
@@ -845,8 +827,8 @@ build_distance_tables(uint32_t *avgDist, uint32_t **avgDistSortKey, Pixel *p,
 
 static int
 map_image_pixels(Pixel *pixelData, uint32_t nPixels, Pixel *paletteData,
-                 uint32_t nPaletteEntries, uint32_t *avgDist,
-                 uint32_t **avgDistSortKey, uint32_t *pixelArray)
+                 uint32_t nPaletteEntries, uint32_t *avgDist, uint32_t **avgDistSortKey,
+                 uint32_t *pixelArray)
 {
     uint32_t *aD, **aDSK;
     uint32_t idx;
@@ -886,10 +868,11 @@ map_image_pixels(Pixel *pixelData, uint32_t nPixels, Pixel *paletteData,
 }
 
 static int
-map_image_pixels_from_quantized_pixels(
-    Pixel *pixelData, uint32_t nPixels, Pixel *paletteData,
-    uint32_t nPaletteEntries, uint32_t *avgDist, uint32_t **avgDistSortKey,
-    uint32_t *pixelArray, uint32_t *avg[3], uint32_t *count)
+map_image_pixels_from_quantized_pixels(Pixel *pixelData, uint32_t nPixels,
+                                       Pixel *paletteData, uint32_t nPaletteEntries,
+                                       uint32_t *avgDist, uint32_t **avgDistSortKey,
+                                       uint32_t *pixelArray, uint32_t *avg[3],
+                                       uint32_t *count)
 {
     uint32_t *aD, **aDSK;
     uint32_t idx;
@@ -941,10 +924,9 @@ map_image_pixels_from_quantized_pixels(
 }
 
 static int
-map_image_pixels_from_median_box(Pixel *pixelData, uint32_t nPixels,
-                                 Pixel *paletteData, uint32_t nPaletteEntries,
-                                 HashTable *medianBoxHash, uint32_t *avgDist,
-                                 uint32_t **avgDistSortKey,
+map_image_pixels_from_median_box(Pixel *pixelData, uint32_t nPixels, Pixel *paletteData,
+                                 uint32_t nPaletteEntries, HashTable *medianBoxHash,
+                                 uint32_t *avgDist, uint32_t **avgDistSortKey,
                                  uint32_t *pixelArray)
 {
     uint32_t *aD, **aDSK;
@@ -1104,8 +1086,7 @@ recompute_palette_from_averages(Pixel *palette, uint32_t nPaletteEntries,
 static int
 compute_palette_from_quantized_pixels(Pixel *pixelData, uint32_t nPixels,
                                       Pixel *palette, uint32_t nPaletteEntries,
-                                      uint32_t *avg[3], uint32_t *count,
-                                      uint32_t *qp)
+                                      uint32_t *avg[3], uint32_t *count, uint32_t *qp)
 {
     uint32_t i;
 
@@ -1174,8 +1155,7 @@ k_means(Pixel *pixelData, uint32_t nPixels, Pixel *paletteData,
     }
 
     /* malloc check ok, using calloc, checking n*n above */
-    avgDistSortKey =
-        calloc(nPaletteEntries * nPaletteEntries, sizeof(uint32_t *));
+    avgDistSortKey = calloc(nPaletteEntries * nPaletteEntries, sizeof(uint32_t *));
     if (!avgDistSortKey) {
         goto error_2;
     }
@@ -1186,22 +1166,20 @@ k_means(Pixel *pixelData, uint32_t nPixels, Pixel *paletteData,
 #endif
     while (1) {
         if (!built) {
-            compute_palette_from_quantized_pixels(pixelData, nPixels,
-                                                  paletteData, nPaletteEntries,
-                                                  avg, count, qp);
+            compute_palette_from_quantized_pixels(pixelData, nPixels, paletteData,
+                                                  nPaletteEntries, avg, count, qp);
             build_distance_tables(avgDist, avgDistSortKey, paletteData,
                                   nPaletteEntries);
             built = 1;
         }
         else {
-            recompute_palette_from_averages(paletteData, nPaletteEntries, avg,
-                                            count);
+            recompute_palette_from_averages(paletteData, nPaletteEntries, avg, count);
             resort_distance_tables(avgDist, avgDistSortKey, paletteData,
                                    nPaletteEntries);
         }
         changes = map_image_pixels_from_quantized_pixels(
-            pixelData, nPixels, paletteData, nPaletteEntries, avgDist,
-            avgDistSortKey, qp, avg, count);
+            pixelData, nPixels, paletteData, nPaletteEntries, avgDist, avgDistSortKey,
+            qp, avg, count);
         if (changes < 0) {
             goto error_3;
         }
@@ -1253,9 +1231,8 @@ error_1:
 }
 
 int
-quantize(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels,
-         Pixel **palette, uint32_t *paletteLength, uint32_t **quantizedPixels,
-         int kmeans)
+quantize(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels, Pixel **palette,
+         uint32_t *paletteLength, uint32_t **quantizedPixels, int kmeans)
 {
     PixelList *hl[3];
     HashTable *h;
@@ -1346,8 +1323,7 @@ quantize(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels,
     fflush(stdout);
     timer = clock();
 #endif
-    if (!compute_palette_from_median_cut(pixelData, nPixels, h, &p,
-                                         nPaletteEntries)) {
+    if (!compute_palette_from_median_cut(pixelData, nPixels, h, &p, nPaletteEntries)) {
         goto error_3;
     }
 #ifndef NO_OUTPUT
@@ -1373,8 +1349,7 @@ quantize(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels,
     }
 
     /* malloc check ok, using calloc for overflow, check of n*n above */
-    avgDistSortKey =
-        calloc(nPaletteEntries * nPaletteEntries, sizeof(uint32_t *));
+    avgDistSortKey = calloc(nPaletteEntries * nPaletteEntries, sizeof(uint32_t *));
     if (!avgDistSortKey) {
         goto error_6;
     }
@@ -1383,9 +1358,8 @@ quantize(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels,
         goto error_7;
     }
 
-    if (!map_image_pixels_from_median_box(pixelData, nPixels, p,
-                                          nPaletteEntries, h, avgDist,
-                                          avgDistSortKey, qp)) {
+    if (!map_image_pixels_from_median_box(pixelData, nPixels, p, nPaletteEntries, h,
+                                          avgDist, avgDistSortKey, qp)) {
         goto error_7;
     }
 
@@ -1467,8 +1441,7 @@ quantize(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels,
     destroy_pixel_hash(h);
 #ifndef NO_OUTPUT
     printf("done (%f)\n", (clock() - timer) / (double)CLOCKS_PER_SEC);
-    printf("-----\ntotal time %f\n",
-           (clock() - timer2) / (double)CLOCKS_PER_SEC);
+    printf("-----\ntotal time %f\n", (clock() - timer2) / (double)CLOCKS_PER_SEC);
 #endif
     return 1;
 
@@ -1509,8 +1482,7 @@ typedef struct {
 } DistanceData;
 
 static void
-compute_distances(const HashTable *h, const Pixel pixel, uint32_t *dist,
-                  void *u)
+compute_distances(const HashTable *h, const Pixel pixel, uint32_t *dist, void *u)
 {
     DistanceData *data = (DistanceData *)u;
     uint32_t oldDist = *dist;
@@ -1527,9 +1499,8 @@ compute_distances(const HashTable *h, const Pixel pixel, uint32_t *dist,
 }
 
 int
-quantize2(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels,
-          Pixel **palette, uint32_t *paletteLength, uint32_t **quantizedPixels,
-          int kmeans)
+quantize2(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels, Pixel **palette,
+          uint32_t *paletteLength, uint32_t **quantizedPixels, int kmeans)
 {
     HashTable *h;
     uint32_t i;
@@ -1592,8 +1563,8 @@ quantize2(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels,
         goto error_4;
     }
 
-    if (!map_image_pixels(pixelData, nPixels, p, nQuantPixels, avgDist,
-                          avgDistSortKey, qp)) {
+    if (!map_image_pixels(pixelData, nPixels, p, nQuantPixels, avgDist, avgDistSortKey,
+                          qp)) {
         goto error_4;
     }
     if (kmeans) {
@@ -1725,18 +1696,16 @@ ImagingQuantize(Imaging im, int colors, int mode, int kmeans)
             if (!strcmp(im->mode, "RGBA")) {
                 withAlpha = 1;
             }
-            result =
-                quantize_octree(p, im->xsize * im->ysize, colors, &palette,
-                                &paletteLength, &newData, withAlpha);
+            result = quantize_octree(p, im->xsize * im->ysize, colors, &palette,
+                                     &paletteLength, &newData, withAlpha);
             break;
         case 3:
 #ifdef HAVE_LIBIMAGEQUANT
             if (!strcmp(im->mode, "RGBA")) {
                 withAlpha = 1;
             }
-            result =
-                quantize_pngquant(p, im->xsize, im->ysize, colors, &palette,
-                                  &paletteLength, &newData, withAlpha);
+            result = quantize_pngquant(p, im->xsize, im->ysize, colors, &palette,
+                                       &paletteLength, &newData, withAlpha);
 #else
             result = -1;
 #endif

@@ -39,7 +39,9 @@
 /* -------------------------------------------------------------------- */
 
 METHODDEF(void)
-stub(j_compress_ptr cinfo) { /* empty */ }
+stub(j_compress_ptr cinfo)
+{ /* empty */
+}
 
 METHODDEF(boolean)
 empty_output_buffer(j_compress_ptr cinfo)
@@ -153,16 +155,16 @@ ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                 for (i = 0; i < context->qtablesLen; i++) {
                     // TODO: Should add support for none baseline
                     jpeg_add_quant_table(&context->cinfo, i,
-                                         &context->qtables[i * DCTSIZE2],
-                                         quality, TRUE);
+                                         &context->qtables[i * DCTSIZE2], quality,
+                                         TRUE);
                     context->cinfo.comp_info[i].quant_tbl_no = i;
                     last_q = i;
                 }
                 if (context->qtablesLen == 1) {
                     // jpeg_set_defaults created two qtables internally, but we
                     // only wanted one.
-                    jpeg_add_quant_table(&context->cinfo, 1,
-                                         &context->qtables[0], quality, TRUE);
+                    jpeg_add_quant_table(&context->cinfo, 1, &context->qtables[0],
+                                         quality, TRUE);
                 }
                 for (i = last_q; i < context->cinfo.num_components; i++) {
                     context->cinfo.comp_info[i].quant_tbl_no = last_q;
@@ -242,8 +244,7 @@ ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
 
         case 2:
             // check for exif len + 'APP1' header bytes
-            if (context->rawExifLen + 5 >
-                context->destination.pub.free_in_buffer) {
+            if (context->rawExifLen + 5 > context->destination.pub.free_in_buffer) {
                 break;
             }
             // add exif header

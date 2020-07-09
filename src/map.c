@@ -73,8 +73,7 @@ PyImaging_MapperNew(const char *filename, int readonly)
         return NULL;
     }
 
-    mapper->hMap =
-        CreateFileMapping(mapper->hFile, NULL, PAGE_READONLY, 0, 0, NULL);
+    mapper->hMap = CreateFileMapping(mapper->hFile, NULL, PAGE_READONLY, 0, 0, NULL);
     if (mapper->hMap == (HANDLE)-1) {
         CloseHandle(mapper->hFile);
         PyErr_SetString(PyExc_OSError, "cannot map file");
@@ -232,8 +231,7 @@ mapping_readimage(ImagingMapperObject *mapper, PyObject *args)
     }
     else {
         for (y = 0; y < ysize; y++) {
-            im->image[ysize - y - 1] =
-                mapper->base + mapper->offset + y * stride;
+            im->image[ysize - y - 1] = mapper->base + mapper->offset + y * stride;
         }
     }
 
@@ -330,8 +328,8 @@ PyImaging_MapBuffer(PyObject *self, PyObject *args)
     int stride;
     int ystep;
 
-    if (!PyArg_ParseTuple(args, "O(ii)sn(sii)", &target, &xsize, &ysize,
-                          &codec, &offset, &mode, &stride, &ystep)) {
+    if (!PyArg_ParseTuple(args, "O(ii)sn(sii)", &target, &xsize, &ysize, &codec,
+                          &offset, &mode, &stride, &ystep)) {
         return NULL;
     }
 
@@ -380,8 +378,7 @@ PyImaging_MapBuffer(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    im = ImagingNewPrologueSubtype(mode, xsize, ysize,
-                                   sizeof(ImagingBufferInstance));
+    im = ImagingNewPrologueSubtype(mode, xsize, ysize, sizeof(ImagingBufferInstance));
     if (!im) {
         PyBuffer_Release(&view);
         return NULL;

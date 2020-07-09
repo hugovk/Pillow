@@ -70,7 +70,9 @@ ImagingJpegUseJCSExtensions()
 /* -------------------------------------------------------------------- */
 
 METHODDEF(void)
-stub(j_decompress_ptr cinfo) { /* empty */ }
+stub(j_decompress_ptr cinfo)
+{ /* empty */
+}
 
 METHODDEF(boolean)
 fill_input_buffer(j_decompress_ptr cinfo)
@@ -110,8 +112,7 @@ jpeg_buffer_src(j_decompress_ptr cinfo, JPEGSOURCE *source)
     source->pub.skip_input_data = skip_input_data;
     source->pub.resync_to_restart = jpeg_resync_to_restart;
     source->pub.term_source = stub;
-    source->pub.bytes_in_buffer =
-        0; /* forces fill_input_buffer on first read */
+    source->pub.bytes_in_buffer = 0; /* forces fill_input_buffer on first read */
 
     source->skip = 0;
 }
@@ -129,15 +130,16 @@ error(j_common_ptr cinfo)
 }
 
 METHODDEF(void)
-output(j_common_ptr cinfo) { /* nothing */ }
+output(j_common_ptr cinfo)
+{ /* nothing */
+}
 
 /* -------------------------------------------------------------------- */
 /* Decoder                                                              */
 /* -------------------------------------------------------------------- */
 
 int
-ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
-                  Py_ssize_t bytes)
+ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
 {
     JPEGSTATE *context = (JPEGSTATE *)state->context;
     int ok;

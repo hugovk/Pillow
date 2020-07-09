@@ -294,8 +294,7 @@ ImagingMemorySetBlocksMax(ImagingMemoryArena arena, int blocks_max)
         arena->blocks_pool = NULL;
     }
     else if (arena->blocks_pool != NULL) {
-        p = realloc(arena->blocks_pool,
-                    sizeof(*arena->blocks_pool) * blocks_max);
+        p = realloc(arena->blocks_pool, sizeof(*arena->blocks_pool) * blocks_max);
         if (!p) {
             // Leave previous blocks_max value
             return 0;
@@ -409,8 +408,7 @@ ImagingAllocateArray(Imaging im, int dirty, int block_size)
         return im;
     }
 
-    aligned_linesize =
-        (im->linesize + arena->alignment - 1) & -arena->alignment;
+    aligned_linesize = (im->linesize + arena->alignment - 1) & -arena->alignment;
     lines_per_block = (block_size - (arena->alignment - 1)) / aligned_linesize;
     if (lines_per_block == 0) {
         lines_per_block = 1;
@@ -436,8 +434,7 @@ ImagingAllocateArray(Imaging im, int dirty, int block_size)
             if (lines_remaining > im->ysize - y) {
                 lines_remaining = im->ysize - y;
             }
-            required =
-                lines_remaining * aligned_linesize + arena->alignment - 1;
+            required = lines_remaining * aligned_linesize + arena->alignment - 1;
             block = memory_get_block(arena, required, dirty);
             if (!block.ptr) {
                 ImagingDestroyArray(im);
@@ -445,9 +442,8 @@ ImagingAllocateArray(Imaging im, int dirty, int block_size)
             }
             im->blocks[current_block] = block;
             /* Bulletproof code from libc _int_memalign */
-            aligned_ptr =
-                (char *)(((size_t)(block.ptr + arena->alignment - 1)) &
-                         -((Py_ssize_t)arena->alignment));
+            aligned_ptr = (char *)(((size_t)(block.ptr + arena->alignment - 1)) &
+                                   -((Py_ssize_t)arena->alignment));
         }
 
         im->image[y] = aligned_ptr + aligned_linesize * line_in_block;

@@ -103,32 +103,30 @@ ImagingRotate90(Imaging imOut, Imaging imIn)
 
     ImagingCopyPalette(imOut, imIn);
 
-#define ROTATE_90(INT, image)                                          \
-    for (y = 0; y < imIn->ysize; y += ROTATE_CHUNK) {                  \
-        for (x = 0; x < imIn->xsize; x += ROTATE_CHUNK) {              \
-            yysize = y + ROTATE_CHUNK < imIn->ysize ? y + ROTATE_CHUNK \
-                                                    : imIn->ysize;     \
-            xxsize = x + ROTATE_CHUNK < imIn->xsize ? x + ROTATE_CHUNK \
-                                                    : imIn->xsize;     \
-            for (yy = y; yy < yysize; yy += ROTATE_SMALL_CHUNK) {      \
-                for (xx = x; xx < xxsize; xx += ROTATE_SMALL_CHUNK) {  \
-                    yyysize = yy + ROTATE_SMALL_CHUNK < imIn->ysize    \
-                                  ? yy + ROTATE_SMALL_CHUNK            \
-                                  : imIn->ysize;                       \
-                    xxxsize = xx + ROTATE_SMALL_CHUNK < imIn->xsize    \
-                                  ? xx + ROTATE_SMALL_CHUNK            \
-                                  : imIn->xsize;                       \
-                    for (yyy = yy; yyy < yyysize; yyy++) {             \
-                        INT *in = (INT *)imIn->image[yyy];             \
-                        xr = imIn->xsize - 1 - xx;                     \
-                        for (xxx = xx; xxx < xxxsize; xxx++, xr--) {   \
-                            INT *out = (INT *)imOut->image[xr];        \
-                            out[yyy] = in[xxx];                        \
-                        }                                              \
-                    }                                                  \
-                }                                                      \
-            }                                                          \
-        }                                                              \
+#define ROTATE_90(INT, image)                                                         \
+    for (y = 0; y < imIn->ysize; y += ROTATE_CHUNK) {                                 \
+        for (x = 0; x < imIn->xsize; x += ROTATE_CHUNK) {                             \
+            yysize = y + ROTATE_CHUNK < imIn->ysize ? y + ROTATE_CHUNK : imIn->ysize; \
+            xxsize = x + ROTATE_CHUNK < imIn->xsize ? x + ROTATE_CHUNK : imIn->xsize; \
+            for (yy = y; yy < yysize; yy += ROTATE_SMALL_CHUNK) {                     \
+                for (xx = x; xx < xxsize; xx += ROTATE_SMALL_CHUNK) {                 \
+                    yyysize = yy + ROTATE_SMALL_CHUNK < imIn->ysize                   \
+                                  ? yy + ROTATE_SMALL_CHUNK                           \
+                                  : imIn->ysize;                                      \
+                    xxxsize = xx + ROTATE_SMALL_CHUNK < imIn->xsize                   \
+                                  ? xx + ROTATE_SMALL_CHUNK                           \
+                                  : imIn->xsize;                                      \
+                    for (yyy = yy; yyy < yyysize; yyy++) {                            \
+                        INT *in = (INT *)imIn->image[yyy];                            \
+                        xr = imIn->xsize - 1 - xx;                                    \
+                        for (xxx = xx; xxx < xxxsize; xxx++, xr--) {                  \
+                            INT *out = (INT *)imOut->image[xr];                       \
+                            out[yyy] = in[xxx];                                       \
+                        }                                                             \
+                    }                                                                 \
+                }                                                                     \
+            }                                                                         \
+        }                                                                             \
     }
 
     ImagingSectionEnter(&cookie);
@@ -168,31 +166,29 @@ ImagingTranspose(Imaging imOut, Imaging imIn)
 
     ImagingCopyPalette(imOut, imIn);
 
-#define TRANSPOSE(INT, image)                                          \
-    for (y = 0; y < imIn->ysize; y += ROTATE_CHUNK) {                  \
-        for (x = 0; x < imIn->xsize; x += ROTATE_CHUNK) {              \
-            yysize = y + ROTATE_CHUNK < imIn->ysize ? y + ROTATE_CHUNK \
-                                                    : imIn->ysize;     \
-            xxsize = x + ROTATE_CHUNK < imIn->xsize ? x + ROTATE_CHUNK \
-                                                    : imIn->xsize;     \
-            for (yy = y; yy < yysize; yy += ROTATE_SMALL_CHUNK) {      \
-                for (xx = x; xx < xxsize; xx += ROTATE_SMALL_CHUNK) {  \
-                    yyysize = yy + ROTATE_SMALL_CHUNK < imIn->ysize    \
-                                  ? yy + ROTATE_SMALL_CHUNK            \
-                                  : imIn->ysize;                       \
-                    xxxsize = xx + ROTATE_SMALL_CHUNK < imIn->xsize    \
-                                  ? xx + ROTATE_SMALL_CHUNK            \
-                                  : imIn->xsize;                       \
-                    for (yyy = yy; yyy < yyysize; yyy++) {             \
-                        INT *in = (INT *)imIn->image[yyy];             \
-                        for (xxx = xx; xxx < xxxsize; xxx++) {         \
-                            INT *out = (INT *)imOut->image[xxx];       \
-                            out[yyy] = in[xxx];                        \
-                        }                                              \
-                    }                                                  \
-                }                                                      \
-            }                                                          \
-        }                                                              \
+#define TRANSPOSE(INT, image)                                                         \
+    for (y = 0; y < imIn->ysize; y += ROTATE_CHUNK) {                                 \
+        for (x = 0; x < imIn->xsize; x += ROTATE_CHUNK) {                             \
+            yysize = y + ROTATE_CHUNK < imIn->ysize ? y + ROTATE_CHUNK : imIn->ysize; \
+            xxsize = x + ROTATE_CHUNK < imIn->xsize ? x + ROTATE_CHUNK : imIn->xsize; \
+            for (yy = y; yy < yysize; yy += ROTATE_SMALL_CHUNK) {                     \
+                for (xx = x; xx < xxsize; xx += ROTATE_SMALL_CHUNK) {                 \
+                    yyysize = yy + ROTATE_SMALL_CHUNK < imIn->ysize                   \
+                                  ? yy + ROTATE_SMALL_CHUNK                           \
+                                  : imIn->ysize;                                      \
+                    xxxsize = xx + ROTATE_SMALL_CHUNK < imIn->xsize                   \
+                                  ? xx + ROTATE_SMALL_CHUNK                           \
+                                  : imIn->xsize;                                      \
+                    for (yyy = yy; yyy < yyysize; yyy++) {                            \
+                        INT *in = (INT *)imIn->image[yyy];                            \
+                        for (xxx = xx; xxx < xxxsize; xxx++) {                        \
+                            INT *out = (INT *)imOut->image[xxx];                      \
+                            out[yyy] = in[xxx];                                       \
+                        }                                                             \
+                    }                                                                 \
+                }                                                                     \
+            }                                                                         \
+        }                                                                             \
     }
 
     ImagingSectionEnter(&cookie);
@@ -232,33 +228,31 @@ ImagingTransverse(Imaging imOut, Imaging imIn)
 
     ImagingCopyPalette(imOut, imIn);
 
-#define TRANSVERSE(INT, image)                                         \
-    for (y = 0; y < imIn->ysize; y += ROTATE_CHUNK) {                  \
-        for (x = 0; x < imIn->xsize; x += ROTATE_CHUNK) {              \
-            yysize = y + ROTATE_CHUNK < imIn->ysize ? y + ROTATE_CHUNK \
-                                                    : imIn->ysize;     \
-            xxsize = x + ROTATE_CHUNK < imIn->xsize ? x + ROTATE_CHUNK \
-                                                    : imIn->xsize;     \
-            for (yy = y; yy < yysize; yy += ROTATE_SMALL_CHUNK) {      \
-                for (xx = x; xx < xxsize; xx += ROTATE_SMALL_CHUNK) {  \
-                    yyysize = yy + ROTATE_SMALL_CHUNK < imIn->ysize    \
-                                  ? yy + ROTATE_SMALL_CHUNK            \
-                                  : imIn->ysize;                       \
-                    xxxsize = xx + ROTATE_SMALL_CHUNK < imIn->xsize    \
-                                  ? xx + ROTATE_SMALL_CHUNK            \
-                                  : imIn->xsize;                       \
-                    yr = imIn->ysize - 1 - yy;                         \
-                    for (yyy = yy; yyy < yyysize; yyy++, yr--) {       \
-                        INT *in = (INT *)imIn->image[yyy];             \
-                        xr = imIn->xsize - 1 - xx;                     \
-                        for (xxx = xx; xxx < xxxsize; xxx++, xr--) {   \
-                            INT *out = (INT *)imOut->image[xr];        \
-                            out[yr] = in[xxx];                         \
-                        }                                              \
-                    }                                                  \
-                }                                                      \
-            }                                                          \
-        }                                                              \
+#define TRANSVERSE(INT, image)                                                        \
+    for (y = 0; y < imIn->ysize; y += ROTATE_CHUNK) {                                 \
+        for (x = 0; x < imIn->xsize; x += ROTATE_CHUNK) {                             \
+            yysize = y + ROTATE_CHUNK < imIn->ysize ? y + ROTATE_CHUNK : imIn->ysize; \
+            xxsize = x + ROTATE_CHUNK < imIn->xsize ? x + ROTATE_CHUNK : imIn->xsize; \
+            for (yy = y; yy < yysize; yy += ROTATE_SMALL_CHUNK) {                     \
+                for (xx = x; xx < xxsize; xx += ROTATE_SMALL_CHUNK) {                 \
+                    yyysize = yy + ROTATE_SMALL_CHUNK < imIn->ysize                   \
+                                  ? yy + ROTATE_SMALL_CHUNK                           \
+                                  : imIn->ysize;                                      \
+                    xxxsize = xx + ROTATE_SMALL_CHUNK < imIn->xsize                   \
+                                  ? xx + ROTATE_SMALL_CHUNK                           \
+                                  : imIn->xsize;                                      \
+                    yr = imIn->ysize - 1 - yy;                                        \
+                    for (yyy = yy; yyy < yyysize; yyy++, yr--) {                      \
+                        INT *in = (INT *)imIn->image[yyy];                            \
+                        xr = imIn->xsize - 1 - xx;                                    \
+                        for (xxx = xx; xxx < xxxsize; xxx++, xr--) {                  \
+                            INT *out = (INT *)imOut->image[xr];                       \
+                            out[yr] = in[xxx];                                        \
+                        }                                                             \
+                    }                                                                 \
+                }                                                                     \
+            }                                                                         \
+        }                                                                             \
     }
 
     ImagingSectionEnter(&cookie);
@@ -345,32 +339,30 @@ ImagingRotate270(Imaging imOut, Imaging imIn)
 
     ImagingCopyPalette(imOut, imIn);
 
-#define ROTATE_270(INT, image)                                         \
-    for (y = 0; y < imIn->ysize; y += ROTATE_CHUNK) {                  \
-        for (x = 0; x < imIn->xsize; x += ROTATE_CHUNK) {              \
-            yysize = y + ROTATE_CHUNK < imIn->ysize ? y + ROTATE_CHUNK \
-                                                    : imIn->ysize;     \
-            xxsize = x + ROTATE_CHUNK < imIn->xsize ? x + ROTATE_CHUNK \
-                                                    : imIn->xsize;     \
-            for (yy = y; yy < yysize; yy += ROTATE_SMALL_CHUNK) {      \
-                for (xx = x; xx < xxsize; xx += ROTATE_SMALL_CHUNK) {  \
-                    yyysize = yy + ROTATE_SMALL_CHUNK < imIn->ysize    \
-                                  ? yy + ROTATE_SMALL_CHUNK            \
-                                  : imIn->ysize;                       \
-                    xxxsize = xx + ROTATE_SMALL_CHUNK < imIn->xsize    \
-                                  ? xx + ROTATE_SMALL_CHUNK            \
-                                  : imIn->xsize;                       \
-                    yr = imIn->ysize - 1 - yy;                         \
-                    for (yyy = yy; yyy < yyysize; yyy++, yr--) {       \
-                        INT *in = (INT *)imIn->image[yyy];             \
-                        for (xxx = xx; xxx < xxxsize; xxx++) {         \
-                            INT *out = (INT *)imOut->image[xxx];       \
-                            out[yr] = in[xxx];                         \
-                        }                                              \
-                    }                                                  \
-                }                                                      \
-            }                                                          \
-        }                                                              \
+#define ROTATE_270(INT, image)                                                        \
+    for (y = 0; y < imIn->ysize; y += ROTATE_CHUNK) {                                 \
+        for (x = 0; x < imIn->xsize; x += ROTATE_CHUNK) {                             \
+            yysize = y + ROTATE_CHUNK < imIn->ysize ? y + ROTATE_CHUNK : imIn->ysize; \
+            xxsize = x + ROTATE_CHUNK < imIn->xsize ? x + ROTATE_CHUNK : imIn->xsize; \
+            for (yy = y; yy < yysize; yy += ROTATE_SMALL_CHUNK) {                     \
+                for (xx = x; xx < xxsize; xx += ROTATE_SMALL_CHUNK) {                 \
+                    yyysize = yy + ROTATE_SMALL_CHUNK < imIn->ysize                   \
+                                  ? yy + ROTATE_SMALL_CHUNK                           \
+                                  : imIn->ysize;                                      \
+                    xxxsize = xx + ROTATE_SMALL_CHUNK < imIn->xsize                   \
+                                  ? xx + ROTATE_SMALL_CHUNK                           \
+                                  : imIn->xsize;                                      \
+                    yr = imIn->ysize - 1 - yy;                                        \
+                    for (yyy = yy; yyy < yyysize; yyy++, yr--) {                      \
+                        INT *in = (INT *)imIn->image[yyy];                            \
+                        for (xxx = xx; xxx < xxxsize; xxx++) {                        \
+                            INT *out = (INT *)imOut->image[xxx];                      \
+                            out[yr] = in[xxx];                                        \
+                        }                                                             \
+                    }                                                                 \
+                }                                                                     \
+            }                                                                         \
+        }                                                                             \
     }
 
     ImagingSectionEnter(&cookie);
@@ -832,9 +824,9 @@ getfilter(Imaging im, int filterid)
 /* transformation engines */
 
 Imaging
-ImagingGenericTransform(Imaging imOut, Imaging imIn, int x0, int y0, int x1,
-                        int y1, ImagingTransformMap transform,
-                        void *transform_data, int filterid, int fill)
+ImagingGenericTransform(Imaging imOut, Imaging imIn, int x0, int y0, int x1, int y1,
+                        ImagingTransformMap transform, void *transform_data,
+                        int filterid, int fill)
 {
     /* slow generic transformation.  use ImagingTransformAffine or
        ImagingScaleAffine where possible. */
@@ -989,8 +981,8 @@ check_fixed(double a[6], int x, int y)
 }
 
 static inline Imaging
-affine_fixed(Imaging imOut, Imaging imIn, int x0, int y0, int x1, int y1,
-             double a[6], int filterid, int fill)
+affine_fixed(Imaging imOut, Imaging imIn, int x0, int y0, int x1, int y1, double a[6],
+             int filterid, int fill)
 {
     /* affine transform, nearest neighbour resampling, fixed point
        arithmetics */
@@ -1060,8 +1052,8 @@ affine_fixed(Imaging imOut, Imaging imIn, int x0, int y0, int x1, int y1,
 }
 
 Imaging
-ImagingTransformAffine(Imaging imOut, Imaging imIn, int x0, int y0, int x1,
-                       int y1, double a[6], int filterid, int fill)
+ImagingTransformAffine(Imaging imOut, Imaging imIn, int x0, int y0, int x1, int y1,
+                       double a[6], int filterid, int fill)
 {
     /* affine transform, nearest neighbour resampling, floating point
        arithmetics*/
@@ -1074,8 +1066,8 @@ ImagingTransformAffine(Imaging imOut, Imaging imIn, int x0, int y0, int x1,
     double xo, yo;
 
     if (filterid || imIn->type == IMAGING_TYPE_SPECIAL) {
-        return ImagingGenericTransform(imOut, imIn, x0, y0, x1, y1,
-                                       affine_transform, a, filterid, fill);
+        return ImagingGenericTransform(imOut, imIn, x0, y0, x1, y1, affine_transform, a,
+                                       filterid, fill);
     }
 
     if (a[1] == 0 && a[3] == 0) {
@@ -1161,15 +1153,15 @@ ImagingTransformAffine(Imaging imOut, Imaging imIn, int x0, int y0, int x1,
 }
 
 Imaging
-ImagingTransform(Imaging imOut, Imaging imIn, int method, int x0, int y0,
-                 int x1, int y1, double a[8], int filterid, int fill)
+ImagingTransform(Imaging imOut, Imaging imIn, int method, int x0, int y0, int x1,
+                 int y1, double a[8], int filterid, int fill)
 {
     ImagingTransformMap transform;
 
     switch (method) {
         case IMAGING_TRANSFORM_AFFINE:
-            return ImagingTransformAffine(imOut, imIn, x0, y0, x1, y1, a,
-                                          filterid, fill);
+            return ImagingTransformAffine(imOut, imIn, x0, y0, x1, y1, a, filterid,
+                                          fill);
             break;
         case IMAGING_TRANSFORM_PERSPECTIVE:
             transform = perspective_transform;
@@ -1181,6 +1173,6 @@ ImagingTransform(Imaging imOut, Imaging imIn, int method, int x0, int y0,
             return (Imaging)ImagingError_ValueError("bad transform method");
     }
 
-    return ImagingGenericTransform(imOut, imIn, x0, y0, x1, y1, transform, a,
-                                   filterid, fill);
+    return ImagingGenericTransform(imOut, imIn, x0, y0, x1, y1, transform, a, filterid,
+                                   fill);
 }

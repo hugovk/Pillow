@@ -50,12 +50,12 @@
 #define C16S (tmp[1] = in[0], tmp[0] = in[1]);
 #define C32N (tmp[0] = in[0], tmp[1] = in[1], tmp[2] = in[2], tmp[3] = in[3]);
 #define C32S (tmp[3] = in[0], tmp[2] = in[1], tmp[1] = in[2], tmp[0] = in[3]);
-#define C64N                                                         \
-    (tmp[0] = in[0], tmp[1] = in[1], tmp[2] = in[2], tmp[3] = in[3], \
-     tmp[4] = in[4], tmp[5] = in[5], tmp[6] = in[6], tmp[7] = in[7]);
-#define C64S                                                         \
-    (tmp[7] = in[0], tmp[6] = in[1], tmp[5] = in[2], tmp[4] = in[3], \
-     tmp[3] = in[4], tmp[2] = in[5], tmp[1] = in[6], tmp[0] = in[7]);
+#define C64N                                                                         \
+    (tmp[0] = in[0], tmp[1] = in[1], tmp[2] = in[2], tmp[3] = in[3], tmp[4] = in[4], \
+     tmp[5] = in[5], tmp[6] = in[6], tmp[7] = in[7]);
+#define C64S                                                                         \
+    (tmp[7] = in[0], tmp[6] = in[1], tmp[5] = in[2], tmp[4] = in[3], tmp[3] = in[4], \
+     tmp[2] = in[5], tmp[1] = in[6], tmp[0] = in[7]);
 
 #ifdef WORDS_BIGENDIAN
 #define C16B C16N
@@ -644,8 +644,7 @@ unpackRGBL(UINT8 *_out, const UINT8 *in, int pixels)
     int i;
     /* RGB, line interleaved */
     for (i = 0; i < pixels; i++, _out += 4) {
-        UINT32 iv =
-            MAKE_UINT32(in[i], in[i + pixels], in[i + pixels + pixels], 255);
+        UINT32 iv = MAKE_UINT32(in[i], in[i + pixels], in[i + pixels + pixels], 255);
         memcpy(_out, &iv, sizeof(iv));
     }
 }
@@ -656,8 +655,7 @@ unpackRGBR(UINT8 *_out, const UINT8 *in, int pixels)
     int i;
     /* RGB, bit reversed */
     for (i = 0; i < pixels; i++) {
-        UINT32 iv =
-            MAKE_UINT32(BITFLIP[in[0]], BITFLIP[in[1]], BITFLIP[in[2]], 255);
+        UINT32 iv = MAKE_UINT32(BITFLIP[in[0]], BITFLIP[in[1]], BITFLIP[in[2]], 255);
         memcpy(_out, &iv, sizeof(iv));
         in += 3;
         _out += 4;
@@ -959,9 +957,8 @@ unpackRGBaskip1(UINT8 *_out, const UINT8 *in, int pixels)
             out[i] = MAKE_UINT32(in[0], in[1], in[2], a);
         }
         else {
-            out[i] =
-                MAKE_UINT32(CLIP8(in[0] * 255 / a), CLIP8(in[1] * 255 / a),
-                            CLIP8(in[2] * 255 / a), a);
+            out[i] = MAKE_UINT32(CLIP8(in[0] * 255 / a), CLIP8(in[1] * 255 / a),
+                                 CLIP8(in[2] * 255 / a), a);
         }
         in += 5;
     }
@@ -982,9 +979,8 @@ unpackRGBaskip2(UINT8 *_out, const UINT8 *in, int pixels)
             out[i] = MAKE_UINT32(in[0], in[1], in[2], a);
         }
         else {
-            out[i] =
-                MAKE_UINT32(CLIP8(in[0] * 255 / a), CLIP8(in[1] * 255 / a),
-                            CLIP8(in[2] * 255 / a), a);
+            out[i] = MAKE_UINT32(CLIP8(in[0] * 255 / a), CLIP8(in[1] * 255 / a),
+                                 CLIP8(in[2] * 255 / a), a);
         }
         in += 6;
     }

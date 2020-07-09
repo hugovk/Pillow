@@ -93,8 +93,7 @@ typedef bool (*t_raqm_set_text_utf8)(raqm_t *rq, const char *text, size_t len);
 typedef bool (*t_raqm_set_par_direction)(raqm_t *rq, raqm_direction_t dir);
 typedef bool (*t_raqm_set_language)(raqm_t *rq, const char *lang, size_t start,
                                     size_t len);
-typedef bool (*t_raqm_add_font_feature)(raqm_t *rq, const char *feature,
-                                        int len);
+typedef bool (*t_raqm_add_font_feature)(raqm_t *rq, const char *feature, int len);
 typedef bool (*t_raqm_set_freetype_face)(raqm_t *rq, FT_Face face);
 typedef bool (*t_raqm_layout)(raqm_t *rq);
 typedef raqm_glyph_t *(*t_raqm_get_glyphs)(raqm_t *rq, size_t *length);
@@ -175,8 +174,7 @@ setraqm(void)
         (t_raqm_set_text_utf8)dlsym(p_raqm.raqm, "raqm_set_text_utf8");
     p_raqm.set_par_direction =
         (t_raqm_set_par_direction)dlsym(p_raqm.raqm, "raqm_set_par_direction");
-    p_raqm.set_language =
-        (t_raqm_set_language)dlsym(p_raqm.raqm, "raqm_set_language");
+    p_raqm.set_language = (t_raqm_set_language)dlsym(p_raqm.raqm, "raqm_set_language");
     p_raqm.add_font_feature =
         (t_raqm_add_font_feature)dlsym(p_raqm.raqm, "raqm_add_font_feature");
     p_raqm.set_freetype_face =
@@ -184,8 +182,7 @@ setraqm(void)
     p_raqm.layout = (t_raqm_layout)dlsym(p_raqm.raqm, "raqm_layout");
     p_raqm.destroy = (t_raqm_destroy)dlsym(p_raqm.raqm, "raqm_destroy");
     if (dlsym(p_raqm.raqm, "raqm_index_to_position")) {
-        p_raqm.get_glyphs =
-            (t_raqm_get_glyphs)dlsym(p_raqm.raqm, "raqm_get_glyphs");
+        p_raqm.get_glyphs = (t_raqm_get_glyphs)dlsym(p_raqm.raqm, "raqm_get_glyphs");
         p_raqm.version = 2;
     }
     else {
@@ -195,35 +192,32 @@ setraqm(void)
     }
     if (dlerror() ||
         !(p_raqm.create && p_raqm.set_text && p_raqm.set_text_utf8 &&
-          p_raqm.set_par_direction && p_raqm.set_language &&
-          p_raqm.add_font_feature && p_raqm.set_freetype_face &&
-          p_raqm.layout && (p_raqm.get_glyphs || p_raqm.get_glyphs_01) &&
-          p_raqm.destroy)) {
+          p_raqm.set_par_direction && p_raqm.set_language && p_raqm.add_font_feature &&
+          p_raqm.set_freetype_face && p_raqm.layout &&
+          (p_raqm.get_glyphs || p_raqm.get_glyphs_01) && p_raqm.destroy)) {
         dlclose(p_raqm.raqm);
         p_raqm.raqm = NULL;
         return 2;
     }
 #else
-    p_raqm.version_string = (t_raqm_version_string)GetProcAddress(
-        p_raqm.raqm, "raqm_version_string");
-    p_raqm.version_atleast = (t_raqm_version_atleast)GetProcAddress(
-        p_raqm.raqm, "raqm_version_atleast");
+    p_raqm.version_string =
+        (t_raqm_version_string)GetProcAddress(p_raqm.raqm, "raqm_version_string");
+    p_raqm.version_atleast =
+        (t_raqm_version_atleast)GetProcAddress(p_raqm.raqm, "raqm_version_atleast");
     p_raqm.create = (t_raqm_create)GetProcAddress(p_raqm.raqm, "raqm_create");
-    p_raqm.set_text =
-        (t_raqm_set_text)GetProcAddress(p_raqm.raqm, "raqm_set_text");
-    p_raqm.set_text_utf8 = (t_raqm_set_text_utf8)GetProcAddress(
-        p_raqm.raqm, "raqm_set_text_utf8");
-    p_raqm.set_par_direction = (t_raqm_set_par_direction)GetProcAddress(
-        p_raqm.raqm, "raqm_set_par_direction");
+    p_raqm.set_text = (t_raqm_set_text)GetProcAddress(p_raqm.raqm, "raqm_set_text");
+    p_raqm.set_text_utf8 =
+        (t_raqm_set_text_utf8)GetProcAddress(p_raqm.raqm, "raqm_set_text_utf8");
+    p_raqm.set_par_direction =
+        (t_raqm_set_par_direction)GetProcAddress(p_raqm.raqm, "raqm_set_par_direction");
     p_raqm.set_language =
         (t_raqm_set_language)GetProcAddress(p_raqm.raqm, "raqm_set_language");
-    p_raqm.add_font_feature = (t_raqm_add_font_feature)GetProcAddress(
-        p_raqm.raqm, "raqm_add_font_feature");
-    p_raqm.set_freetype_face = (t_raqm_set_freetype_face)GetProcAddress(
-        p_raqm.raqm, "raqm_set_freetype_face");
+    p_raqm.add_font_feature =
+        (t_raqm_add_font_feature)GetProcAddress(p_raqm.raqm, "raqm_add_font_feature");
+    p_raqm.set_freetype_face =
+        (t_raqm_set_freetype_face)GetProcAddress(p_raqm.raqm, "raqm_set_freetype_face");
     p_raqm.layout = (t_raqm_layout)GetProcAddress(p_raqm.raqm, "raqm_layout");
-    p_raqm.destroy =
-        (t_raqm_destroy)GetProcAddress(p_raqm.raqm, "raqm_destroy");
+    p_raqm.destroy = (t_raqm_destroy)GetProcAddress(p_raqm.raqm, "raqm_destroy");
     if (GetProcAddress(p_raqm.raqm, "raqm_index_to_position")) {
         p_raqm.get_glyphs =
             (t_raqm_get_glyphs)GetProcAddress(p_raqm.raqm, "raqm_get_glyphs");
@@ -231,14 +225,13 @@ setraqm(void)
     }
     else {
         p_raqm.version = 1;
-        p_raqm.get_glyphs_01 = (t_raqm_get_glyphs_01)GetProcAddress(
-            p_raqm.raqm, "raqm_get_glyphs");
+        p_raqm.get_glyphs_01 =
+            (t_raqm_get_glyphs_01)GetProcAddress(p_raqm.raqm, "raqm_get_glyphs");
     }
     if (!(p_raqm.create && p_raqm.set_text && p_raqm.set_text_utf8 &&
-          p_raqm.set_par_direction && p_raqm.set_language &&
-          p_raqm.add_font_feature && p_raqm.set_freetype_face &&
-          p_raqm.layout && (p_raqm.get_glyphs || p_raqm.get_glyphs_01) &&
-          p_raqm.destroy)) {
+          p_raqm.set_par_direction && p_raqm.set_language && p_raqm.add_font_feature &&
+          p_raqm.set_freetype_face && p_raqm.layout &&
+          (p_raqm.get_glyphs || p_raqm.get_glyphs_01) && p_raqm.destroy)) {
         FreeLibrary(p_raqm.raqm);
         p_raqm.raqm = NULL;
         return 2;
@@ -263,20 +256,17 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw)
     unsigned char *encoding;
     unsigned char *font_bytes;
     Py_ssize_t font_bytes_size = 0;
-    static char *kwlist[] = {"filename", "size",       "index",
-                             "encoding", "font_bytes", "layout_engine",
-                             NULL};
+    static char *kwlist[] = {"filename",   "size",          "index", "encoding",
+                             "font_bytes", "layout_engine", NULL};
 
     if (!library) {
-        PyErr_SetString(PyExc_OSError,
-                        "failed to initialize FreeType library");
+        PyErr_SetString(PyExc_OSError, "failed to initialize FreeType library");
         return NULL;
     }
 
-    if (!PyArg_ParseTupleAndKeywords(args, kw, "etn|nsy#n", kwlist,
-                                     Py_FileSystemDefaultEncoding, &filename,
-                                     &size, &index, &encoding, &font_bytes,
-                                     &font_bytes_size, &layout_engine)) {
+    if (!PyArg_ParseTupleAndKeywords(
+            args, kw, "etn|nsy#n", kwlist, Py_FileSystemDefaultEncoding, &filename,
+            &size, &index, &encoding, &font_bytes, &font_bytes_size, &layout_engine)) {
         return NULL;
     }
 
@@ -350,8 +340,7 @@ font_getchar(PyObject *string, int index, FT_ULong *char_out)
 
 static size_t
 text_layout_raqm(PyObject *string, FontObject *self, const char *dir,
-                 PyObject *features, const char *lang, GlyphInfo **glyph_info,
-                 int mask)
+                 PyObject *features, const char *lang, GlyphInfo **glyph_info, int mask)
 {
     size_t i = 0, count = 0, start = 0;
     raqm_t *rq;
@@ -380,8 +369,7 @@ text_layout_raqm(PyObject *string, FontObject *self, const char *dir,
         }
         if (lang) {
             if (!(*p_raqm.set_language)(rq, lang, start, size)) {
-                PyErr_SetString(PyExc_ValueError,
-                                "raqm_set_language() failed");
+                PyErr_SetString(PyExc_ValueError, "raqm_set_language() failed");
                 goto failed;
             }
         }
@@ -403,8 +391,7 @@ text_layout_raqm(PyObject *string, FontObject *self, const char *dir,
         }
         if (lang) {
             if (!(*p_raqm.set_language)(rq, lang, start, size)) {
-                PyErr_SetString(PyExc_ValueError,
-                                "raqm_set_language() failed");
+                PyErr_SetString(PyExc_ValueError, "raqm_set_language() failed");
                 goto failed;
             }
         }
@@ -425,11 +412,9 @@ text_layout_raqm(PyObject *string, FontObject *self, const char *dir,
         }
         else if (strcmp(dir, "ttb") == 0) {
             direction = RAQM_DIRECTION_TTB;
-            if (p_raqm.version_atleast == NULL ||
-                !(*p_raqm.version_atleast)(0, 7, 0)) {
-                PyErr_SetString(
-                    PyExc_ValueError,
-                    "libraqm 0.7 or greater required for 'ttb' direction");
+            if (p_raqm.version_atleast == NULL || !(*p_raqm.version_atleast)(0, 7, 0)) {
+                PyErr_SetString(PyExc_ValueError,
+                                "libraqm 0.7 or greater required for 'ttb' direction");
                 goto failed;
             }
         }
@@ -473,16 +458,14 @@ text_layout_raqm(PyObject *string, FontObject *self, const char *dir,
                 size = PyBytes_GET_SIZE(bytes);
             }
             if (!(*p_raqm.add_font_feature)(rq, feature, size)) {
-                PyErr_SetString(PyExc_ValueError,
-                                "raqm_add_font_feature() failed");
+                PyErr_SetString(PyExc_ValueError, "raqm_add_font_feature() failed");
                 goto failed;
             }
         }
     }
 
     if (!(*p_raqm.set_freetype_face)(rq, self->face)) {
-        PyErr_SetString(PyExc_RuntimeError,
-                        "raqm_set_freetype_face() failed.");
+        PyErr_SetString(PyExc_RuntimeError, "raqm_set_freetype_face() failed.");
         goto failed;
     }
 
@@ -543,8 +526,8 @@ failed:
 
 static size_t
 text_layout_fallback(PyObject *string, FontObject *self, const char *dir,
-                     PyObject *features, const char *lang,
-                     GlyphInfo **glyph_info, int mask)
+                     PyObject *features, const char *lang, GlyphInfo **glyph_info,
+                     int mask)
 {
     int error, load_flags;
     FT_ULong ch;
@@ -610,19 +593,17 @@ text_layout_fallback(PyObject *string, FontObject *self, const char *dir,
 }
 
 static size_t
-text_layout(PyObject *string, FontObject *self, const char *dir,
-            PyObject *features, const char *lang, GlyphInfo **glyph_info,
-            int mask)
+text_layout(PyObject *string, FontObject *self, const char *dir, PyObject *features,
+            const char *lang, GlyphInfo **glyph_info, int mask)
 {
     size_t count;
 
     if (p_raqm.raqm && self->layout_engine == LAYOUT_RAQM) {
-        count = text_layout_raqm(string, self, dir, features, lang, glyph_info,
-                                 mask);
+        count = text_layout_raqm(string, self, dir, features, lang, glyph_info, mask);
     }
     else {
-        count = text_layout_fallback(string, self, dir, features, lang,
-                                     glyph_info, mask);
+        count =
+            text_layout_fallback(string, self, dir, features, lang, glyph_info, mask);
     }
     return count;
 }
@@ -645,8 +626,8 @@ font_getsize(FontObject *self, PyObject *args)
     /* calculate size and bearing for a given string */
 
     PyObject *string;
-    if (!PyArg_ParseTuple(args, "O|izOz:getsize", &string, &mask, &dir,
-                          &features, &lang)) {
+    if (!PyArg_ParseTuple(args, "O|izOz:getsize", &string, &mask, &dir, &features,
+                          &lang)) {
         return NULL;
     }
 
@@ -728,8 +709,7 @@ font_getsize(FontObject *self, PyObject *args)
             if (i == count - 1) {
                 // trim end gap from final glyph
                 int offset;
-                offset = -glyph_info[i].y_advance -
-                         face->glyph->metrics.height -
+                offset = -glyph_info[i].y_advance - face->glyph->metrics.height -
                          face->glyph->metrics.vertBearingY;
                 if (offset < 0) {
                     y_max -= offset;
@@ -777,8 +757,8 @@ font_getsize(FontObject *self, PyObject *args)
         }
     }
 
-    return Py_BuildValue("(ii)(ii)", PIXEL(x_max - x_min),
-                         PIXEL(y_max - y_min), PIXEL(xoffset), yoffset);
+    return Py_BuildValue("(ii)(ii)", PIXEL(x_max - x_min), PIXEL(y_max - y_min),
+                         PIXEL(xoffset), yoffset);
 }
 
 static PyObject *
@@ -812,8 +792,8 @@ font_render(FontObject *self, PyObject *args)
     GlyphInfo *glyph_info;
     PyObject *features = NULL;
 
-    if (!PyArg_ParseTuple(args, "On|izOzi:render", &string, &id, &mask, &dir,
-                          &features, &lang, &stroke_width)) {
+    if (!PyArg_ParseTuple(args, "On|izOzi:render", &string, &id, &mask, &dir, &features,
+                          &lang, &stroke_width)) {
         return NULL;
     }
 
@@ -832,8 +812,8 @@ font_render(FontObject *self, PyObject *args)
             return geterror(error);
         }
 
-        FT_Stroker_Set(stroker, (FT_Fixed)stroke_width * 64,
-                       FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+        FT_Stroker_Set(stroker, (FT_Fixed)stroke_width * 64, FT_STROKER_LINECAP_ROUND,
+                       FT_STROKER_LINEJOIN_ROUND, 0);
     }
 
     im = (Imaging)id;
@@ -882,8 +862,7 @@ font_render(FontObject *self, PyObject *args)
             }
             if (!error) {
                 FT_Vector origin = {0, 0};
-                error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL,
-                                           &origin, 1);
+                error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, &origin, 1);
             }
             if (error) {
                 return geterror(error);
@@ -930,8 +909,7 @@ font_render(FontObject *self, PyObject *args)
                 yy -= PIXEL(glyph_info[i].y_offset) + stroke_width * 2;
             }
             else {
-                yy = bitmap_y + PIXEL(y + glyph_slot->metrics.vertBearingY) +
-                     ascender;
+                yy = bitmap_y + PIXEL(y + glyph_slot->metrics.vertBearingY) + ascender;
                 yy += PIXEL(glyph_info[i].y_offset);
             }
             if (yy >= 0 && yy < im->ysize) {
@@ -1042,8 +1020,7 @@ font_getvaraxes(FontObject *self)
         list_axis = PyDict_New();
         PyDict_SetItemString(list_axis, "minimum",
                              PyLong_FromLong(axis.minimum / 65536));
-        PyDict_SetItemString(list_axis, "default",
-                             PyLong_FromLong(axis.def / 65536));
+        PyDict_SetItemString(list_axis, "default", PyLong_FromLong(axis.def / 65536));
         PyDict_SetItemString(list_axis, "maximum",
                              PyLong_FromLong(axis.maximum / 65536));
 
@@ -1261,8 +1238,7 @@ static PyTypeObject Font_Type = {
 };
 
 static PyMethodDef _functions[] = {
-    {"getfont", (PyCFunction)getfont, METH_VARARGS | METH_KEYWORDS},
-    {NULL, NULL}};
+    {"getfont", (PyCFunction)getfont, METH_VARARGS | METH_KEYWORDS}, {NULL, NULL}};
 
 static int
 setup_module(PyObject *m)

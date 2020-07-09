@@ -24,8 +24,8 @@
 #include "Imaging.h"
 
 static inline void
-paste(Imaging imOut, Imaging imIn, int dx, int dy, int sx, int sy, int xsize,
-      int ysize, int pixelsize)
+paste(Imaging imOut, Imaging imIn, int dx, int dy, int sx, int sy, int xsize, int ysize,
+      int pixelsize)
 {
     /* paste opaque region */
 
@@ -42,8 +42,8 @@ paste(Imaging imOut, Imaging imIn, int dx, int dy, int sx, int sy, int xsize,
 }
 
 static inline void
-paste_mask_1(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy,
-             int sx, int sy, int xsize, int ysize, int pixelsize)
+paste_mask_1(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy, int sx,
+             int sy, int xsize, int ysize, int pixelsize)
 {
     /* paste with mode "1" mask */
 
@@ -78,8 +78,8 @@ paste_mask_1(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy,
 }
 
 static inline void
-paste_mask_L(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy,
-             int sx, int sy, int xsize, int ysize, int pixelsize)
+paste_mask_L(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy, int sx,
+             int sy, int xsize, int ysize, int pixelsize)
 {
     /* paste with mode "L" matte */
 
@@ -117,8 +117,8 @@ paste_mask_L(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy,
 }
 
 static inline void
-paste_mask_RGBA(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy,
-                int sx, int sy, int xsize, int ysize, int pixelsize)
+paste_mask_RGBA(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy, int sx,
+                int sy, int xsize, int ysize, int pixelsize)
 {
     /* paste with mode "RGBA" matte */
 
@@ -156,8 +156,8 @@ paste_mask_RGBA(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy,
 }
 
 static inline void
-paste_mask_RGBa(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy,
-                int sx, int sy, int xsize, int ysize, int pixelsize)
+paste_mask_RGBa(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy, int sx,
+                int sy, int xsize, int ysize, int pixelsize)
 {
     /* paste with mode "RGBa" matte */
 
@@ -195,8 +195,8 @@ paste_mask_RGBa(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy,
 }
 
 int
-ImagingPaste(Imaging imOut, Imaging imIn, Imaging imMask, int dx0, int dy0,
-             int dx1, int dy1)
+ImagingPaste(Imaging imOut, Imaging imIn, Imaging imMask, int dx0, int dy0, int dx1,
+             int dy1)
 {
     int xsize, ysize;
     int pixelsize;
@@ -213,8 +213,7 @@ ImagingPaste(Imaging imOut, Imaging imIn, Imaging imMask, int dx0, int dy0,
     xsize = dx1 - dx0;
     ysize = dy1 - dy0;
 
-    if (xsize != imIn->xsize || ysize != imIn->ysize ||
-        pixelsize != imIn->pixelsize) {
+    if (xsize != imIn->xsize || ysize != imIn->ysize || pixelsize != imIn->pixelsize) {
         (void)ImagingError_Mismatch();
         return -1;
     }
@@ -250,14 +249,12 @@ ImagingPaste(Imaging imOut, Imaging imIn, Imaging imMask, int dx0, int dy0,
     }
     else if (strcmp(imMask->mode, "1") == 0) {
         ImagingSectionEnter(&cookie);
-        paste_mask_1(imOut, imIn, imMask, dx0, dy0, sx0, sy0, xsize, ysize,
-                     pixelsize);
+        paste_mask_1(imOut, imIn, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
     }
     else if (strcmp(imMask->mode, "L") == 0) {
         ImagingSectionEnter(&cookie);
-        paste_mask_L(imOut, imIn, imMask, dx0, dy0, sx0, sy0, xsize, ysize,
-                     pixelsize);
+        paste_mask_L(imOut, imIn, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
     }
     else if (strcmp(imMask->mode, "RGBA") == 0) {
@@ -311,8 +308,8 @@ fill(Imaging imOut, const void *ink_, int dx, int dy, int xsize, int ysize,
 }
 
 static inline void
-fill_mask_1(Imaging imOut, const void *ink_, Imaging imMask, int dx, int dy,
-            int sx, int sy, int xsize, int ysize, int pixelsize)
+fill_mask_1(Imaging imOut, const void *ink_, Imaging imMask, int dx, int dy, int sx,
+            int sy, int xsize, int ysize, int pixelsize)
 {
     /* fill with mode "1" mask */
 
@@ -350,8 +347,8 @@ fill_mask_1(Imaging imOut, const void *ink_, Imaging imMask, int dx, int dy,
 }
 
 static inline void
-fill_mask_L(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy,
-            int sx, int sy, int xsize, int ysize, int pixelsize)
+fill_mask_L(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy, int sx,
+            int sy, int xsize, int ysize, int pixelsize)
 {
     /* fill with mode "L" matte */
 
@@ -381,8 +378,8 @@ fill_mask_L(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy,
                          strcmp(imOut->mode, "LA") == 0 ||
                          strcmp(imOut->mode, "PA") == 0) &&
                         i != 3) {
-                        channel_mask = 255 - (255 - channel_mask) *
-                                                 (1 - (255 - out[3]) / 255);
+                        channel_mask =
+                            255 - (255 - channel_mask) * (1 - (255 - out[3]) / 255);
                     }
                     out[i] = BLEND(channel_mask, out[i], ink[i], tmp1);
                 }
@@ -394,8 +391,8 @@ fill_mask_L(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy,
 }
 
 static inline void
-fill_mask_RGBA(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy,
-               int sx, int sy, int xsize, int ysize, int pixelsize)
+fill_mask_RGBA(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy, int sx,
+               int sy, int xsize, int ysize, int pixelsize)
 {
     /* fill with mode "RGBA" matte */
 
@@ -431,8 +428,8 @@ fill_mask_RGBA(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy,
 }
 
 static inline void
-fill_mask_RGBa(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy,
-               int sx, int sy, int xsize, int ysize, int pixelsize)
+fill_mask_RGBa(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy, int sx,
+               int sy, int xsize, int ysize, int pixelsize)
 {
     /* fill with mode "RGBa" matte */
 
@@ -468,8 +465,8 @@ fill_mask_RGBa(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy,
 }
 
 int
-ImagingFill2(Imaging imOut, const void *ink, Imaging imMask, int dx0, int dy0,
-             int dx1, int dy1)
+ImagingFill2(Imaging imOut, const void *ink, Imaging imMask, int dx0, int dy0, int dx1,
+             int dy1)
 {
     ImagingSectionCookie cookie;
     int xsize, ysize;
@@ -517,26 +514,22 @@ ImagingFill2(Imaging imOut, const void *ink, Imaging imMask, int dx0, int dy0,
     }
     else if (strcmp(imMask->mode, "1") == 0) {
         ImagingSectionEnter(&cookie);
-        fill_mask_1(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize,
-                    pixelsize);
+        fill_mask_1(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
     }
     else if (strcmp(imMask->mode, "L") == 0) {
         ImagingSectionEnter(&cookie);
-        fill_mask_L(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize,
-                    pixelsize);
+        fill_mask_L(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
     }
     else if (strcmp(imMask->mode, "RGBA") == 0) {
         ImagingSectionEnter(&cookie);
-        fill_mask_RGBA(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize,
-                       pixelsize);
+        fill_mask_RGBA(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
     }
     else if (strcmp(imMask->mode, "RGBa") == 0) {
         ImagingSectionEnter(&cookie);
-        fill_mask_RGBa(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize,
-                       pixelsize);
+        fill_mask_RGBa(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
     }
     else {

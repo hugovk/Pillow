@@ -73,28 +73,24 @@ ImagingUnsharpMask(Imaging imOut, Imaging imIn, float radius, int percent,
             for (x = 0; x < imIn->xsize; x++) {
                 /* compare in/out pixels, apply sharpening */
                 diff = lineIn[x][0] - lineOut[x][0];
-                lineOut[x][0] =
-                    abs(diff) > threshold
-                        ? clip8(lineIn[x][0] + diff * percent / 100)
-                        : lineIn[x][0];
+                lineOut[x][0] = abs(diff) > threshold
+                                    ? clip8(lineIn[x][0] + diff * percent / 100)
+                                    : lineIn[x][0];
 
                 diff = lineIn[x][1] - lineOut[x][1];
-                lineOut[x][1] =
-                    abs(diff) > threshold
-                        ? clip8(lineIn[x][1] + diff * percent / 100)
-                        : lineIn[x][1];
+                lineOut[x][1] = abs(diff) > threshold
+                                    ? clip8(lineIn[x][1] + diff * percent / 100)
+                                    : lineIn[x][1];
 
                 diff = lineIn[x][2] - lineOut[x][2];
-                lineOut[x][2] =
-                    abs(diff) > threshold
-                        ? clip8(lineIn[x][2] + diff * percent / 100)
-                        : lineIn[x][2];
+                lineOut[x][2] = abs(diff) > threshold
+                                    ? clip8(lineIn[x][2] + diff * percent / 100)
+                                    : lineIn[x][2];
 
                 diff = lineIn[x][3] - lineOut[x][3];
-                lineOut[x][3] =
-                    abs(diff) > threshold
-                        ? clip8(lineIn[x][3] + diff * percent / 100)
-                        : lineIn[x][3];
+                lineOut[x][3] = abs(diff) > threshold
+                                    ? clip8(lineIn[x][3] + diff * percent / 100)
+                                    : lineIn[x][3];
             }
         }
     }

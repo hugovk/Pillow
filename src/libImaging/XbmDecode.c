@@ -15,16 +15,14 @@
 
 #include "Imaging.h"
 
-#define HEX(v)                    \
-    ((v >= '0' && v <= '9')       \
-         ? v - '0'                \
-         : (v >= 'a' && v <= 'f') \
-               ? v - 'a' + 10     \
-               : (v >= 'A' && v <= 'F') ? v - 'A' + 10 : 0)
+#define HEX(v)                                   \
+    ((v >= '0' && v <= '9')                      \
+         ? v - '0'                               \
+         : (v >= 'a' && v <= 'f') ? v - 'a' + 10 \
+                                  : (v >= 'A' && v <= 'F') ? v - 'A' + 10 : 0)
 
 int
-ImagingXbmDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
-                 Py_ssize_t bytes)
+ImagingXbmDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
 {
     enum { BYTE = 1, SKIP };
 
@@ -63,8 +61,7 @@ ImagingXbmDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
 
         if (++state->x >= state->bytes) {
             /* Got a full line, unpack it */
-            state->shuffle((UINT8 *)im->image[state->y], state->buffer,
-                           state->xsize);
+            state->shuffle((UINT8 *)im->image[state->y], state->buffer, state->xsize);
 
             state->x = 0;
 

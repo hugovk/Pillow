@@ -5,9 +5,9 @@
 
 typedef UINT8 pixel[4];
 
-void static inline ImagingLineBoxBlur32(pixel *lineOut, pixel *lineIn,
-                                        int lastx, int radius, int edgeA,
-                                        int edgeB, UINT32 ww, UINT32 fw)
+void static inline ImagingLineBoxBlur32(pixel *lineOut, pixel *lineIn, int lastx,
+                                        int radius, int edgeA, int edgeB, UINT32 ww,
+                                        UINT32 fw)
 {
     int x;
     UINT32 acc[4];
@@ -97,9 +97,9 @@ void static inline ImagingLineBoxBlur32(pixel *lineOut, pixel *lineIn,
 #undef SAVE
 }
 
-void static inline ImagingLineBoxBlur8(UINT8 *lineOut, UINT8 *lineIn,
-                                       int lastx, int radius, int edgeA,
-                                       int edgeB, UINT32 ww, UINT32 fw)
+void static inline ImagingLineBoxBlur8(UINT8 *lineOut, UINT8 *lineIn, int lastx,
+                                       int radius, int edgeA, int edgeB, UINT32 ww,
+                                       UINT32 fw)
 {
     int x;
     UINT32 acc;
@@ -183,10 +183,9 @@ ImagingHorizontalBoxBlur(Imaging imOut, Imaging imIn, float floatRadius)
 
     if (imIn->image8) {
         for (y = 0; y < imIn->ysize; y++) {
-            ImagingLineBoxBlur8(
-                (imIn == imOut ? (UINT8 *)lineOut : imOut->image8[y]),
-                imIn->image8[y], imIn->xsize - 1, radius, edgeA, edgeB, ww,
-                fw);
+            ImagingLineBoxBlur8((imIn == imOut ? (UINT8 *)lineOut : imOut->image8[y]),
+                                imIn->image8[y], imIn->xsize - 1, radius, edgeA, edgeB,
+                                ww, fw);
             if (imIn == imOut) {
                 // Commit.
                 memcpy(imOut->image8[y], lineOut, imIn->xsize);
@@ -197,8 +196,8 @@ ImagingHorizontalBoxBlur(Imaging imOut, Imaging imIn, float floatRadius)
         for (y = 0; y < imIn->ysize; y++) {
             ImagingLineBoxBlur32(
                 imIn == imOut ? (pixel *)lineOut : (pixel *)imOut->image32[y],
-                (pixel *)imIn->image32[y], imIn->xsize - 1, radius, edgeA,
-                edgeB, ww, fw);
+                (pixel *)imIn->image32[y], imIn->xsize - 1, radius, edgeA, edgeB, ww,
+                fw);
             if (imIn == imOut) {
                 // Commit.
                 memcpy(imOut->image32[y], lineOut, imIn->xsize * 4);
@@ -220,8 +219,7 @@ ImagingBoxBlur(Imaging imOut, Imaging imIn, float radius, int n)
     Imaging imTransposed;
 
     if (n < 1) {
-        return ImagingError_ValueError(
-            "number of passes must be greater than zero");
+        return ImagingError_ValueError("number of passes must be greater than zero");
     }
 
     if (strcmp(imIn->mode, imOut->mode) || imIn->type != imOut->type ||

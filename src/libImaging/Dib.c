@@ -63,8 +63,7 @@ ImagingNewDIB(const char *mode, int xsize, int ysize)
     int i;
 
     /* Check mode */
-    if (strcmp(mode, "1") != 0 && strcmp(mode, "L") != 0 &&
-        strcmp(mode, "RGB") != 0) {
+    if (strcmp(mode, "1") != 0 && strcmp(mode, "L") != 0 && strcmp(mode, "RGB") != 0) {
         return (ImagingDIB)ImagingError_ModeError();
     }
 
@@ -75,8 +74,7 @@ ImagingNewDIB(const char *mode, int xsize, int ysize)
         return (ImagingDIB)ImagingError_MemoryError();
     }
     /* malloc check ok, small constant allocation */
-    dib->info =
-        (BITMAPINFO *)malloc(sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD));
+    dib->info = (BITMAPINFO *)malloc(sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD));
     if (!dib->info) {
         free(dib);
         return (ImagingDIB)ImagingError_MemoryError();
@@ -98,8 +96,8 @@ ImagingNewDIB(const char *mode, int xsize, int ysize)
         return (ImagingDIB)ImagingError_MemoryError();
     }
 
-    dib->bitmap = CreateDIBSection(dib->dc, dib->info, DIB_RGB_COLORS,
-                                   &dib->bits, NULL, 0);
+    dib->bitmap =
+        CreateDIBSection(dib->dc, dib->info, DIB_RGB_COLORS, &dib->bits, NULL, 0);
     if (!dib->bitmap) {
         free(dib->info);
         free(dib);
@@ -244,19 +242,17 @@ ImagingDrawDIB(ImagingDIB dib, void *dc, int dst[4], int src[4])
 
     if (GetDeviceCaps((HDC)dc, RASTERCAPS) & RC_STRETCHDIB) {
         /* stretchdib (printers) */
-        StretchDIBits((HDC)dc, dst[0], dst[1], dst[2] - dst[0],
-                      dst[3] - dst[1], src[0], src[1], src[2] - src[0],
-                      src[3] - src[1], dib->bits, dib->info, DIB_RGB_COLORS,
-                      SRCCOPY);
+        StretchDIBits((HDC)dc, dst[0], dst[1], dst[2] - dst[0], dst[3] - dst[1], src[0],
+                      src[1], src[2] - src[0], src[3] - src[1], dib->bits, dib->info,
+                      DIB_RGB_COLORS, SRCCOPY);
     }
     else {
         /* stretchblt (displays) */
         if (dib->palette != 0) {
             SelectPalette((HDC)dc, dib->palette, FALSE);
         }
-        StretchBlt((HDC)dc, dst[0], dst[1], dst[2] - dst[0], dst[3] - dst[1],
-                   dib->dc, src[0], src[1], src[2] - src[0], src[3] - src[1],
-                   SRCCOPY);
+        StretchBlt((HDC)dc, dst[0], dst[1], dst[2] - dst[0], dst[3] - dst[1], dib->dc,
+                   src[0], src[1], src[2] - src[0], src[3] - src[1], SRCCOPY);
     }
 }
 

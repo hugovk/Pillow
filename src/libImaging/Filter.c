@@ -69,18 +69,17 @@ ImagingExpand(Imaging imIn, int xmargin, int ymargin, int mode)
         }                                                          \
     }
 
-#define EXPAND(type, image)                           \
-    {                                                 \
-        for (y = 0; y < ymargin; y++) {               \
-            EXPAND_LINE(type, image, 0, y);           \
-        }                                             \
-        for (y = 0; y < imIn->ysize; y++) {           \
-            EXPAND_LINE(type, image, y, y + ymargin); \
-        }                                             \
-        for (y = 0; y < ymargin; y++) {               \
-            EXPAND_LINE(type, image, imIn->ysize - 1, \
-                        ymargin + imIn->ysize + y);   \
-        }                                             \
+#define EXPAND(type, image)                                                       \
+    {                                                                             \
+        for (y = 0; y < ymargin; y++) {                                           \
+            EXPAND_LINE(type, image, 0, y);                                       \
+        }                                                                         \
+        for (y = 0; y < imIn->ysize; y++) {                                       \
+            EXPAND_LINE(type, image, y, y + ymargin);                             \
+        }                                                                         \
+        for (y = 0; y < ymargin; y++) {                                           \
+            EXPAND_LINE(type, image, imIn->ysize - 1, ymargin + imIn->ysize + y); \
+        }                                                                         \
     }
 
     ImagingSectionEnter(&cookie);
@@ -100,9 +99,8 @@ ImagingExpand(Imaging imIn, int xmargin, int ymargin, int mode)
 void
 ImagingFilter3x3(Imaging imOut, Imaging im, const float *kernel, float offset)
 {
-#define KERNEL1x3(in0, x, kernel, d)         \
-    (_i2f((UINT8)in0[x - d]) * (kernel)[0] + \
-     _i2f((UINT8)in0[x]) * (kernel)[1] +     \
+#define KERNEL1x3(in0, x, kernel, d)                                             \
+    (_i2f((UINT8)in0[x - d]) * (kernel)[0] + _i2f((UINT8)in0[x]) * (kernel)[1] + \
      _i2f((UINT8)in0[x + d]) * (kernel)[2])
 
     int x = 0, y = 0;
@@ -191,13 +189,11 @@ ImagingFilter3x3(Imaging imOut, Imaging im, const float *kernel, float offset)
                     ss1 += KERNEL1x3(in_1, x * 4 + 1, &kernel[6], 4);
                     ss2 += KERNEL1x3(in_1, x * 4 + 2, &kernel[6], 4);
                     ss3 += KERNEL1x3(in_1, x * 4 + 3, &kernel[6], 4);
-                    v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2),
-                                    clip8(ss3));
+                    v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2), clip8(ss3));
                     memcpy(out + x * sizeof(v), &v, sizeof(v));
                 }
             }
-            memcpy(out + x * sizeof(UINT32), in0 + x * sizeof(UINT32),
-                   sizeof(UINT32));
+            memcpy(out + x * sizeof(UINT32), in0 + x * sizeof(UINT32), sizeof(UINT32));
         }
     }
     memcpy(imOut->image[y], im->image[y], im->linesize);
@@ -206,11 +202,10 @@ ImagingFilter3x3(Imaging imOut, Imaging im, const float *kernel, float offset)
 void
 ImagingFilter5x5(Imaging imOut, Imaging im, const float *kernel, float offset)
 {
-#define KERNEL1x5(in0, x, kernel, d)             \
-    (_i2f((UINT8)in0[x - d - d]) * (kernel)[0] + \
-     _i2f((UINT8)in0[x - d]) * (kernel)[1] +     \
-     _i2f((UINT8)in0[x]) * (kernel)[2] +         \
-     _i2f((UINT8)in0[x + d]) * (kernel)[3] +     \
+#define KERNEL1x5(in0, x, kernel, d)                                             \
+    (_i2f((UINT8)in0[x - d - d]) * (kernel)[0] +                                 \
+     _i2f((UINT8)in0[x - d]) * (kernel)[1] + _i2f((UINT8)in0[x]) * (kernel)[2] + \
+     _i2f((UINT8)in0[x + d]) * (kernel)[3] +                                     \
      _i2f((UINT8)in0[x + d + d]) * (kernel)[4])
 
     int x = 0, y = 0;
@@ -326,8 +321,7 @@ ImagingFilter5x5(Imaging imOut, Imaging im, const float *kernel, float offset)
                     ss1 += KERNEL1x5(in_2, x * 4 + 1, &kernel[20], 4);
                     ss2 += KERNEL1x5(in_2, x * 4 + 2, &kernel[20], 4);
                     ss3 += KERNEL1x5(in_2, x * 4 + 3, &kernel[20], 4);
-                    v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2),
-                                    clip8(ss3));
+                    v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2), clip8(ss3));
                     memcpy(out + x * sizeof(v), &v, sizeof(v));
                 }
             }
@@ -340,8 +334,7 @@ ImagingFilter5x5(Imaging imOut, Imaging im, const float *kernel, float offset)
 }
 
 Imaging
-ImagingFilter(Imaging im, int xsize, int ysize, const FLOAT32 *kernel,
-              FLOAT32 offset)
+ImagingFilter(Imaging im, int xsize, int ysize, const FLOAT32 *kernel, FLOAT32 offset)
 {
     Imaging imOut;
     ImagingSectionCookie cookie;

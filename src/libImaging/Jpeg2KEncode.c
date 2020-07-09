@@ -93,12 +93,11 @@ j2k_seek(OPJ_OFF_T p_nb_bytes, void *p_user_data)
 /* Encoder                                                              */
 /* -------------------------------------------------------------------- */
 
-typedef void (*j2k_pack_tile_t)(Imaging im, UINT8 *buf, unsigned x0,
-                                unsigned y0, unsigned w, unsigned h);
+typedef void (*j2k_pack_tile_t)(Imaging im, UINT8 *buf, unsigned x0, unsigned y0,
+                                unsigned w, unsigned h);
 
 static void
-j2k_pack_l(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w,
-           unsigned h)
+j2k_pack_l(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w, unsigned h)
 {
     UINT8 *ptr = buf;
     unsigned x, y;
@@ -111,8 +110,7 @@ j2k_pack_l(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w,
 }
 
 static void
-j2k_pack_i16(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w,
-             unsigned h)
+j2k_pack_i16(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w, unsigned h)
 {
     UINT8 *ptr = buf;
     unsigned x, y;
@@ -126,8 +124,7 @@ j2k_pack_i16(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w,
 }
 
 static void
-j2k_pack_la(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w,
-            unsigned h)
+j2k_pack_la(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w, unsigned h)
 {
     UINT8 *ptr = buf;
     UINT8 *ptra = buf + w * h;
@@ -143,8 +140,7 @@ j2k_pack_la(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w,
 }
 
 static void
-j2k_pack_rgb(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w,
-             unsigned h)
+j2k_pack_rgb(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w, unsigned h)
 {
     UINT8 *pr = buf;
     UINT8 *pg = pr + w * h;
@@ -162,8 +158,7 @@ j2k_pack_rgb(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w,
 }
 
 static void
-j2k_pack_rgba(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w,
-              unsigned h)
+j2k_pack_rgba(Imaging im, UINT8 *buf, unsigned x0, unsigned y0, unsigned w, unsigned h)
 {
     UINT8 *pr = buf;
     UINT8 *pg = pr + w * h;
@@ -515,11 +510,9 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
     }
 
     /* Write each tile */
-    tiles_x = (im->xsize + (params.image_offset_x0 - params.cp_tx0) +
-               tile_width - 1) /
+    tiles_x = (im->xsize + (params.image_offset_x0 - params.cp_tx0) + tile_width - 1) /
               tile_width;
-    tiles_y = (im->ysize + (params.image_offset_y0 - params.cp_ty0) +
-               tile_height - 1) /
+    tiles_y = (im->ysize + (params.image_offset_y0 - params.cp_ty0) + tile_height - 1) /
               tile_height;
 
     /* check for integer overflow for the malloc line, checking any expression
@@ -577,8 +570,7 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
 
             data_size = pixw * pixh * components * prec / 8;
 
-            if (!opj_write_tile(codec, tile_ndx++, state->buffer, data_size,
-                                stream)) {
+            if (!opj_write_tile(codec, tile_ndx++, state->buffer, data_size, stream)) {
                 state->errcode = IMAGING_CODEC_BROKEN;
                 state->state = J2K_STATE_FAILED;
                 goto quick_exit;

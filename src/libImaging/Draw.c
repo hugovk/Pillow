@@ -45,10 +45,8 @@
  * Rounds around zero (up=away from zero, down=towards zero)
  * This guarantees that ROUND_UP|DOWN(f) == -ROUND_UP|DOWN(-f)
  */
-#define ROUND_UP(f) \
-    ((int)((f) >= 0.0 ? floor((f) + 0.5F) : -floor(fabs(f) + 0.5F)))
-#define ROUND_DOWN(f) \
-    ((int)((f) >= 0.0 ? ceil((f)-0.5F) : -ceil(fabs(f) - 0.5F)))
+#define ROUND_UP(f) ((int)((f) >= 0.0 ? floor((f) + 0.5F) : -floor(fabs(f) + 0.5F)))
+#define ROUND_DOWN(f) ((int)((f) >= 0.0 ? ceil((f)-0.5F) : -ceil(fabs(f) - 0.5F)))
 
 /* -------------------------------------------------------------------- */
 /* Primitives                                                           */
@@ -470,8 +468,7 @@ draw_horizontal_lines(Imaging im, int n, Edge *e, int ink, int *x_pos, int y,
  * Filled polygon draw function using scan line algorithm.
  */
 static inline int
-polygon_generic(Imaging im, int n, Edge *e, int ink, int eofill,
-                hline_handler hline)
+polygon_generic(Imaging im, int n, Edge *e, int ink, int eofill, hline_handler hline)
 {
     Edge **edge_table;
     float *xx;
@@ -659,8 +656,7 @@ ImagingDrawPoint(Imaging im, int x0, int y0, const void *ink_, int op)
 }
 
 int
-ImagingDrawLine(Imaging im, int x0, int y0, int x1, int y1, const void *ink_,
-                int op)
+ImagingDrawLine(Imaging im, int x0, int y0, int x1, int y1, const void *ink_, int op)
 {
     DRAW *draw;
     INT32 ink;
@@ -673,8 +669,8 @@ ImagingDrawLine(Imaging im, int x0, int y0, int x1, int y1, const void *ink_,
 }
 
 int
-ImagingDrawWideLine(Imaging im, int x0, int y0, int x1, int y1,
-                    const void *ink_, int width, int op)
+ImagingDrawWideLine(Imaging im, int x0, int y0, int x1, int y1, const void *ink_,
+                    int width, int op)
 {
     DRAW *draw;
     INT32 ink;
@@ -707,14 +703,10 @@ ImagingDrawWideLine(Imaging im, int x0, int y0, int x1, int y1,
                               {x1 + dxmax, y1 - dymin},
                               {x0 + dxmax, y0 - dymin}};
 
-        add_edge(e + 0, vertices[0][0], vertices[0][1], vertices[1][0],
-                 vertices[1][1]);
-        add_edge(e + 1, vertices[1][0], vertices[1][1], vertices[2][0],
-                 vertices[2][1]);
-        add_edge(e + 2, vertices[2][0], vertices[2][1], vertices[3][0],
-                 vertices[3][1]);
-        add_edge(e + 3, vertices[3][0], vertices[3][1], vertices[0][0],
-                 vertices[0][1]);
+        add_edge(e + 0, vertices[0][0], vertices[0][1], vertices[1][0], vertices[1][1]);
+        add_edge(e + 1, vertices[1][0], vertices[1][1], vertices[2][0], vertices[2][1]);
+        add_edge(e + 2, vertices[2][0], vertices[2][1], vertices[3][0], vertices[3][1]);
+        add_edge(e + 3, vertices[3][0], vertices[3][1], vertices[0][0], vertices[0][1]);
 
         draw->polygon(im, 4, e, ink, 0);
     }
@@ -722,8 +714,8 @@ ImagingDrawWideLine(Imaging im, int x0, int y0, int x1, int y1,
 }
 
 int
-ImagingDrawRectangle(Imaging im, int x0, int y0, int x1, int y1,
-                     const void *ink_, int fill, int width, int op)
+ImagingDrawRectangle(Imaging im, int x0, int y0, int x1, int y1, const void *ink_,
+                     int fill, int width, int op)
 {
     int i;
     int y;
@@ -773,8 +765,7 @@ ImagingDrawRectangle(Imaging im, int x0, int y0, int x1, int y1,
 }
 
 int
-ImagingDrawPolygon(Imaging im, int count, int *xy, const void *ink_, int fill,
-                   int op)
+ImagingDrawPolygon(Imaging im, int count, int *xy, const void *ink_, int fill, int op)
 {
     int i, n;
     DRAW *draw;
@@ -795,8 +786,7 @@ ImagingDrawPolygon(Imaging im, int count, int *xy, const void *ink_, int fill,
             return -1;
         }
         for (i = n = 0; i < count - 1; i++) {
-            add_edge(&e[n++], xy[i + i], xy[i + i + 1], xy[i + i + 2],
-                     xy[i + i + 3]);
+            add_edge(&e[n++], xy[i + i], xy[i + i + 1], xy[i + i + 2], xy[i + i + 3]);
         }
         if (xy[i + i] != xy[0] || xy[i + i + 1] != xy[1]) {
             add_edge(&e[n++], xy[i + i], xy[i + i + 1], xy[0], xy[1]);
@@ -807,8 +797,7 @@ ImagingDrawPolygon(Imaging im, int count, int *xy, const void *ink_, int fill,
     else {
         /* Outline */
         for (i = 0; i < count - 1; i++) {
-            draw->line(im, xy[i + i], xy[i + i + 1], xy[i + i + 2],
-                       xy[i + i + 3], ink);
+            draw->line(im, xy[i + i], xy[i + i + 1], xy[i + i + 2], xy[i + i + 3], ink);
         }
         draw->line(im, xy[i + i], xy[i + i + 1], xy[0], xy[1], ink);
     }
@@ -817,8 +806,7 @@ ImagingDrawPolygon(Imaging im, int count, int *xy, const void *ink_, int fill,
 }
 
 int
-ImagingDrawBitmap(Imaging im, int x0, int y0, Imaging bitmap, const void *ink,
-                  int op)
+ImagingDrawBitmap(Imaging im, int x0, int y0, Imaging bitmap, const void *ink, int op)
 {
     return ImagingFill2(im, ink, bitmap, x0, y0, x0 + bitmap->xsize,
                         y0 + bitmap->ysize);
@@ -996,10 +984,8 @@ ellipse(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
                     add_edge(&e[n++], sx, sy, cx, cy);
                     add_edge(&e[n++], cx, cy, lx, ly);
                     if (inner) {
-                        ImagingDrawWideLine(im, sx, sy, cx, cy, &ink, width,
-                                            op);
-                        ImagingDrawWideLine(im, cx, cy, lx, ly, &ink, width,
-                                            op);
+                        ImagingDrawWideLine(im, sx, sy, cx, cy, &ink, width, op);
+                        ImagingDrawWideLine(im, cx, cy, lx, ly, &ink, width, op);
                     }
                 }
             }
@@ -1024,18 +1010,17 @@ ellipse(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
 }
 
 int
-ImagingDrawArc(Imaging im, int x0, int y0, int x1, int y1, float start,
-               float end, const void *ink, int width, int op)
+ImagingDrawArc(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
+               const void *ink, int width, int op)
 {
     return ellipse(im, x0, y0, x1, y1, start, end, ink, 0, width, ARC, op);
 }
 
 int
-ImagingDrawChord(Imaging im, int x0, int y0, int x1, int y1, float start,
-                 float end, const void *ink, int fill, int width, int op)
+ImagingDrawChord(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
+                 const void *ink, int fill, int width, int op)
 {
-    return ellipse(im, x0, y0, x1, y1, start, end, ink, fill, width, CHORD,
-                   op);
+    return ellipse(im, x0, y0, x1, y1, start, end, ink, fill, width, CHORD, op);
 }
 
 int
@@ -1046,11 +1031,10 @@ ImagingDrawEllipse(Imaging im, int x0, int y0, int x1, int y1, const void *ink,
 }
 
 int
-ImagingDrawPieslice(Imaging im, int x0, int y0, int x1, int y1, float start,
-                    float end, const void *ink, int fill, int width, int op)
+ImagingDrawPieslice(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
+                    const void *ink, int fill, int width, int op)
 {
-    return ellipse(im, x0, y0, x1, y1, start, end, ink, fill, width, PIESLICE,
-                   op);
+    return ellipse(im, x0, y0, x1, y1, start, end, ink, fill, width, PIESLICE, op);
 }
 
 /* -------------------------------------------------------------------- */
@@ -1163,8 +1147,8 @@ ImagingOutlineLine(ImagingOutline outline, float x1, float y1)
 }
 
 int
-ImagingOutlineCurve(ImagingOutline outline, float x1, float y1, float x2,
-                    float y2, float x3, float y3)
+ImagingOutlineCurve(ImagingOutline outline, float x1, float y1, float x2, float y2,
+                    float x3, float y3)
 {
     Edge *e;
     int i;
@@ -1191,10 +1175,8 @@ ImagingOutlineCurve(ImagingOutline outline, float x1, float y1, float x2,
         float u2 = u * u;
         float u3 = u2 * u;
 
-        float x =
-            outline->x * u3 + 3 * (x1 * t * u2 + x2 * t2 * u) + x3 * t3 + 0.5;
-        float y =
-            outline->y * u3 + 3 * (y1 * t * u2 + y2 * t2 * u) + y3 * t3 + 0.5;
+        float x = outline->x * u3 + 3 * (x1 * t * u2 + x2 * t2 * u) + x3 * t3 + 0.5;
+        float y = outline->y * u3 + 3 * (y1 * t * u2 + y2 * t2 * u) + y3 * t3 + 0.5;
 
         add_edge(e++, xo, yo, (int)x, (int)y);
 
@@ -1286,8 +1268,8 @@ ImagingOutlineTransform(ImagingOutline outline, double a[6])
 }
 
 int
-ImagingDrawOutline(Imaging im, ImagingOutline outline, const void *ink_,
-                   int fill, int op)
+ImagingDrawOutline(Imaging im, ImagingOutline outline, const void *ink_, int fill,
+                   int op)
 {
     DRAW *draw;
     INT32 ink;

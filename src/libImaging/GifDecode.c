@@ -56,8 +56,7 @@
     }
 
 int
-ImagingGifDecode(Imaging im, ImagingCodecState state, UINT8 *buffer,
-                 Py_ssize_t bytes)
+ImagingGifDecode(Imaging im, ImagingCodecState state, UINT8 *buffer, Py_ssize_t bytes)
 {
     UINT8 *p;
     UINT8 *out;
@@ -202,8 +201,7 @@ ImagingGifDecode(Imaging im, ImagingCodecState state, UINT8 *buffer,
                         return -1;
                     }
 
-                    context->buffer[--context->bufferindex] =
-                        context->lastdata;
+                    context->buffer[--context->bufferindex] = context->lastdata;
 
                     c = context->lastcode;
                 }

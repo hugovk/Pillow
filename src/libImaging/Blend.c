@@ -24,8 +24,8 @@ ImagingBlend(Imaging imIn1, Imaging imIn2, float alpha)
     int x, y;
 
     /* Check arguments */
-    if (!imIn1 || !imIn2 || imIn1->type != IMAGING_TYPE_UINT8 ||
-        imIn1->palette || strcmp(imIn1->mode, "1") == 0 || imIn2->palette ||
+    if (!imIn1 || !imIn2 || imIn1->type != IMAGING_TYPE_UINT8 || imIn1->palette ||
+        strcmp(imIn1->mode, "1") == 0 || imIn2->palette ||
         strcmp(imIn2->mode, "1") == 0) {
         return ImagingError_ModeError();
     }
@@ -55,8 +55,7 @@ ImagingBlend(Imaging imIn1, Imaging imIn2, float alpha)
             UINT8 *in2 = (UINT8 *)imIn2->image[y];
             UINT8 *out = (UINT8 *)imOut->image[y];
             for (x = 0; x < imIn1->linesize; x++) {
-                out[x] =
-                    (UINT8)((int)in1[x] + alpha * ((int)in2[x] - (int)in1[x]));
+                out[x] = (UINT8)((int)in1[x] + alpha * ((int)in2[x] - (int)in1[x]));
             }
         }
     }
@@ -67,8 +66,7 @@ ImagingBlend(Imaging imIn1, Imaging imIn2, float alpha)
             UINT8 *in2 = (UINT8 *)imIn2->image[y];
             UINT8 *out = (UINT8 *)imOut->image[y];
             for (x = 0; x < imIn1->linesize; x++) {
-                float temp =
-                    (float)((int)in1[x] + alpha * ((int)in2[x] - (int)in1[x]));
+                float temp = (float)((int)in1[x] + alpha * ((int)in2[x] - (int)in1[x]));
                 if (temp <= 0.0) {
                     out[x] = 0;
                 }

@@ -125,8 +125,7 @@ cms_profile_fromstring(PyObject *self, PyObject *args)
 
     char *pProfile;
     Py_ssize_t nProfile;
-    if (!PyArg_ParseTuple(args, "y#:profile_frombytes", &pProfile,
-                          &nProfile)) {
+    if (!PyArg_ParseTuple(args, "y#:profile_frombytes", &pProfile, &nProfile)) {
         return NULL;
     }
 
@@ -291,8 +290,7 @@ findLCMStype(char *PILmode)
     }
     else if (strcmp(PILmode, "LAB") == 0) {
         // LabX equivalent like ALab, but not reversed -- no #define in lcms2
-        return (COLORSPACE_SH(PT_LabV2) | CHANNELS_SH(3) | BYTES_SH(1) |
-                EXTRA_SH(1));
+        return (COLORSPACE_SH(PT_LabV2) | CHANNELS_SH(3) | BYTES_SH(1) | EXTRA_SH(1));
     }
 
     else {
@@ -380,10 +378,8 @@ pyCMScopyAux(cmsHTRANSFORM hTransform, Imaging imDst, const Imaging imSrc)
     ySize = Cms_Min(imSrc->ysize, imDst->ysize);
     xSize = Cms_Min(imSrc->xsize, imDst->xsize);
     channelSize = T_BYTES(dstLCMSFormat);
-    srcChunkSize =
-        (T_CHANNELS(srcLCMSFormat) + T_EXTRA(srcLCMSFormat)) * channelSize;
-    dstChunkSize =
-        (T_CHANNELS(dstLCMSFormat) + T_EXTRA(dstLCMSFormat)) * channelSize;
+    srcChunkSize = (T_CHANNELS(srcLCMSFormat) + T_EXTRA(srcLCMSFormat)) * channelSize;
+    dstChunkSize = (T_CHANNELS(dstLCMSFormat) + T_EXTRA(dstLCMSFormat)) * channelSize;
 
     for (e = 0; e < numExtras; ++e) {
         int y;
@@ -393,12 +389,11 @@ pyCMScopyAux(cmsHTRANSFORM hTransform, Imaging imDst, const Imaging imSrc)
         for (y = 0; y < ySize; y++) {
             int x;
             char *pDstExtras = imDst->image[y] + dstChannel * channelSize;
-            const char *pSrcExtras =
-                imSrc->image[y] + srcChannel * channelSize;
+            const char *pSrcExtras = imSrc->image[y] + srcChannel * channelSize;
 
             for (x = 0; x < xSize; x++) {
-                memcpy(pDstExtras + x * dstChunkSize,
-                       pSrcExtras + x * srcChunkSize, channelSize);
+                memcpy(pDstExtras + x * dstChunkSize, pSrcExtras + x * srcChunkSize,
+                       channelSize);
             }
         }
     }
@@ -437,18 +432,17 @@ pyCMSdoTransform(Imaging im, Imaging imOut, cmsHTRANSFORM hTransform)
 }
 
 static cmsHTRANSFORM
-_buildTransform(cmsHPROFILE hInputProfile, cmsHPROFILE hOutputProfile,
-                char *sInMode, char *sOutMode, int iRenderingIntent,
-                cmsUInt32Number cmsFLAGS)
+_buildTransform(cmsHPROFILE hInputProfile, cmsHPROFILE hOutputProfile, char *sInMode,
+                char *sOutMode, int iRenderingIntent, cmsUInt32Number cmsFLAGS)
 {
     cmsHTRANSFORM hTransform;
 
     Py_BEGIN_ALLOW_THREADS
 
         /* create the transform */
-        hTransform = cmsCreateTransform(hInputProfile, findLCMStype(sInMode),
-                                        hOutputProfile, findLCMStype(sOutMode),
-                                        iRenderingIntent, cmsFLAGS);
+        hTransform =
+            cmsCreateTransform(hInputProfile, findLCMStype(sInMode), hOutputProfile,
+                               findLCMStype(sOutMode), iRenderingIntent, cmsFLAGS);
 
     Py_END_ALLOW_THREADS
 
@@ -463,18 +457,17 @@ _buildTransform(cmsHPROFILE hInputProfile, cmsHPROFILE hOutputProfile,
 static cmsHTRANSFORM
 _buildProofTransform(cmsHPROFILE hInputProfile, cmsHPROFILE hOutputProfile,
                      cmsHPROFILE hProofProfile, char *sInMode, char *sOutMode,
-                     int iRenderingIntent, int iProofIntent,
-                     cmsUInt32Number cmsFLAGS)
+                     int iRenderingIntent, int iProofIntent, cmsUInt32Number cmsFLAGS)
 {
     cmsHTRANSFORM hTransform;
 
     Py_BEGIN_ALLOW_THREADS
 
         /* create the transform */
-        hTransform = cmsCreateProofingTransform(
-            hInputProfile, findLCMStype(sInMode), hOutputProfile,
-            findLCMStype(sOutMode), hProofProfile, iRenderingIntent,
-            iProofIntent, cmsFLAGS);
+        hTransform = cmsCreateProofingTransform(hInputProfile, findLCMStype(sInMode),
+                                                hOutputProfile, findLCMStype(sOutMode),
+                                                hProofProfile, iRenderingIntent,
+                                                iProofIntent, cmsFLAGS);
 
     Py_END_ALLOW_THREADS
 
@@ -502,14 +495,13 @@ buildTransform(PyObject *self, PyObject *args)
     cmsHTRANSFORM transform = NULL;
 
     if (!PyArg_ParseTuple(args, "O!O!ss|ii:buildTransform", &CmsProfile_Type,
-                          &pInputProfile, &CmsProfile_Type, &pOutputProfile,
-                          &sInMode, &sOutMode, &iRenderingIntent, &cmsFLAGS)) {
+                          &pInputProfile, &CmsProfile_Type, &pOutputProfile, &sInMode,
+                          &sOutMode, &iRenderingIntent, &cmsFLAGS)) {
         return NULL;
     }
 
-    transform =
-        _buildTransform(pInputProfile->profile, pOutputProfile->profile,
-                        sInMode, sOutMode, iRenderingIntent, cmsFLAGS);
+    transform = _buildTransform(pInputProfile->profile, pOutputProfile->profile,
+                                sInMode, sOutMode, iRenderingIntent, cmsFLAGS);
 
     if (!transform) {
         return NULL;
@@ -532,18 +524,16 @@ buildProofTransform(PyObject *self, PyObject *args)
 
     cmsHTRANSFORM transform = NULL;
 
-    if (!PyArg_ParseTuple(args, "O!O!O!ss|iii:buildProofTransform",
-                          &CmsProfile_Type, &pInputProfile, &CmsProfile_Type,
-                          &pOutputProfile, &CmsProfile_Type, &pProofProfile,
-                          &sInMode, &sOutMode, &iRenderingIntent,
-                          &iProofIntent, &cmsFLAGS)) {
+    if (!PyArg_ParseTuple(args, "O!O!O!ss|iii:buildProofTransform", &CmsProfile_Type,
+                          &pInputProfile, &CmsProfile_Type, &pOutputProfile,
+                          &CmsProfile_Type, &pProofProfile, &sInMode, &sOutMode,
+                          &iRenderingIntent, &iProofIntent, &cmsFLAGS)) {
         return NULL;
     }
 
-    transform =
-        _buildProofTransform(pInputProfile->profile, pOutputProfile->profile,
-                             pProofProfile->profile, sInMode, sOutMode,
-                             iRenderingIntent, iProofIntent, cmsFLAGS);
+    transform = _buildProofTransform(pInputProfile->profile, pOutputProfile->profile,
+                                     pProofProfile->profile, sInMode, sOutMode,
+                                     iRenderingIntent, iProofIntent, cmsFLAGS);
 
     if (!transform) {
         return NULL;
@@ -586,8 +576,7 @@ createProfile(PyObject *self, PyObject *args)
     cmsCIExyY whitePoint;
     cmsBool result;
 
-    if (!PyArg_ParseTuple(args, "s|d:createProfile", &sColorSpace,
-                          &dColorTemp)) {
+    if (!PyArg_ParseTuple(args, "s|d:createProfile", &sColorSpace, &dColorTemp)) {
         return NULL;
     }
 
@@ -618,8 +607,7 @@ createProfile(PyObject *self, PyObject *args)
     }
 
     if (!hProfile) {
-        PyErr_SetString(PyExc_ValueError,
-                        "failed to create requested color space");
+        PyErr_SetString(PyExc_ValueError, "failed to create requested color space");
         return NULL;
     }
 
@@ -636,8 +624,7 @@ cms_profile_is_intent_supported(CmsProfileObject *self, PyObject *args)
 
     int intent;
     int direction;
-    if (!PyArg_ParseTuple(args, "ii:is_intent_supported", &intent,
-                          &direction)) {
+    if (!PyArg_ParseTuple(args, "ii:is_intent_supported", &intent, &direction)) {
         return NULL;
     }
 
@@ -776,8 +763,8 @@ _xyz_py(cmsCIEXYZ *XYZ)
 {
     cmsCIExyY xyY;
     cmsXYZ2xyY(&xyY, XYZ);
-    return Py_BuildValue("((d,d,d),(d,d,d))", XYZ->X, XYZ->Y, XYZ->Z, xyY.x,
-                         xyY.y, xyY.Y);
+    return Py_BuildValue("((d,d,d),(d,d,d))", XYZ->X, XYZ->Y, XYZ->Z, xyY.x, xyY.y,
+                         xyY.Y);
 }
 
 static PyObject *
@@ -788,11 +775,10 @@ _xyz3_py(cmsCIEXYZ *XYZ)
     cmsXYZ2xyY(&xyY[1], &XYZ[1]);
     cmsXYZ2xyY(&xyY[2], &XYZ[2]);
 
-    return Py_BuildValue(
-        "(((d,d,d),(d,d,d),(d,d,d)),((d,d,d),(d,d,d),(d,d,d)))", XYZ[0].X,
-        XYZ[0].Y, XYZ[0].Z, XYZ[1].X, XYZ[1].Y, XYZ[1].Z, XYZ[2].X, XYZ[2].Y,
-        XYZ[2].Z, xyY[0].x, xyY[0].y, xyY[0].Y, xyY[1].x, xyY[1].y, xyY[1].Y,
-        xyY[2].x, xyY[2].y, xyY[2].Y);
+    return Py_BuildValue("(((d,d,d),(d,d,d),(d,d,d)),((d,d,d),(d,d,d),(d,d,d)))",
+                         XYZ[0].X, XYZ[0].Y, XYZ[0].Z, XYZ[1].X, XYZ[1].Y, XYZ[1].Z,
+                         XYZ[2].X, XYZ[2].Y, XYZ[2].Z, xyY[0].x, xyY[0].y, xyY[0].Y,
+                         xyY[1].x, xyY[1].y, xyY[1].Y, xyY[2].x, xyY[2].y, xyY[2].Y);
 }
 
 static PyObject *
@@ -836,10 +822,10 @@ _profile_read_ciexyy_triple(CmsProfileObject *self, cmsTagSignature info)
 
     /* Note: lcms does all the heavy lifting and error checking (nr of
        channels == 3).  */
-    return Py_BuildValue("((d,d,d),(d,d,d),(d,d,d)),", triple->Red.x,
-                         triple->Red.y, triple->Red.Y, triple->Green.x,
-                         triple->Green.y, triple->Green.Y, triple->Blue.x,
-                         triple->Blue.y, triple->Blue.Y);
+    return Py_BuildValue("((d,d,d),(d,d,d),(d,d,d)),", triple->Red.x, triple->Red.y,
+                         triple->Red.Y, triple->Green.x, triple->Green.y,
+                         triple->Green.Y, triple->Blue.x, triple->Blue.y,
+                         triple->Blue.Y);
 }
 
 static PyObject *
@@ -899,8 +885,8 @@ _calculate_rgb_primaries(CmsProfileObject *self, cmsCIEXYZTRIPLE *result)
     }
 
     // transform from our profile to XYZ using doubles for highest precision
-    hTransform = cmsCreateTransform(self->profile, TYPE_RGB_DBL, hXYZ,
-                                    TYPE_XYZ_DBL, INTENT_RELATIVE_COLORIMETRIC,
+    hTransform = cmsCreateTransform(self->profile, TYPE_RGB_DBL, hXYZ, TYPE_XYZ_DBL,
+                                    INTENT_RELATIVE_COLORIMETRIC,
                                     cmsFLAGS_NOCACHE | cmsFLAGS_NOOPTIMIZE);
     cmsCloseProfile(hXYZ);
     if (hTransform == NULL) {
@@ -949,25 +935,20 @@ _is_intent_supported(CmsProfileObject *self, int clut)
 
         /* Only valid for ICC Intents (otherwise we read invalid memory in lcms
          * cmsio1.c). */
-        if (!(intent == INTENT_PERCEPTUAL ||
-              intent == INTENT_RELATIVE_COLORIMETRIC ||
-              intent == INTENT_SATURATION ||
-              intent == INTENT_ABSOLUTE_COLORIMETRIC)) {
+        if (!(intent == INTENT_PERCEPTUAL || intent == INTENT_RELATIVE_COLORIMETRIC ||
+              intent == INTENT_SATURATION || intent == INTENT_ABSOLUTE_COLORIMETRIC)) {
             continue;
         }
 
         id = PyLong_FromLong((long)intent);
         entry = Py_BuildValue(
             "(OOO)",
-            _check_intent(clut, self->profile, intent, LCMS_USED_AS_INPUT)
-                ? Py_True
-                : Py_False,
-            _check_intent(clut, self->profile, intent, LCMS_USED_AS_OUTPUT)
-                ? Py_True
-                : Py_False,
-            _check_intent(clut, self->profile, intent, LCMS_USED_AS_PROOF)
-                ? Py_True
-                : Py_False);
+            _check_intent(clut, self->profile, intent, LCMS_USED_AS_INPUT) ? Py_True
+                                                                           : Py_False,
+            _check_intent(clut, self->profile, intent, LCMS_USED_AS_OUTPUT) ? Py_True
+                                                                            : Py_False,
+            _check_intent(clut, self->profile, intent, LCMS_USED_AS_PROOF) ? Py_True
+                                                                           : Py_False);
         if (id == NULL || entry == NULL) {
             Py_XDECREF(id);
             Py_XDECREF(entry);
@@ -1015,8 +996,7 @@ _profile_getattr(CmsProfileObject *self, cmsInfoType field)
     // wchar_t buf[256]; -- UNDONE need wchar_t for unicode version.
     char buf[256];
     cmsUInt32Number written;
-    written =
-        cmsGetProfileInfoASCII(self->profile, field, "en", "us", buf, 256);
+    written = cmsGetProfileInfoASCII(self->profile, field, "en", "us", buf, 256);
     if (written) {
         return PyUnicode_FromString(buf);
     }
@@ -1027,10 +1007,9 @@ _profile_getattr(CmsProfileObject *self, cmsInfoType field)
 static PyObject *
 cms_profile_getattr_product_desc(CmsProfileObject *self, void *closure)
 {
-    PyErr_WarnEx(
-        PyExc_DeprecationWarning,
-        "product_desc is deprecated. Use Unicode profile_description instead.",
-        1);
+    PyErr_WarnEx(PyExc_DeprecationWarning,
+                 "product_desc is deprecated. Use Unicode profile_description instead.",
+                 1);
     // description was Description != 'Copyright' || or  "%s - %s"
     // (manufacturer, model) in 1.x
     return _profile_getattr(self, cmsInfoDescription);
@@ -1069,9 +1048,8 @@ cms_profile_getattr_product_manufacturer(CmsProfileObject *self, void *closure)
 static PyObject *
 cms_profile_getattr_product_copyright(CmsProfileObject *self, void *closure)
 {
-    PyErr_WarnEx(
-        PyExc_DeprecationWarning,
-        "product_copyright is deprecated. Use Unicode copyright instead.", 1);
+    PyErr_WarnEx(PyExc_DeprecationWarning,
+                 "product_copyright is deprecated. Use Unicode copyright instead.", 1);
     return _profile_getattr(self, cmsInfoCopyright);
 }
 
@@ -1093,10 +1071,8 @@ static PyObject *
 cms_profile_getattr_color_space(CmsProfileObject *self, void *closure)
 {
     PyErr_WarnEx(PyExc_DeprecationWarning,
-                 "color_space is deprecated. Use padded xcolor_space instead.",
-                 1);
-    return PyUnicode_DecodeFSDefault(
-        findICmode(cmsGetColorSpace(self->profile)));
+                 "color_space is deprecated. Use padded xcolor_space instead.", 1);
+    return PyUnicode_DecodeFSDefault(findICmode(cmsGetColorSpace(self->profile)));
 }
 
 /* New-style unicode interfaces.  */
@@ -1131,8 +1107,7 @@ cms_profile_getattr_profile_description(CmsProfileObject *self, void *closure)
 }
 
 static PyObject *
-cms_profile_getattr_screening_description(CmsProfileObject *self,
-                                          void *closure)
+cms_profile_getattr_screening_description(CmsProfileObject *self, void *closure)
 {
     return _profile_read_mlu(self, cmsSigScreeningDescTag);
 }
@@ -1192,8 +1167,7 @@ cms_profile_getattr_header_flags(CmsProfileObject *self, void *closure)
 static PyObject *
 cms_profile_getattr_header_manufacturer(CmsProfileObject *self, void *closure)
 {
-    return _profile_read_int_as_string(
-        cmsGetHeaderManufacturer(self->profile));
+    return _profile_read_int_as_string(cmsGetHeaderManufacturer(self->profile));
 }
 
 static PyObject *
@@ -1245,24 +1219,21 @@ cms_profile_getattr_technology(CmsProfileObject *self, void *closure)
 static PyObject *
 cms_profile_getattr_colorimetric_intent(CmsProfileObject *self, void *closure)
 {
-    return _profile_read_signature(self,
-                                   cmsSigColorimetricIntentImageStateTag);
+    return _profile_read_signature(self, cmsSigColorimetricIntentImageStateTag);
 }
 
 static PyObject *
 cms_profile_getattr_perceptual_rendering_intent_gamut(CmsProfileObject *self,
                                                       void *closure)
 {
-    return _profile_read_signature(self,
-                                   cmsSigPerceptualRenderingIntentGamutTag);
+    return _profile_read_signature(self, cmsSigPerceptualRenderingIntentGamutTag);
 }
 
 static PyObject *
 cms_profile_getattr_saturation_rendering_intent_gamut(CmsProfileObject *self,
                                                       void *closure)
 {
-    return _profile_read_signature(self,
-                                   cmsSigSaturationRenderingIntentGamutTag);
+    return _profile_read_signature(self, cmsSigSaturationRenderingIntentGamutTag);
 }
 
 static PyObject *
@@ -1296,8 +1267,7 @@ cms_profile_getattr_blue_colorant(CmsProfileObject *self, void *closure)
 }
 
 static PyObject *
-cms_profile_getattr_media_white_point_temperature(CmsProfileObject *self,
-                                                  void *closure)
+cms_profile_getattr_media_white_point_temperature(CmsProfileObject *self, void *closure)
 {
     cmsCIEXYZ *XYZ;
     cmsCIExyY xyY;
@@ -1462,8 +1432,7 @@ _illu_map(int i)
 }
 
 static PyObject *
-cms_profile_getattr_icc_measurement_condition(CmsProfileObject *self,
-                                              void *closure)
+cms_profile_getattr_icc_measurement_condition(CmsProfileObject *self, void *closure)
 {
     cmsICCMeasurementConditions *mc;
     cmsTagSignature info = cmsSigMeasurementTag;
@@ -1491,14 +1460,13 @@ cms_profile_getattr_icc_measurement_condition(CmsProfileObject *self,
     }
 
     return Py_BuildValue("{s:i,s:(ddd),s:s,s:d,s:s}", "observer", mc->Observer,
-                         "backing", mc->Backing.X, mc->Backing.Y,
-                         mc->Backing.Z, "geo", geo, "flare", mc->Flare,
-                         "illuminant_type", _illu_map(mc->IlluminantType));
+                         "backing", mc->Backing.X, mc->Backing.Y, mc->Backing.Z, "geo",
+                         geo, "flare", mc->Flare, "illuminant_type",
+                         _illu_map(mc->IlluminantType));
 }
 
 static PyObject *
-cms_profile_getattr_icc_viewing_condition(CmsProfileObject *self,
-                                          void *closure)
+cms_profile_getattr_icc_viewing_condition(CmsProfileObject *self, void *closure)
 {
     cmsICCViewingConditions *vc;
     cmsTagSignature info = cmsSigViewingConditionsTag;
@@ -1514,10 +1482,9 @@ cms_profile_getattr_icc_viewing_condition(CmsProfileObject *self,
         return Py_None;
     }
 
-    return Py_BuildValue("{s:(ddd),s:(ddd),s:s}", "illuminant",
-                         vc->IlluminantXYZ.X, vc->IlluminantXYZ.Y,
-                         vc->IlluminantXYZ.Z, "surround", vc->SurroundXYZ.X,
-                         vc->SurroundXYZ.Y, vc->SurroundXYZ.Z,
+    return Py_BuildValue("{s:(ddd),s:(ddd),s:s}", "illuminant", vc->IlluminantXYZ.X,
+                         vc->IlluminantXYZ.Y, vc->IlluminantXYZ.Z, "surround",
+                         vc->SurroundXYZ.X, vc->SurroundXYZ.Y, vc->SurroundXYZ.Z,
                          "illuminant_type", _illu_map(vc->IlluminantType));
 }
 
@@ -1539,8 +1506,7 @@ static struct PyGetSetDef cms_profile_getsetters[] = {
     {"manufacturer", (getter)cms_profile_getattr_manufacturer},
     {"model", (getter)cms_profile_getattr_model},
     {"profile_description", (getter)cms_profile_getattr_profile_description},
-    {"screening_description",
-     (getter)cms_profile_getattr_screening_description},
+    {"screening_description", (getter)cms_profile_getattr_screening_description},
     {"viewing_condition", (getter)cms_profile_getattr_viewing_condition},
     {"version", (getter)cms_profile_getattr_version},
     {"icc_version", (getter)cms_profile_getattr_icc_version},
@@ -1580,8 +1546,7 @@ static struct PyGetSetDef cms_profile_getsetters[] = {
     {"clut", (getter)cms_profile_getattr_is_clut},
     {"icc_measurement_condition",
      (getter)cms_profile_getattr_icc_measurement_condition},
-    {"icc_viewing_condition",
-     (getter)cms_profile_getattr_icc_viewing_condition},
+    {"icc_viewing_condition", (getter)cms_profile_getattr_icc_viewing_condition},
 
     {NULL}};
 
@@ -1639,8 +1604,7 @@ static struct PyGetSetDef cms_transform_getsetters[] = {
     {NULL}};
 
 static PyTypeObject CmsTransform_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0) "CmsTransform", sizeof(CmsTransformObject),
-    0,
+    PyVarObject_HEAD_INIT(NULL, 0) "CmsTransform", sizeof(CmsTransformObject), 0,
     /* methods */
     (destructor)cms_transform_dealloc, /*tp_dealloc*/
     0,                                 /*tp_print*/

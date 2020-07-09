@@ -22,8 +22,7 @@
 #include "Imaging.h"
 
 int
-ImagingPcdDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
-                 Py_ssize_t bytes)
+ImagingPcdDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
 {
     int x;
     int chunk;
@@ -49,8 +48,7 @@ ImagingPcdDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
             out += 3;
         }
 
-        state->shuffle((UINT8 *)im->image[state->y], state->buffer,
-                       state->xsize);
+        state->shuffle((UINT8 *)im->image[state->y], state->buffer, state->xsize);
 
         if (++state->y >= state->ysize) {
             return -1; /* This can hardly happen */
@@ -65,8 +63,7 @@ ImagingPcdDecode(Imaging im, ImagingCodecState state, UINT8 *buf,
             out += 3;
         }
 
-        state->shuffle((UINT8 *)im->image[state->y], state->buffer,
-                       state->xsize);
+        state->shuffle((UINT8 *)im->image[state->y], state->buffer, state->xsize);
 
         if (++state->y >= state->ysize) {
             return -1;

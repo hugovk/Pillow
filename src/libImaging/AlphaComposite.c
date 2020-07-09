@@ -62,19 +62,18 @@ ImagingAlphaComposite(Imaging imDst, Imaging imSrc)
                 UINT32 outa255 = src->a * 255 + blend;
                 // There we use 7 bits for precision.
                 // We could use more, but we go beyond 32 bits.
-                UINT32 coef1 =
-                    src->a * 255 * 255 * (1 << PRECISION_BITS) / outa255;
+                UINT32 coef1 = src->a * 255 * 255 * (1 << PRECISION_BITS) / outa255;
                 UINT32 coef2 = 255 * (1 << PRECISION_BITS) - coef1;
 
                 tmpr = src->r * coef1 + dst->r * coef2;
                 tmpg = src->g * coef1 + dst->g * coef2;
                 tmpb = src->b * coef1 + dst->b * coef2;
-                out->r = SHIFTFORDIV255(tmpr + (0x80 << PRECISION_BITS)) >>
-                         PRECISION_BITS;
-                out->g = SHIFTFORDIV255(tmpg + (0x80 << PRECISION_BITS)) >>
-                         PRECISION_BITS;
-                out->b = SHIFTFORDIV255(tmpb + (0x80 << PRECISION_BITS)) >>
-                         PRECISION_BITS;
+                out->r =
+                    SHIFTFORDIV255(tmpr + (0x80 << PRECISION_BITS)) >> PRECISION_BITS;
+                out->g =
+                    SHIFTFORDIV255(tmpg + (0x80 << PRECISION_BITS)) >> PRECISION_BITS;
+                out->b =
+                    SHIFTFORDIV255(tmpb + (0x80 << PRECISION_BITS)) >> PRECISION_BITS;
                 out->a = SHIFTFORDIV255(outa255 + 0x80);
             }
 

@@ -221,9 +221,8 @@ ImagingPointTransform(Imaging imIn, double scale, double offset)
     Imaging imOut;
     int x, y;
 
-    if (!imIn ||
-        (strcmp(imIn->mode, "I") != 0 && strcmp(imIn->mode, "I;16") != 0 &&
-         strcmp(imIn->mode, "F") != 0)) {
+    if (!imIn || (strcmp(imIn->mode, "I") != 0 && strcmp(imIn->mode, "I;16") != 0 &&
+                  strcmp(imIn->mode, "F") != 0)) {
         return (Imaging)ImagingError_ModeError();
     }
 

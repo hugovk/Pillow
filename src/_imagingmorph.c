@@ -45,16 +45,14 @@ apply(PyObject *self, PyObject *args)
     }
 
     if (!PyBytes_Check(py_lut)) {
-        PyErr_SetString(PyExc_RuntimeError,
-                        "The morphology LUT is not a bytes object");
+        PyErr_SetString(PyExc_RuntimeError, "The morphology LUT is not a bytes object");
         return NULL;
     }
 
     lut_len = PyBytes_Size(py_lut);
 
     if (lut_len < LUT_SIZE) {
-        PyErr_SetString(PyExc_RuntimeError,
-                        "The morphology LUT has the wrong size");
+        PyErr_SetString(PyExc_RuntimeError, "The morphology LUT has the wrong size");
         return NULL;
     }
 
@@ -146,16 +144,14 @@ match(PyObject *self, PyObject *args)
     }
 
     if (!PyBytes_Check(py_lut)) {
-        PyErr_SetString(PyExc_RuntimeError,
-                        "The morphology LUT is not a bytes object");
+        PyErr_SetString(PyExc_RuntimeError, "The morphology LUT is not a bytes object");
         return NULL;
     }
 
     lut_len = PyBytes_Size(py_lut);
 
     if (lut_len < LUT_SIZE) {
-        PyErr_SetString(PyExc_RuntimeError,
-                        "The morphology LUT has the wrong size");
+        PyErr_SetString(PyExc_RuntimeError, "The morphology LUT has the wrong size");
         return NULL;
     }
 

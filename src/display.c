@@ -97,9 +97,8 @@ _draw(ImagingDisplayObject *display, PyObject *args)
     HDC hdc;
     int dst[4];
     int src[4];
-    if (!PyArg_ParseTuple(args, F_HANDLE "(iiii)(iiii)", &hdc, dst + 0,
-                          dst + 1, dst + 2, dst + 3, src + 0, src + 1, src + 2,
-                          src + 3)) {
+    if (!PyArg_ParseTuple(args, F_HANDLE "(iiii)(iiii)", &hdc, dst + 0, dst + 1,
+                          dst + 2, dst + 3, src + 0, src + 1, src + 2, src + 3)) {
         return NULL;
     }
 
@@ -120,8 +119,7 @@ _paste(ImagingDisplayObject *display, PyObject *args)
     PyObject *op;
     int xy[4];
     xy[0] = xy[1] = xy[2] = xy[3] = 0;
-    if (!PyArg_ParseTuple(args, "O|(iiii)", &op, xy + 0, xy + 1, xy + 2,
-                          xy + 3)) {
+    if (!PyArg_ParseTuple(args, "O|(iiii)", &op, xy + 0, xy + 1, xy + 2, xy + 3)) {
         return NULL;
     }
     im = PyImaging_AsImaging(op);
@@ -220,8 +218,8 @@ _tobytes(ImagingDisplayObject *display, PyObject *args)
         return NULL;
     }
 
-    return PyBytes_FromStringAndSize(
-        display->dib->bits, display->dib->ysize * display->dib->linesize);
+    return PyBytes_FromStringAndSize(display->dib->bits,
+                                     display->dib->ysize * display->dib->linesize);
 }
 
 static struct PyMethodDef methods[] = {
@@ -453,9 +451,9 @@ list_windows_callback(HWND hwnd, LPARAM lParam)
     GetClientRect(hwnd, &inner);
     GetWindowRect(hwnd, &outer);
 
-    item = Py_BuildValue(F_HANDLE "N(iiii)(iiii)", hwnd, title, inner.left,
-                         inner.top, inner.right, inner.bottom, outer.left,
-                         outer.top, outer.right, outer.bottom);
+    item = Py_BuildValue(F_HANDLE "N(iiii)(iiii)", hwnd, title, inner.left, inner.top,
+                         inner.right, inner.bottom, outer.left, outer.top, outer.right,
+                         outer.bottom);
     if (!item) {
         return 0;
     }
@@ -503,8 +501,7 @@ PyImaging_GrabClipboardWin32(PyObject *self, PyObject *args)
     void *data;
     PyObject *result;
     UINT format;
-    UINT formats[] = {CF_DIB, CF_DIBV5, CF_HDROP,
-                      RegisterClipboardFormatA("PNG"), 0};
+    UINT formats[] = {CF_DIB, CF_DIBV5, CF_HDROP, RegisterClipboardFormatA("PNG"), 0};
     LPCSTR format_names[] = {"DIB", "DIB", "file", "png", NULL};
 
     if (!OpenClipboard(NULL)) {
@@ -609,9 +606,9 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
             dc = GetDC(wnd);
             GetWindowRect(wnd, &rect); /* in screen coordinates */
 
-            result = PyObject_CallFunction(
-                callback, "siiii", "damage", ps.rcPaint.left, ps.rcPaint.top,
-                ps.rcPaint.right, ps.rcPaint.bottom);
+            result = PyObject_CallFunction(callback, "siiii", "damage", ps.rcPaint.left,
+                                           ps.rcPaint.top, ps.rcPaint.right,
+                                           ps.rcPaint.bottom);
             if (result) {
                 Py_DECREF(result);
             }
@@ -619,9 +616,9 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
                 callback_error("window damage callback");
             }
 
-            result = PyObject_CallFunction(
-                callback, "s" F_HANDLE "iiii", "clear", dc, 0, 0,
-                rect.right - rect.left, rect.bottom - rect.top);
+            result =
+                PyObject_CallFunction(callback, "s" F_HANDLE "iiii", "clear", dc, 0, 0,
+                                      rect.right - rect.left, rect.bottom - rect.top);
             if (result) {
                 Py_DECREF(result);
             }
@@ -629,9 +626,9 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
                 callback_error("window clear callback");
             }
 
-            result = PyObject_CallFunction(
-                callback, "s" F_HANDLE "iiii", "repair", dc, 0, 0,
-                rect.right - rect.left, rect.bottom - rect.top);
+            result =
+                PyObject_CallFunction(callback, "s" F_HANDLE "iiii", "repair", dc, 0, 0,
+                                      rect.right - rect.left, rect.bottom - rect.top);
             if (result) {
                 Py_DECREF(result);
             }
@@ -645,8 +642,8 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_SIZE:
             /* resize window */
-            result = PyObject_CallFunction(callback, "sii", "resize",
-                                           LOWORD(lParam), HIWORD(lParam));
+            result = PyObject_CallFunction(callback, "sii", "resize", LOWORD(lParam),
+                                           HIWORD(lParam));
             if (result) {
                 InvalidateRect(wnd, NULL, 1);
                 Py_DECREF(result);
@@ -716,9 +713,9 @@ PyImaging_CreateWindowWin32(PyObject *self, PyObject *args)
 
     RegisterClass(&windowClass); /* FIXME: check return status */
 
-    wnd = CreateWindowEx(0, windowClass.lpszClassName, title,
-                         WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-                         width, height, HWND_DESKTOP, NULL, NULL, NULL);
+    wnd = CreateWindowEx(0, windowClass.lpszClassName, title, WS_OVERLAPPEDWINDOW,
+                         CW_USEDEFAULT, CW_USEDEFAULT, width, height, HWND_DESKTOP,
+                         NULL, NULL, NULL);
 
     if (!wnd) {
         PyErr_SetString(PyExc_OSError, "failed to create window");
@@ -773,8 +770,8 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args)
     int datasize;
     int width, height;
     int x0, y0, x1, y1;
-    if (!PyArg_ParseTuple(args, "y#(ii)(iiii):_load", &data, &datasize, &width,
-                          &height, &x0, &x1, &y0, &y1)) {
+    if (!PyArg_ParseTuple(args, "y#(ii)(iiii):_load", &data, &datasize, &width, &height,
+                          &x0, &x1, &y0, &y1)) {
         return NULL;
     }
 
@@ -784,8 +781,7 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args)
         /* placeable windows metafile (22-byte aldus header) */
         meta = SetWinMetaFileBits(datasize - 22, data + 22, NULL, NULL);
     }
-    else if (datasize > 80 && GET32(data, 0) == 1 &&
-             GET32(data, 40) == 0x464d4520) {
+    else if (datasize > 80 && GET32(data, 0) == 1 && GET32(data, 40) == 0x464d4520) {
         /* enhanced metafile */
         meta = SetEnhMetaFileBits(datasize, data);
     }
@@ -809,8 +805,7 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args)
 
     dc = CreateCompatibleDC(NULL);
 
-    bitmap = CreateDIBSection(dc, (BITMAPINFO *)&core, DIB_RGB_COLORS, &ptr,
-                              NULL, 0);
+    bitmap = CreateDIBSection(dc, (BITMAPINFO *)&core, DIB_RGB_COLORS, &ptr, NULL, 0);
 
     if (!bitmap) {
         PyErr_SetString(PyExc_OSError, "cannot create bitmap");
@@ -914,12 +909,11 @@ PyImaging_GrabScreenX11(PyObject *self, PyObject *args)
 
     reply = xcb_get_image_reply(
         connection,
-        xcb_get_image(connection, XCB_IMAGE_FORMAT_Z_PIXMAP, screen->root, 0,
-                      0, width, height, 0x00ffffff),
+        xcb_get_image(connection, XCB_IMAGE_FORMAT_Z_PIXMAP, screen->root, 0, 0, width,
+                      height, 0x00ffffff),
         &error);
     if (reply == NULL) {
-        PyErr_Format(PyExc_OSError,
-                     "X get_image failed: error %i (%i, %i, %i)",
+        PyErr_Format(PyExc_OSError, "X get_image failed: error %i (%i, %i, %i)",
                      error->error_code, error->major_code, error->minor_code,
                      error->resource_id);
         free(error);

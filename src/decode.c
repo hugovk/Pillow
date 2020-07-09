@@ -44,8 +44,8 @@
 /* -------------------------------------------------------------------- */
 
 typedef struct {
-    PyObject_HEAD int (*decode)(Imaging im, ImagingCodecState state,
-                                UINT8 *buffer, Py_ssize_t bytes);
+    PyObject_HEAD int (*decode)(Imaging im, ImagingCodecState state, UINT8 *buffer,
+                                Py_ssize_t bytes);
     int (*cleanup)(ImagingCodecState state);
     struct ImagingCodecStateInstance state;
     Imaging im;
@@ -297,8 +297,7 @@ static PyTypeObject ImagingDecoderType = {
 /* -------------------------------------------------------------------- */
 
 int
-get_unpacker(ImagingDecoderObject *decoder, const char *mode,
-             const char *rawmode)
+get_unpacker(ImagingDecoderObject *decoder, const char *mode, const char *rawmode)
 {
     int bits;
     ImagingShuffler unpack;
@@ -331,8 +330,7 @@ PyImaging_BitDecoderNew(PyObject *self, PyObject *args)
     int fill = 0;
     int sign = 0;
     int ystep = 1;
-    if (!PyArg_ParseTuple(args, "s|iiiii", &mode, &bits, &pad, &fill, &sign,
-                          &ystep)) {
+    if (!PyArg_ParseTuple(args, "s|iiiii", &mode, &bits, &pad, &fill, &sign, &ystep)) {
         return NULL;
     }
 
@@ -391,8 +389,7 @@ PyImaging_BcnDecoderNew(PyObject *self, PyObject *args)
             actual = "RGBAF";
             break;
         default:
-            PyErr_SetString(PyExc_ValueError,
-                            "block compression type unknown");
+            PyErr_SetString(PyExc_ValueError, "block compression type unknown");
             return NULL;
     }
 
@@ -515,8 +512,7 @@ PyImaging_LibTiffDecoderNew(PyObject *self, PyObject *args)
     int fp;
     uint32 ifdoffset;
 
-    if (!PyArg_ParseTuple(args, "sssiI", &mode, &rawmode, &compname, &fp,
-                          &ifdoffset)) {
+    if (!PyArg_ParseTuple(args, "sssiI", &mode, &rawmode, &compname, &fp, &ifdoffset)) {
         return NULL;
     }
 
@@ -533,8 +529,7 @@ PyImaging_LibTiffDecoderNew(PyObject *self, PyObject *args)
 
     if (!ImagingLibTiffInit(&decoder->state, fp, ifdoffset)) {
         Py_DECREF(decoder);
-        PyErr_SetString(PyExc_RuntimeError,
-                        "tiff codec initialization failed");
+        PyErr_SetString(PyExc_RuntimeError, "tiff codec initialization failed");
         return NULL;
     }
 
@@ -856,8 +851,7 @@ PyImaging_JpegDecoderNew(PyObject *self, PyObject *args)
     int scale = 1;
     int draft = 0;
 
-    if (!PyArg_ParseTuple(args, "ssz|ii", &mode, &rawmode, &jpegmode, &scale,
-                          &draft)) {
+    if (!PyArg_ParseTuple(args, "ssz|ii", &mode, &rawmode, &jpegmode, &scale, &draft)) {
         return NULL;
     }
 
@@ -916,8 +910,8 @@ PyImaging_Jpeg2KDecoderNew(PyObject *self, PyObject *args)
     int fd = -1;
     PY_LONG_LONG length = -1;
 
-    if (!PyArg_ParseTuple(args, "ss|iiiL", &mode, &format, &reduce, &layers,
-                          &fd, &length)) {
+    if (!PyArg_ParseTuple(args, "ss|iiiL", &mode, &format, &reduce, &layers, &fd,
+                          &length)) {
         return NULL;
     }
 

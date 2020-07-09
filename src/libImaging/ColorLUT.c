@@ -60,8 +60,8 @@ table_index3D(int index1D, int index2D, int index3D, int size1D, int size1D_2D)
     and 255 << PRECISION_BITS (16320) is highest value.
 */
 Imaging
-ImagingColorLUT3D_linear(Imaging imOut, Imaging imIn, int table_channels,
-                         int size1D, int size2D, int size3D, INT16 *table)
+ImagingColorLUT3D_linear(Imaging imOut, Imaging imIn, int table_channels, int size1D,
+                         int size2D, int size3D, INT16 *table)
 {
     /* This float to int conversion doesn't have rounding
        error compensation (+0.5) for two reasons:
@@ -85,9 +85,8 @@ ImagingColorLUT3D_linear(Imaging imOut, Imaging imIn, int table_channels,
         return NULL;
     }
 
-    if (imIn->type != IMAGING_TYPE_UINT8 ||
-        imOut->type != IMAGING_TYPE_UINT8 || imIn->bands < 3 ||
-        imOut->bands < table_channels) {
+    if (imIn->type != IMAGING_TYPE_UINT8 || imOut->type != IMAGING_TYPE_UINT8 ||
+        imIn->bands < 3 || imOut->bands < table_channels) {
         return (Imaging)ImagingError_ModeError();
     }
 
@@ -104,60 +103,52 @@ ImagingColorLUT3D_linear(Imaging imOut, Imaging imIn, int table_channels,
             UINT32 index1D = rowIn[x * 4 + 0] * scale1D;
             UINT32 index2D = rowIn[x * 4 + 1] * scale2D;
             UINT32 index3D = rowIn[x * 4 + 2] * scale3D;
-            INT16 shift1D =
-                (SCALE_MASK & index1D) >> (SCALE_BITS - SHIFT_BITS);
-            INT16 shift2D =
-                (SCALE_MASK & index2D) >> (SCALE_BITS - SHIFT_BITS);
-            INT16 shift3D =
-                (SCALE_MASK & index3D) >> (SCALE_BITS - SHIFT_BITS);
-            int idx = table_channels * table_index3D(index1D >> SCALE_BITS,
-                                                     index2D >> SCALE_BITS,
-                                                     index3D >> SCALE_BITS,
-                                                     size1D, size1D_2D);
+            INT16 shift1D = (SCALE_MASK & index1D) >> (SCALE_BITS - SHIFT_BITS);
+            INT16 shift2D = (SCALE_MASK & index2D) >> (SCALE_BITS - SHIFT_BITS);
+            INT16 shift3D = (SCALE_MASK & index3D) >> (SCALE_BITS - SHIFT_BITS);
+            int idx = table_channels *
+                      table_index3D(index1D >> SCALE_BITS, index2D >> SCALE_BITS,
+                                    index3D >> SCALE_BITS, size1D, size1D_2D);
             INT16 result[4], left[4], right[4];
             INT16 leftleft[4], leftright[4], rightleft[4], rightright[4];
 
             if (table_channels == 3) {
                 UINT32 v;
-                interpolate3(leftleft, &table[idx + 0], &table[idx + 3],
-                             shift1D);
+                interpolate3(leftleft, &table[idx + 0], &table[idx + 3], shift1D);
                 interpolate3(leftright, &table[idx + size1D * 3],
                              &table[idx + size1D * 3 + 3], shift1D);
                 interpolate3(left, leftleft, leftright, shift2D);
 
                 interpolate3(rightleft, &table[idx + size1D_2D * 3],
                              &table[idx + size1D_2D * 3 + 3], shift1D);
-                interpolate3(
-                    rightright, &table[idx + size1D_2D * 3 + size1D * 3],
-                    &table[idx + size1D_2D * 3 + size1D * 3 + 3], shift1D);
+                interpolate3(rightright, &table[idx + size1D_2D * 3 + size1D * 3],
+                             &table[idx + size1D_2D * 3 + size1D * 3 + 3], shift1D);
                 interpolate3(right, rightleft, rightright, shift2D);
 
                 interpolate3(result, left, right, shift3D);
 
-                v = MAKE_UINT32(clip8(result[0]), clip8(result[1]),
-                                clip8(result[2]), rowIn[x * 4 + 3]);
+                v = MAKE_UINT32(clip8(result[0]), clip8(result[1]), clip8(result[2]),
+                                rowIn[x * 4 + 3]);
                 memcpy(rowOut + x * sizeof(v), &v, sizeof(v));
             }
 
             if (table_channels == 4) {
                 UINT32 v;
-                interpolate4(leftleft, &table[idx + 0], &table[idx + 4],
-                             shift1D);
+                interpolate4(leftleft, &table[idx + 0], &table[idx + 4], shift1D);
                 interpolate4(leftright, &table[idx + size1D * 4],
                              &table[idx + size1D * 4 + 4], shift1D);
                 interpolate4(left, leftleft, leftright, shift2D);
 
                 interpolate4(rightleft, &table[idx + size1D_2D * 4],
                              &table[idx + size1D_2D * 4 + 4], shift1D);
-                interpolate4(
-                    rightright, &table[idx + size1D_2D * 4 + size1D * 4],
-                    &table[idx + size1D_2D * 4 + size1D * 4 + 4], shift1D);
+                interpolate4(rightright, &table[idx + size1D_2D * 4 + size1D * 4],
+                             &table[idx + size1D_2D * 4 + size1D * 4 + 4], shift1D);
                 interpolate4(right, rightleft, rightright, shift2D);
 
                 interpolate4(result, left, right, shift3D);
 
-                v = MAKE_UINT32(clip8(result[0]), clip8(result[1]),
-                                clip8(result[2]), clip8(result[3]));
+                v = MAKE_UINT32(clip8(result[0]), clip8(result[1]), clip8(result[2]),
+                                clip8(result[3]));
                 memcpy(rowOut + x * sizeof(v), &v, sizeof(v));
             }
         }

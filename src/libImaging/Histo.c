@@ -145,8 +145,7 @@ ImagingGetHistogram(Imaging im, Imaging imMask, void *minmax)
                         break;
                     }
                     memcpy(&imin, minmax, sizeof(imin));
-                    memcpy(&imax, ((char *)minmax) + sizeof(imin),
-                           sizeof(imax));
+                    memcpy(&imax, ((char *)minmax) + sizeof(imin), sizeof(imax));
                     if (imin >= imax) {
                         break;
                     }
@@ -172,8 +171,7 @@ ImagingGetHistogram(Imaging im, Imaging imMask, void *minmax)
                         break;
                     }
                     memcpy(&fmin, minmax, sizeof(fmin));
-                    memcpy(&fmax, ((char *)minmax) + sizeof(fmin),
-                           sizeof(fmax));
+                    memcpy(&fmax, ((char *)minmax) + sizeof(fmin), sizeof(fmax));
                     if (fmin >= fmax) {
                         break;
                     }

@@ -40,10 +40,8 @@
 #define CLIP16(v) ((v) <= -32768 ? -32768 : (v) >= 32767 ? 32767 : (v))
 
 /* ITU-R Recommendation 601-2 (assuming nonlinear RGB) */
-#define L(rgb) \
-    ((INT32)(rgb)[0] * 299 + (INT32)(rgb)[1] * 587 + (INT32)(rgb)[2] * 114)
-#define L24(rgb) \
-    ((rgb)[0] * 19595 + (rgb)[1] * 38470 + (rgb)[2] * 7471 + 0x8000)
+#define L(rgb) ((INT32)(rgb)[0] * 299 + (INT32)(rgb)[1] * 587 + (INT32)(rgb)[2] * 114)
+#define L24(rgb) ((rgb)[0] * 19595 + (rgb)[1] * 38470 + (rgb)[2] * 7471 + 0x8000)
 
 #ifndef round
 double
@@ -535,12 +533,10 @@ static void
 rgbT2rgba(UINT8 *out, int xsize, int r, int g, int b)
 {
 #ifdef WORDS_BIGENDIAN
-    UINT32 trns =
-        ((r & 0xff) << 24) | ((g & 0xff) << 16) | ((b & 0xff) << 8) | 0xff;
+    UINT32 trns = ((r & 0xff) << 24) | ((g & 0xff) << 16) | ((b & 0xff) << 8) | 0xff;
     UINT32 repl = trns & 0xffffff00;
 #else
-    UINT32 trns =
-        (0xff << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
+    UINT32 trns = (0xff << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
     UINT32 repl = trns & 0x00ffffff;
 #endif
 
@@ -1352,8 +1348,8 @@ frompalette(Imaging imOut, Imaging imIn, const char *mode)
 
     ImagingSectionEnter(&cookie);
     for (y = 0; y < imIn->ysize; y++) {
-        (*convert)((UINT8 *)imOut->image[y], (UINT8 *)imIn->image[y],
-                   imIn->xsize, imIn->palette->palette);
+        (*convert)((UINT8 *)imOut->image[y], (UINT8 *)imIn->image[y], imIn->xsize,
+                   imIn->palette->palette);
     }
     ImagingSectionLeave(&cookie);
 
@@ -1364,8 +1360,8 @@ frompalette(Imaging imOut, Imaging imIn, const char *mode)
 #pragma optimize("", off)
 #endif
 static Imaging
-topalette(Imaging imOut, Imaging imIn, const char *mode,
-          ImagingPalette inpalette, int dither)
+topalette(Imaging imOut, Imaging imIn, const char *mode, ImagingPalette inpalette,
+          int dither)
 {
     ImagingSectionCookie cookie;
     int alpha;
@@ -1412,8 +1408,7 @@ topalette(Imaging imOut, Imaging imIn, const char *mode,
         ImagingSectionEnter(&cookie);
         for (y = 0; y < imIn->ysize; y++) {
             if (alpha) {
-                l2la((UINT8 *)imOut->image[y], (UINT8 *)imIn->image[y],
-                     imIn->xsize);
+                l2la((UINT8 *)imOut->image[y], (UINT8 *)imIn->image[y], imIn->xsize);
             }
             else {
                 memcpy(imOut->image[y], imIn->image[y], imIn->linesize);
@@ -1450,8 +1445,7 @@ topalette(Imaging imOut, Imaging imIn, const char *mode,
                 int g, g0, g1, g2;
                 int b, b0, b1, b2;
                 UINT8 *in = (UINT8 *)imIn->image[y];
-                UINT8 *out =
-                    alpha ? (UINT8 *)imOut->image32[y] : imOut->image8[y];
+                UINT8 *out = alpha ? (UINT8 *)imOut->image32[y] : imOut->image8[y];
                 int *e = errors;
 
                 r = r0 = r1 = 0;
@@ -1472,8 +1466,7 @@ topalette(Imaging imOut, Imaging imIn, const char *mode,
                         ImagingPaletteCacheUpdate(palette, r, g, b);
                     }
                     if (alpha) {
-                        out[x * 4] = out[x * 4 + 1] = out[x * 4 + 2] =
-                            (UINT8)cache[0];
+                        out[x * 4] = out[x * 4 + 1] = out[x * 4 + 2] = (UINT8)cache[0];
                         out[x * 4 + 3] = 255;
                     }
                     else {
@@ -1526,8 +1519,7 @@ topalette(Imaging imOut, Imaging imIn, const char *mode,
             for (y = 0; y < imIn->ysize; y++) {
                 int r, g, b;
                 UINT8 *in = (UINT8 *)imIn->image[y];
-                UINT8 *out =
-                    alpha ? (UINT8 *)imOut->image32[y] : imOut->image8[y];
+                UINT8 *out = alpha ? (UINT8 *)imOut->image32[y] : imOut->image8[y];
 
                 for (x = 0; x < imIn->xsize; x++, in += 4) {
                     INT16 *cache;
@@ -1542,8 +1534,7 @@ topalette(Imaging imOut, Imaging imIn, const char *mode,
                         ImagingPaletteCacheUpdate(palette, r, g, b);
                     }
                     if (alpha) {
-                        out[x * 4] = out[x * 4 + 1] = out[x * 4 + 2] =
-                            (UINT8)cache[0];
+                        out[x * 4] = out[x * 4 + 1] = out[x * 4 + 2] = (UINT8)cache[0];
                         out[x * 4 + 3] = 255;
                     }
                     else {
@@ -1717,8 +1708,7 @@ convert(Imaging imOut, Imaging imIn, const char *mode, ImagingPalette palette,
 #else
         static char buf[256];
         /* FIXME: may overflow if mode is too large */
-        sprintf(buf, "conversion from %s to %s not supported", imIn->mode,
-                mode);
+        sprintf(buf, "conversion from %s to %s not supported", imIn->mode, mode);
         return (Imaging)ImagingError_ValueError(buf);
 #endif
     }
@@ -1730,8 +1720,7 @@ convert(Imaging imOut, Imaging imIn, const char *mode, ImagingPalette palette,
 
     ImagingSectionEnter(&cookie);
     for (y = 0; y < imIn->ysize; y++) {
-        (*convert)((UINT8 *)imOut->image[y], (UINT8 *)imIn->image[y],
-                   imIn->xsize);
+        (*convert)((UINT8 *)imOut->image[y], (UINT8 *)imIn->image[y], imIn->xsize);
     }
     ImagingSectionLeave(&cookie);
 
@@ -1739,8 +1728,7 @@ convert(Imaging imOut, Imaging imIn, const char *mode, ImagingPalette palette,
 }
 
 Imaging
-ImagingConvert(Imaging imIn, const char *mode, ImagingPalette palette,
-               int dither)
+ImagingConvert(Imaging imIn, const char *mode, ImagingPalette palette, int dither)
 {
     return convert(NULL, imIn, mode, palette, dither);
 }
@@ -1774,10 +1762,8 @@ ImagingConvertTransparent(Imaging imIn, const char *mode, int r, int g, int b)
     {
         static char buf[256];
         /* FIXME: may overflow if mode is too large */
-        sprintf(
-            buf,
-            "conversion from %s to %s not supported in convert_transparent",
-            imIn->mode, mode);
+        sprintf(buf, "conversion from %s to %s not supported in convert_transparent",
+                imIn->mode, mode);
         return (Imaging)ImagingError_ValueError(buf);
     }
 #endif
@@ -1805,8 +1791,7 @@ ImagingConvertTransparent(Imaging imIn, const char *mode, int r, int g, int b)
 
     ImagingSectionEnter(&cookie);
     for (y = 0; y < imIn->ysize; y++) {
-        (*convert)((UINT8 *)imOut->image[y], (UINT8 *)imIn->image[y],
-                   imIn->xsize);
+        (*convert)((UINT8 *)imOut->image[y], (UINT8 *)imIn->image[y], imIn->xsize);
         rgbT2rgba((UINT8 *)imOut->image[y], imIn->xsize, r, g, b);
     }
     ImagingSectionLeave(&cookie);
@@ -1834,8 +1819,7 @@ ImagingConvertInPlace(Imaging imIn, const char *mode)
 
     ImagingSectionEnter(&cookie);
     for (y = 0; y < imIn->ysize; y++) {
-        (*convert)((UINT8 *)imIn->image[y], (UINT8 *)imIn->image[y],
-                   imIn->xsize);
+        (*convert)((UINT8 *)imIn->image[y], (UINT8 *)imIn->image[y], imIn->xsize);
     }
     ImagingSectionLeave(&cookie);
 

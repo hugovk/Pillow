@@ -65,10 +65,10 @@ ImagingRawEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
     ptr = buf;
 
     while (bytes >= state->bytes) {
-        state->shuffle(ptr,
-                       (UINT8 *)im->image[state->y + state->yoff] +
-                           state->xoff * im->pixelsize,
-                       state->xsize);
+        state->shuffle(
+            ptr,
+            (UINT8 *)im->image[state->y + state->yoff] + state->xoff * im->pixelsize,
+            state->xsize);
 
         if (state->bytes > state->count) {
             /* zero-pad the buffer, if necessary */

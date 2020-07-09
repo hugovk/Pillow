@@ -1,15 +1,13 @@
 #ifdef WORDS_BIGENDIAN
-#define MAKE_UINT32(u0, u1, u2, u3)                              \
-    ((UINT32)(u3) | ((UINT32)(u2) << 8) | ((UINT32)(u1) << 16) | \
-     ((UINT32)(u0) << 24))
+#define MAKE_UINT32(u0, u1, u2, u3) \
+    ((UINT32)(u3) | ((UINT32)(u2) << 8) | ((UINT32)(u1) << 16) | ((UINT32)(u0) << 24))
 #define MASK_UINT32_CHANNEL_0 0xff000000
 #define MASK_UINT32_CHANNEL_1 0x00ff0000
 #define MASK_UINT32_CHANNEL_2 0x0000ff00
 #define MASK_UINT32_CHANNEL_3 0x000000ff
 #else
-#define MAKE_UINT32(u0, u1, u2, u3)                              \
-    ((UINT32)(u0) | ((UINT32)(u1) << 8) | ((UINT32)(u2) << 16) | \
-     ((UINT32)(u3) << 24))
+#define MAKE_UINT32(u0, u1, u2, u3) \
+    ((UINT32)(u0) | ((UINT32)(u1) << 8) | ((UINT32)(u2) << 16) | ((UINT32)(u3) << 24))
 #define MASK_UINT32_CHANNEL_0 0x000000ff
 #define MASK_UINT32_CHANNEL_1 0x0000ff00
 #define MASK_UINT32_CHANNEL_2 0x00ff0000
@@ -23,11 +21,9 @@
 
 #define DIV255(a, tmp) (tmp = (a) + 128, SHIFTFORDIV255(tmp))
 
-#define BLEND(mask, in1, in2, tmp1) \
-    DIV255(in1 *(255 - mask) + in2 * mask, tmp1)
+#define BLEND(mask, in1, in2, tmp1) DIV255(in1 *(255 - mask) + in2 * mask, tmp1)
 
-#define PREBLEND(mask, in1, in2, tmp1) \
-    (MULDIV255(in1, (255 - mask), tmp1) + in2)
+#define PREBLEND(mask, in1, in2, tmp1) (MULDIV255(in1, (255 - mask), tmp1) + in2)
 
 #define CLIP8(v) ((v) <= 0 ? 0 : (v) < 256 ? (v) : 255)
 

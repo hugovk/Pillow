@@ -99,91 +99,81 @@ static struct filter LANCZOS = {lanczos_filter, 3.0};
 
 /* Handles values form -640 to 639. */
 UINT8 _clip8_lookups[1280] = {
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   1,   2,   3,   4,
-    5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15,  16,  17,  18,  19,
-    20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32,  33,  34,
-    35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,  48,  49,
-    50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,  64,
-    65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,  78,  79,
-    80,  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,
-    95,  96,  97,  98,  99,  100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
-    110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124,
-    125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139,
-    140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154,
-    155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169,
-    170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184,
-    185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199,
-    200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214,
-    215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229,
-    230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244,
-    245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   1,   2,   3,   4,   5,
+    6,   7,   8,   9,   10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,
+    23,  24,  25,  26,  27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,
+    40,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  52,  53,  54,  55,  56,
+    57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,  70,  71,  72,  73,
+    74,  75,  76,  77,  78,  79,  80,  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,
+    91,  92,  93,  94,  95,  96,  97,  98,  99,  100, 101, 102, 103, 104, 105, 106, 107,
+    108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124,
+    125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141,
+    142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158,
+    159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175,
+    176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
+    193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
+    210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226,
+    227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243,
+    244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255,
 };
 
@@ -196,8 +186,8 @@ clip8(int in)
 }
 
 int
-precompute_coeffs(int inSize, float in0, float in1, int outSize,
-                  struct filter *filterp, int **boundsp, double **kkp)
+precompute_coeffs(int inSize, float in0, float in1, int outSize, struct filter *filterp,
+                  int **boundsp, double **kkp)
 {
     double support, scale, filterscale;
     double center, ww, ss;
@@ -297,8 +287,8 @@ normalize_coeffs_8bpc(int outSize, int ksize, double *prekk)
 }
 
 void
-ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset,
-                               int ksize, int *bounds, double *prekk)
+ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
+                               int *bounds, double *prekk)
 {
     ImagingSectionCookie cookie;
     int ss0, ss1, ss2, ss3;
@@ -334,11 +324,9 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset,
                     k = &kk[xx * ksize];
                     ss0 = ss3 = 1 << (PRECISION_BITS - 1);
                     for (x = 0; x < xmax; x++) {
-                        ss0 += ((UINT8)imIn
-                                    ->image[yy + offset][(x + xmin) * 4 + 0]) *
+                        ss0 += ((UINT8)imIn->image[yy + offset][(x + xmin) * 4 + 0]) *
                                k[x];
-                        ss3 += ((UINT8)imIn
-                                    ->image[yy + offset][(x + xmin) * 4 + 3]) *
+                        ss3 += ((UINT8)imIn->image[yy + offset][(x + xmin) * 4 + 3]) *
                                k[x];
                     }
                     v = MAKE_UINT32(clip8(ss0), 0, 0, clip8(ss3));
@@ -355,14 +343,11 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset,
                     k = &kk[xx * ksize];
                     ss0 = ss1 = ss2 = 1 << (PRECISION_BITS - 1);
                     for (x = 0; x < xmax; x++) {
-                        ss0 += ((UINT8)imIn
-                                    ->image[yy + offset][(x + xmin) * 4 + 0]) *
+                        ss0 += ((UINT8)imIn->image[yy + offset][(x + xmin) * 4 + 0]) *
                                k[x];
-                        ss1 += ((UINT8)imIn
-                                    ->image[yy + offset][(x + xmin) * 4 + 1]) *
+                        ss1 += ((UINT8)imIn->image[yy + offset][(x + xmin) * 4 + 1]) *
                                k[x];
-                        ss2 += ((UINT8)imIn
-                                    ->image[yy + offset][(x + xmin) * 4 + 2]) *
+                        ss2 += ((UINT8)imIn->image[yy + offset][(x + xmin) * 4 + 2]) *
                                k[x];
                     }
                     v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2), 0);
@@ -379,21 +364,16 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset,
                     k = &kk[xx * ksize];
                     ss0 = ss1 = ss2 = ss3 = 1 << (PRECISION_BITS - 1);
                     for (x = 0; x < xmax; x++) {
-                        ss0 += ((UINT8)imIn
-                                    ->image[yy + offset][(x + xmin) * 4 + 0]) *
+                        ss0 += ((UINT8)imIn->image[yy + offset][(x + xmin) * 4 + 0]) *
                                k[x];
-                        ss1 += ((UINT8)imIn
-                                    ->image[yy + offset][(x + xmin) * 4 + 1]) *
+                        ss1 += ((UINT8)imIn->image[yy + offset][(x + xmin) * 4 + 1]) *
                                k[x];
-                        ss2 += ((UINT8)imIn
-                                    ->image[yy + offset][(x + xmin) * 4 + 2]) *
+                        ss2 += ((UINT8)imIn->image[yy + offset][(x + xmin) * 4 + 2]) *
                                k[x];
-                        ss3 += ((UINT8)imIn
-                                    ->image[yy + offset][(x + xmin) * 4 + 3]) *
+                        ss3 += ((UINT8)imIn->image[yy + offset][(x + xmin) * 4 + 3]) *
                                k[x];
                     }
-                    v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2),
-                                    clip8(ss3));
+                    v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2), clip8(ss3));
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
                 }
             }
@@ -403,8 +383,8 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset,
 }
 
 void
-ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset,
-                             int ksize, int *bounds, double *prekk)
+ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
+                             int *bounds, double *prekk)
 {
     ImagingSectionCookie cookie;
     int ss0, ss1, ss2, ss3;
@@ -440,10 +420,8 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset,
                     UINT32 v;
                     ss0 = ss3 = 1 << (PRECISION_BITS - 1);
                     for (y = 0; y < ymax; y++) {
-                        ss0 +=
-                            ((UINT8)imIn->image[y + ymin][xx * 4 + 0]) * k[y];
-                        ss3 +=
-                            ((UINT8)imIn->image[y + ymin][xx * 4 + 3]) * k[y];
+                        ss0 += ((UINT8)imIn->image[y + ymin][xx * 4 + 0]) * k[y];
+                        ss3 += ((UINT8)imIn->image[y + ymin][xx * 4 + 3]) * k[y];
                     }
                     v = MAKE_UINT32(clip8(ss0), 0, 0, clip8(ss3));
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
@@ -459,12 +437,9 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset,
                     UINT32 v;
                     ss0 = ss1 = ss2 = 1 << (PRECISION_BITS - 1);
                     for (y = 0; y < ymax; y++) {
-                        ss0 +=
-                            ((UINT8)imIn->image[y + ymin][xx * 4 + 0]) * k[y];
-                        ss1 +=
-                            ((UINT8)imIn->image[y + ymin][xx * 4 + 1]) * k[y];
-                        ss2 +=
-                            ((UINT8)imIn->image[y + ymin][xx * 4 + 2]) * k[y];
+                        ss0 += ((UINT8)imIn->image[y + ymin][xx * 4 + 0]) * k[y];
+                        ss1 += ((UINT8)imIn->image[y + ymin][xx * 4 + 1]) * k[y];
+                        ss2 += ((UINT8)imIn->image[y + ymin][xx * 4 + 2]) * k[y];
                     }
                     v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2), 0);
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
@@ -480,17 +455,12 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset,
                     UINT32 v;
                     ss0 = ss1 = ss2 = ss3 = 1 << (PRECISION_BITS - 1);
                     for (y = 0; y < ymax; y++) {
-                        ss0 +=
-                            ((UINT8)imIn->image[y + ymin][xx * 4 + 0]) * k[y];
-                        ss1 +=
-                            ((UINT8)imIn->image[y + ymin][xx * 4 + 1]) * k[y];
-                        ss2 +=
-                            ((UINT8)imIn->image[y + ymin][xx * 4 + 2]) * k[y];
-                        ss3 +=
-                            ((UINT8)imIn->image[y + ymin][xx * 4 + 3]) * k[y];
+                        ss0 += ((UINT8)imIn->image[y + ymin][xx * 4 + 0]) * k[y];
+                        ss1 += ((UINT8)imIn->image[y + ymin][xx * 4 + 1]) * k[y];
+                        ss2 += ((UINT8)imIn->image[y + ymin][xx * 4 + 2]) * k[y];
+                        ss3 += ((UINT8)imIn->image[y + ymin][xx * 4 + 3]) * k[y];
                     }
-                    v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2),
-                                    clip8(ss3));
+                    v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2), clip8(ss3));
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
                 }
             }
@@ -500,8 +470,8 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset,
 }
 
 void
-ImagingResampleHorizontal_32bpc(Imaging imOut, Imaging imIn, int offset,
-                                int ksize, int *bounds, double *kk)
+ImagingResampleHorizontal_32bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
+                                int *bounds, double *kk)
 {
     ImagingSectionCookie cookie;
     double ss;
@@ -518,8 +488,7 @@ ImagingResampleHorizontal_32bpc(Imaging imOut, Imaging imIn, int offset,
                     k = &kk[xx * ksize];
                     ss = 0.0;
                     for (x = 0; x < xmax; x++) {
-                        ss += IMAGING_PIXEL_I(imIn, x + xmin, yy + offset) *
-                              k[x];
+                        ss += IMAGING_PIXEL_I(imIn, x + xmin, yy + offset) * k[x];
                     }
                     IMAGING_PIXEL_I(imOut, xx, yy) = ROUND_UP(ss);
                 }
@@ -534,8 +503,7 @@ ImagingResampleHorizontal_32bpc(Imaging imOut, Imaging imIn, int offset,
                     k = &kk[xx * ksize];
                     ss = 0.0;
                     for (x = 0; x < xmax; x++) {
-                        ss += IMAGING_PIXEL_F(imIn, x + xmin, yy + offset) *
-                              k[x];
+                        ss += IMAGING_PIXEL_F(imIn, x + xmin, yy + offset) * k[x];
                     }
                     IMAGING_PIXEL_F(imOut, xx, yy) = ss;
                 }
@@ -546,8 +514,8 @@ ImagingResampleHorizontal_32bpc(Imaging imOut, Imaging imIn, int offset,
 }
 
 void
-ImagingResampleVertical_32bpc(Imaging imOut, Imaging imIn, int offset,
-                              int ksize, int *bounds, double *kk)
+ImagingResampleVertical_32bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
+                              int *bounds, double *kk)
 {
     ImagingSectionCookie cookie;
     double ss;
@@ -589,13 +557,12 @@ ImagingResampleVertical_32bpc(Imaging imOut, Imaging imIn, int offset,
     ImagingSectionLeave(&cookie);
 }
 
-typedef void (*ResampleFunction)(Imaging imOut, Imaging imIn, int offset,
-                                 int ksize, int *bounds, double *kk);
+typedef void (*ResampleFunction)(Imaging imOut, Imaging imIn, int offset, int ksize,
+                                 int *bounds, double *kk);
 
 Imaging
-ImagingResampleInner(Imaging imIn, int xsize, int ysize,
-                     struct filter *filterp, float box[4],
-                     ResampleFunction ResampleHorizontal,
+ImagingResampleInner(Imaging imIn, int xsize, int ysize, struct filter *filterp,
+                     float box[4], ResampleFunction ResampleHorizontal,
                      ResampleFunction ResampleVertical);
 
 Imaging
@@ -650,18 +617,16 @@ ImagingResample(Imaging imIn, int xsize, int ysize, int filter, float box[4])
             filterp = &LANCZOS;
             break;
         default:
-            return (Imaging)ImagingError_ValueError(
-                "unsupported resampling filter");
+            return (Imaging)ImagingError_ValueError("unsupported resampling filter");
     }
 
-    return ImagingResampleInner(imIn, xsize, ysize, filterp, box,
-                                ResampleHorizontal, ResampleVertical);
+    return ImagingResampleInner(imIn, xsize, ysize, filterp, box, ResampleHorizontal,
+                                ResampleVertical);
 }
 
 Imaging
-ImagingResampleInner(Imaging imIn, int xsize, int ysize,
-                     struct filter *filterp, float box[4],
-                     ResampleFunction ResampleHorizontal,
+ImagingResampleInner(Imaging imIn, int xsize, int ysize, struct filter *filterp,
+                     float box[4], ResampleFunction ResampleHorizontal,
                      ResampleFunction ResampleVertical)
 {
     Imaging imTemp = NULL;
@@ -676,8 +641,8 @@ ImagingResampleInner(Imaging imIn, int xsize, int ysize,
     need_horizontal = xsize != imIn->xsize || box[0] || box[2] != xsize;
     need_vertical = ysize != imIn->ysize || box[1] || box[3] != ysize;
 
-    ksize_horiz = precompute_coeffs(imIn->xsize, box[0], box[2], xsize,
-                                    filterp, &bounds_horiz, &kk_horiz);
+    ksize_horiz = precompute_coeffs(imIn->xsize, box[0], box[2], xsize, filterp,
+                                    &bounds_horiz, &kk_horiz);
     if (!ksize_horiz) {
         return NULL;
     }
@@ -704,8 +669,8 @@ ImagingResampleInner(Imaging imIn, int xsize, int ysize,
 
         imTemp = ImagingNewDirty(imIn->mode, xsize, ybox_last - ybox_first);
         if (imTemp) {
-            ResampleHorizontal(imTemp, imIn, ybox_first, ksize_horiz,
-                               bounds_horiz, kk_horiz);
+            ResampleHorizontal(imTemp, imIn, ybox_first, ksize_horiz, bounds_horiz,
+                               kk_horiz);
         }
         free(bounds_horiz);
         free(kk_horiz);

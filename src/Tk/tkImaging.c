@@ -92,8 +92,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp *interp, int argc,
     /* get Tcl PhotoImage handle */
     photo = TK_FIND_PHOTO(interp, argv[1]);
     if (photo == NULL) {
-        TCL_APPEND_RESULT(interp, "destination photo must exist",
-                          (char *)NULL);
+        TCL_APPEND_RESULT(interp, "destination photo must exist", (char *)NULL);
         return TCL_ERROR;
     }
 
@@ -147,8 +146,8 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp *interp, int argc,
     }
     else {
         /* Tk >=8.5 */
-        TK_PHOTO_PUT_BLOCK_85(interp, photo, &block, 0, 0, block.width,
-                              block.height, TK_PHOTO_COMPOSITE_SET);
+        TK_PHOTO_PUT_BLOCK_85(interp, photo, &block, 0, 0, block.width, block.height,
+                              TK_PHOTO_COMPOSITE_SET);
     }
 
     return TCL_OK;
@@ -201,10 +200,10 @@ PyImagingPhotoGet(ClientData clientdata, Tcl_Interp *interp, int argc,
 void
 TkImaging_Init(Tcl_Interp *interp)
 {
-    TCL_CREATE_COMMAND(interp, "PyImagingPhoto", PyImagingPhotoPut,
-                       (ClientData)0, (Tcl_CmdDeleteProc *)NULL);
-    TCL_CREATE_COMMAND(interp, "PyImagingPhotoGet", PyImagingPhotoGet,
-                       (ClientData)0, (Tcl_CmdDeleteProc *)NULL);
+    TCL_CREATE_COMMAND(interp, "PyImagingPhoto", PyImagingPhotoPut, (ClientData)0,
+                       (Tcl_CmdDeleteProc *)NULL);
+    TCL_CREATE_COMMAND(interp, "PyImagingPhotoGet", PyImagingPhotoGet, (ClientData)0,
+                       (Tcl_CmdDeleteProc *)NULL);
 }
 
 /*
@@ -257,8 +256,8 @@ get_tcl(HMODULE hMod)
      * functions found.
      */
 
-    if ((TCL_CREATE_COMMAND = (Tcl_CreateCommand_t)GetProcAddress(
-             hMod, "Tcl_CreateCommand")) == NULL) {
+    if ((TCL_CREATE_COMMAND =
+             (Tcl_CreateCommand_t)GetProcAddress(hMod, "Tcl_CreateCommand")) == NULL) {
         return 0; /* Maybe not Tcl module */
     }
     return ((TCL_APPEND_RESULT =
@@ -280,20 +279,19 @@ get_tk(HMODULE hMod)
     if (func == NULL) { /* Maybe not Tk module */
         return 0;
     }
-    if ((TK_PHOTO_GET_IMAGE =
-             (Tk_PhotoGetImage_t)_dfunc(hMod, "Tk_PhotoGetImage")) == NULL) {
+    if ((TK_PHOTO_GET_IMAGE = (Tk_PhotoGetImage_t)_dfunc(hMod, "Tk_PhotoGetImage")) ==
+        NULL) {
         return -1;
     };
-    if ((TK_FIND_PHOTO = (Tk_FindPhoto_t)_dfunc(hMod, "Tk_FindPhoto")) ==
-        NULL) {
+    if ((TK_FIND_PHOTO = (Tk_FindPhoto_t)_dfunc(hMod, "Tk_FindPhoto")) == NULL) {
         return -1;
     };
     TK_LT_85 = GetProcAddress(hMod, "Tk_PhotoPutBlock_Panic") == NULL;
     /* Tk_PhotoPutBlock_Panic defined as of 8.5.0 */
     if (TK_LT_85) {
         TK_PHOTO_PUT_BLOCK_84 = (Tk_PhotoPutBlock_84_t)func;
-        return ((TK_PHOTO_SET_SIZE_84 = (Tk_PhotoSetSize_84_t)_dfunc(
-                     hMod, "Tk_PhotoSetSize")) == NULL)
+        return ((TK_PHOTO_SET_SIZE_84 =
+                     (Tk_PhotoSetSize_84_t)_dfunc(hMod, "Tk_PhotoSetSize")) == NULL)
                    ? -1
                    : 1;
     }
@@ -406,20 +404,19 @@ _func_loader(void *lib)
      * Return 1 if any pointer is NULL, 0 otherwise.
      */
 
-    if ((TCL_CREATE_COMMAND =
-             (Tcl_CreateCommand_t)_dfunc(lib, "Tcl_CreateCommand")) == NULL) {
-        return 1;
-    }
-    if ((TCL_APPEND_RESULT =
-             (Tcl_AppendResult_t)_dfunc(lib, "Tcl_AppendResult")) == NULL) {
-        return 1;
-    }
-    if ((TK_PHOTO_GET_IMAGE =
-             (Tk_PhotoGetImage_t)_dfunc(lib, "Tk_PhotoGetImage")) == NULL) {
-        return 1;
-    }
-    if ((TK_FIND_PHOTO = (Tk_FindPhoto_t)_dfunc(lib, "Tk_FindPhoto")) ==
+    if ((TCL_CREATE_COMMAND = (Tcl_CreateCommand_t)_dfunc(lib, "Tcl_CreateCommand")) ==
         NULL) {
+        return 1;
+    }
+    if ((TCL_APPEND_RESULT = (Tcl_AppendResult_t)_dfunc(lib, "Tcl_AppendResult")) ==
+        NULL) {
+        return 1;
+    }
+    if ((TK_PHOTO_GET_IMAGE = (Tk_PhotoGetImage_t)_dfunc(lib, "Tk_PhotoGetImage")) ==
+        NULL) {
+        return 1;
+    }
+    if ((TK_FIND_PHOTO = (Tk_FindPhoto_t)_dfunc(lib, "Tk_FindPhoto")) == NULL) {
         return 1;
     }
     /* Tk_PhotoPutBlock_Panic defined as of 8.5.0 */
@@ -427,11 +424,11 @@ _func_loader(void *lib)
     if (TK_LT_85) {
         return (((TK_PHOTO_PUT_BLOCK_84 = (Tk_PhotoPutBlock_84_t)_dfunc(
                       lib, "Tk_PhotoPutBlock")) == NULL) ||
-                ((TK_PHOTO_SET_SIZE_84 = (Tk_PhotoSetSize_84_t)_dfunc(
-                      lib, "Tk_PhotoSetSize")) == NULL));
+                ((TK_PHOTO_SET_SIZE_84 =
+                      (Tk_PhotoSetSize_84_t)_dfunc(lib, "Tk_PhotoSetSize")) == NULL));
     }
-    return ((TK_PHOTO_PUT_BLOCK_85 = (Tk_PhotoPutBlock_85_t)_dfunc(
-                 lib, "Tk_PhotoPutBlock")) == NULL);
+    return ((TK_PHOTO_PUT_BLOCK_85 =
+                 (Tk_PhotoPutBlock_85_t)_dfunc(lib, "Tk_PhotoPutBlock")) == NULL);
 }
 
 int
@@ -471,8 +468,7 @@ load_tkinter_funcs(void)
     }
     tkinter_lib = dlopen(tkinter_libname, RTLD_LAZY);
     if (tkinter_lib == NULL) {
-        PyErr_SetString(PyExc_RuntimeError,
-                        "Cannot dlopen tkinter module file");
+        PyErr_SetString(PyExc_RuntimeError, "Cannot dlopen tkinter module file");
         goto exit;
     }
     ret = _func_loader(tkinter_lib);
