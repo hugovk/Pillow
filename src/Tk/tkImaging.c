@@ -112,20 +112,17 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp *interp, int argc,
     if (strcmp(im->mode, "1") == 0 || strcmp(im->mode, "L") == 0) {
         block.pixelSize = 1;
         block.offset[0] = block.offset[1] = block.offset[2] = 0;
-    }
-    else if (strncmp(im->mode, "RGB", 3) == 0) {
+    } else if (strncmp(im->mode, "RGB", 3) == 0) {
         block.pixelSize = 4;
         block.offset[0] = 0;
         block.offset[1] = 1;
         block.offset[2] = 2;
         if (strcmp(im->mode, "RGBA") == 0) {
             block.offset[3] = 3; /* alpha (or reserved, under 8.2) */
-        }
-        else {
+        } else {
             block.offset[3] = 0; /* no alpha */
         }
-    }
-    else {
+    } else {
         TCL_APPEND_RESULT(interp, "Bad mode", (char *)NULL);
         return TCL_ERROR;
     }
@@ -143,8 +140,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp *interp, int argc,
             /* (fixed in Tk 8.5a3) */
             TK_PHOTO_SET_SIZE_84(photo, block.width, block.height);
         }
-    }
-    else {
+    } else {
         /* Tk >=8.5 */
         TK_PHOTO_PUT_BLOCK_85(interp, photo, &block, 0, 0, block.width, block.height,
                               TK_PHOTO_COMPOSITE_SET);
@@ -347,8 +343,7 @@ load_tkinter_funcs(void)
 
     if (found_tcl == 0) {
         PyErr_SetString(PyExc_RuntimeError, "Could not find Tcl routines");
-    }
-    else {
+    } else {
         PyErr_SetString(PyExc_RuntimeError, "Could not find Tk routines");
     }
     return 1;

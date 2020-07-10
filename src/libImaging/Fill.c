@@ -35,15 +35,13 @@ ImagingFill(Imaging im, const void *colour)
                 }
             }
             ImagingAccessDelete(im, access);
-        }
-        else {
+        } else {
             /* wipe the image */
             for (y = 0; y < im->ysize; y++) {
                 memset(im->image[y], 0, im->linesize);
             }
         }
-    }
-    else {
+    } else {
         INT32 c = 0L;
         ImagingSectionEnter(&cookie);
         memcpy(&c, colour, im->pixelsize);
@@ -53,8 +51,7 @@ ImagingFill(Imaging im, const void *colour)
                     im->image32[y][x] = c;
                 }
             }
-        }
-        else {
+        } else {
             unsigned char cc = (unsigned char)*(UINT8 *)colour;
             for (y = 0; y < im->ysize; y++) {
                 memset(im->image[y], cc, im->linesize);
@@ -110,8 +107,7 @@ ImagingFillRadialGradient(const char *mode)
                           2.0);
             if (d >= 255) {
                 im->image8[y][x] = 255;
-            }
-            else {
+            } else {
                 im->image8[y][x] = d;
             }
         }

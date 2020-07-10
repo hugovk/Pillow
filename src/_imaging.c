@@ -539,8 +539,7 @@ getink(PyObject *color, Imaging im, char *ink)
                 }
                 ink[0] = (char)CLIP8(r);
                 ink[1] = ink[2] = ink[3] = 0;
-            }
-            else {
+            } else {
                 a = 255;
                 if (rIsInt) {
                     /* compatibility: ABGR */
@@ -548,15 +547,13 @@ getink(PyObject *color, Imaging im, char *ink)
                     b = (UINT8)(r >> 16);
                     g = (UINT8)(r >> 8);
                     r = (UINT8)r;
-                }
-                else {
+                } else {
                     if (im->bands == 2) {
                         if (!PyArg_ParseTuple(color, "L|i", &r, &a)) {
                             return NULL;
                         }
                         g = b = r;
-                    }
-                    else {
+                    } else {
                         if (!PyArg_ParseTuple(color, "Lii|i", &r, &g, &b, &a)) {
                             return NULL;
                         }
@@ -811,8 +808,7 @@ _prepare_lut_table(PyObject *table, Py_ssize_t table_size)
         }
         if (item < 0) {
             prepared[i] = item * (255 << PRECISION_BITS) - 0.5;
-        }
-        else {
+        } else {
             prepared[i] = item * (255 << PRECISION_BITS) + 0.5;
         }
     }
@@ -1116,22 +1112,18 @@ _getxy(PyObject *xy, int *x, int *y)
     value = PyTuple_GET_ITEM(xy, 0);
     if (PyLong_Check(value)) {
         *x = PyLong_AS_LONG(value);
-    }
-    else if (PyFloat_Check(value)) {
+    } else if (PyFloat_Check(value)) {
         *x = (int)PyFloat_AS_DOUBLE(value);
-    }
-    else {
+    } else {
         goto badval;
     }
 
     value = PyTuple_GET_ITEM(xy, 1);
     if (PyLong_Check(value)) {
         *y = PyLong_AS_LONG(value);
-    }
-    else if (PyFloat_Check(value)) {
+    } else if (PyFloat_Check(value)) {
         *y = (int)PyFloat_AS_DOUBLE(value);
-    }
-    else {
+    } else {
         goto badval;
     }
 
@@ -1210,8 +1202,7 @@ parse_histogram_extremap(ImagingObject *self, PyObject *extremap,
             default:
                 return NULL;
         }
-    }
-    else {
+    } else {
         return NULL;
     }
     return ep;
@@ -1349,8 +1340,7 @@ _paste(ImagingObject *self, PyObject *args)
     if (PyImaging_Check(source)) {
         status = ImagingPaste(self->image, PyImaging_AsImaging(source),
                               (maskp) ? maskp->image : NULL, x0, y0, x1, y1);
-    }
-    else {
+    } else {
         if (!getink(source, self->image, ink)) {
             return NULL;
         }
@@ -1392,8 +1382,7 @@ _point(ImagingObject *self, PyObject *args)
         }
         im = ImagingPoint(self->image, mode, (void *)data);
         free(data);
-    }
-    else if (!strcmp(self->image->mode, "I") && mode && !strcmp(mode, "L")) {
+    } else if (!strcmp(self->image->mode, "I") && mode && !strcmp(mode, "L")) {
         UINT8 *data;
 
         /* map from 16-bit subset of 32-bit data to 8-bit */
@@ -1405,8 +1394,7 @@ _point(ImagingObject *self, PyObject *args)
         }
         im = ImagingPoint(self->image, mode, (void *)data);
         free(data);
-    }
-    else {
+    } else {
         INT32 *data;
         UINT8 lut[1024];
 
@@ -1415,8 +1403,7 @@ _point(ImagingObject *self, PyObject *args)
             if (bands < 0) {
                 return NULL;
             }
-        }
-        else {
+        } else {
             bands = self->image->bands;
         }
 
@@ -1429,8 +1416,7 @@ _point(ImagingObject *self, PyObject *args)
 
         if (mode && !strcmp(mode, "I")) {
             im = ImagingPoint(self->image, mode, (void *)data);
-        }
-        else if (mode && bands > 1) {
+        } else if (mode && bands > 1) {
             for (i = 0; i < 256; i++) {
                 lut[i * 4] = CLIP8(data[i]);
                 lut[i * 4 + 1] = CLIP8(data[i + 256]);
@@ -1440,8 +1426,7 @@ _point(ImagingObject *self, PyObject *args)
                 }
             }
             im = ImagingPoint(self->image, mode, (void *)lut);
-        }
-        else {
+        } else {
             /* map individual bands */
             for (i = 0; i < n; i++) {
                 lut[i] = CLIP8(data[i]);
@@ -1510,8 +1495,7 @@ _putdata(ImagingObject *self, PyObject *args)
                     }
                     memcpy(image->image8[y], p + i, x);
                 }
-            }
-            else {
+            } else {
                 /* Scaled and clipped string data */
                 for (i = x = y = 0; i < n; i++) {
                     image->image8[y][x] = CLIP8((int)(p[i] * scale + offset));
@@ -1520,8 +1504,7 @@ _putdata(ImagingObject *self, PyObject *args)
                     }
                 }
             }
-        }
-        else {
+        } else {
             seq = PySequence_Fast(data, must_be_sequence);
             if (!seq) {
                 PyErr_SetString(PyExc_TypeError, must_be_sequence);
@@ -1536,8 +1519,7 @@ _putdata(ImagingObject *self, PyObject *args)
                         x = 0, y++;
                     }
                 }
-            }
-            else {
+            } else {
                 /* Scaled and clipped data */
                 for (i = x = y = 0; i < n; i++) {
                     PyObject *op = PySequence_Fast_GET_ITEM(seq, i);
@@ -1550,8 +1532,7 @@ _putdata(ImagingObject *self, PyObject *args)
             }
             PyErr_Clear(); /* Avoid weird exceptions */
         }
-    }
-    else {
+    } else {
         /* 32-bit images */
         seq = PySequence_Fast(data, must_be_sequence);
         if (!seq) {
@@ -1820,8 +1801,7 @@ _resize(ImagingObject *self, PyObject *args)
     if (box[0] - (int)box[0] == 0 && box[2] - box[0] == xsize &&
         box[1] - (int)box[1] == 0 && box[3] - box[1] == ysize) {
         imOut = ImagingCrop(imIn, box[0], box[1], box[2], box[3]);
-    }
-    else if (filter == IMAGING_TRANSFORM_NEAREST) {
+    } else if (filter == IMAGING_TRANSFORM_NEAREST) {
         double a[6];
 
         memset(a, 0, sizeof a);
@@ -1834,8 +1814,7 @@ _resize(ImagingObject *self, PyObject *args)
 
         imOut = ImagingTransform(imOut, imIn, IMAGING_TRANSFORM_AFFINE, 0, 0, xsize,
                                  ysize, a, filter, 1);
-    }
-    else {
+    } else {
         imOut = ImagingResample(imIn, xsize, ysize, filter, box);
     }
 
@@ -1878,8 +1857,7 @@ _reduce(ImagingObject *self, PyObject *args)
 
     if (xscale == 1 && yscale == 1) {
         imOut = ImagingCrop(imIn, box[0], box[1], box[2], box[3]);
-    }
-    else {
+    } else {
         // Change box format: (left, top, width, height)
         box[2] -= box[0];
         box[3] -= box[1];
@@ -1911,16 +1889,14 @@ im_setmode(ImagingObject *self, PyObject *args)
 
     if (!strcmp(im->mode, mode)) {
         ; /* same mode; always succeeds */
-    }
-    else if (IS_RGB(im->mode) && IS_RGB(mode)) {
+    } else if (IS_RGB(im->mode) && IS_RGB(mode)) {
         /* color to color */
         strcpy(im->mode, mode);
         im->bands = modelen;
         if (!strcmp(mode, "RGBA")) {
             (void)ImagingFillBand(im, 3, 255);
         }
-    }
-    else {
+    } else {
         /* trying doing an in-place conversion */
         if (!ImagingConvertInPlace(im, mode)) {
             return NULL;
@@ -2140,8 +2116,7 @@ _getcolors(ImagingObject *self, PyObject *args)
     if (colors > maxcolors) {
         out = Py_None;
         Py_INCREF(out);
-    }
-    else {
+    } else {
         out = PyList_New(colors);
         for (i = 0; i < colors; i++) {
             ImagingColorItem *v = &items[i];
@@ -2632,16 +2607,14 @@ _font_text_asBytes(PyObject *encoded_string, unsigned char **text)
             return;
         }
         PyBytes_AsStringAndSize(bytes, &buffer, &len);
-    }
-    else if (PyBytes_Check(encoded_string)) {
+    } else if (PyBytes_Check(encoded_string)) {
         PyBytes_AsStringAndSize(encoded_string, &buffer, &len);
     }
 
     *text = calloc(len + 1, 1);
     if (*text) {
         memcpy(*text, buffer, len);
-    }
-    else {
+    } else {
         ImagingError_MemoryError();
     }
     if (bytes) {
@@ -2974,8 +2947,7 @@ _draw_lines(ImagingDrawObject *self, PyObject *args)
             ImagingDrawPoint(self->image->image, (int)p[2], (int)p[3], &ink,
                              self->blend);
         }
-    }
-    else {
+    } else {
         for (i = 0; i < n - 1; i++) {
             double *p = &xy[i + i];
             if (ImagingDrawWideLine(self->image->image, (int)p[0], (int)p[1], (int)p[2],
@@ -3565,8 +3537,7 @@ image_item(ImagingObject *self, Py_ssize_t i)
     if (im->xsize > 0) {
         x = i % im->xsize;
         y = i / im->xsize;
-    }
-    else {
+    } else {
         x = y = 0; /* leave it to getpixel to raise an exception */
     }
 
@@ -3847,8 +3818,7 @@ _set_blocks_max(PyObject *self, PyObject *args)
     if (blocks_max < 0) {
         PyErr_SetString(PyExc_ValueError, "blocks_max should be greater than 0");
         return NULL;
-    }
-    else if (blocks_max > SIZE_MAX / sizeof(ImagingDefaultArena.blocks_pool[0])) {
+    } else if (blocks_max > SIZE_MAX / sizeof(ImagingDefaultArena.blocks_pool[0])) {
         PyErr_SetString(PyExc_ValueError, "blocks_max is too large");
         return NULL;
     }

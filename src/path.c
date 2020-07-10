@@ -175,47 +175,37 @@ PyPath_Flatten(PyObject *data, double **pxy)
             PyObject *op = PyList_GET_ITEM(data, i);
             if (PyFloat_Check(op)) {
                 xy[j++] = PyFloat_AS_DOUBLE(op);
-            }
-            else if (PyLong_Check(op)) {
+            } else if (PyLong_Check(op)) {
                 xy[j++] = (float)PyLong_AS_LONG(op);
-            }
-            else if (PyNumber_Check(op)) {
+            } else if (PyNumber_Check(op)) {
                 xy[j++] = PyFloat_AsDouble(op);
-            }
-            else if (PyArg_ParseTuple(op, "dd", &x, &y)) {
+            } else if (PyArg_ParseTuple(op, "dd", &x, &y)) {
                 xy[j++] = x;
                 xy[j++] = y;
-            }
-            else {
+            } else {
                 free(xy);
                 return -1;
             }
         }
-    }
-    else if (PyTuple_Check(data)) {
+    } else if (PyTuple_Check(data)) {
         for (i = 0; i < n; i++) {
             double x, y;
             PyObject *op = PyTuple_GET_ITEM(data, i);
             if (PyFloat_Check(op)) {
                 xy[j++] = PyFloat_AS_DOUBLE(op);
-            }
-            else if (PyLong_Check(op)) {
+            } else if (PyLong_Check(op)) {
                 xy[j++] = (float)PyLong_AS_LONG(op);
-            }
-            else if (PyNumber_Check(op)) {
+            } else if (PyNumber_Check(op)) {
                 xy[j++] = PyFloat_AsDouble(op);
-            }
-            else if (PyArg_ParseTuple(op, "dd", &x, &y)) {
+            } else if (PyArg_ParseTuple(op, "dd", &x, &y)) {
                 xy[j++] = x;
                 xy[j++] = y;
-            }
-            else {
+            } else {
                 free(xy);
                 return -1;
             }
         }
-    }
-    else {
+    } else {
         for (i = 0; i < n; i++) {
             double x, y;
             PyObject *op = PySequence_GetItem(data, i);
@@ -224,26 +214,21 @@ PyPath_Flatten(PyObject *data, double **pxy)
                 if (PyErr_Occurred() && PyErr_ExceptionMatches(PyExc_IndexError)) {
                     PyErr_Clear();
                     break;
-                }
-                else {
+                } else {
                     free(xy);
                     return -1;
                 }
             }
             if (PyFloat_Check(op)) {
                 xy[j++] = PyFloat_AS_DOUBLE(op);
-            }
-            else if (PyLong_Check(op)) {
+            } else if (PyLong_Check(op)) {
                 xy[j++] = (float)PyLong_AS_LONG(op);
-            }
-            else if (PyNumber_Check(op)) {
+            } else if (PyNumber_Check(op)) {
                 xy[j++] = PyFloat_AsDouble(op);
-            }
-            else if (PyArg_ParseTuple(op, "dd", &x, &y)) {
+            } else if (PyArg_ParseTuple(op, "dd", &x, &y)) {
                 xy[j++] = x;
                 xy[j++] = y;
-            }
-            else {
+            } else {
                 Py_DECREF(op);
                 free(xy);
                 return -1;
@@ -279,8 +264,7 @@ PyPath_Create(PyObject *self, PyObject *args)
         if (!xy) {
             return NULL;
         }
-    }
-    else {
+    } else {
         /* sequence or other path */
         PyErr_Clear();
         if (!PyArg_ParseTuple(args, "O", &data)) {
@@ -392,8 +376,7 @@ path_getslice(PyPathObject *self, Py_ssize_t ilow, Py_ssize_t ihigh)
     /* adjust arguments */
     if (ilow < 0) {
         ilow = 0;
-    }
-    else if (ilow >= self->count) {
+    } else if (ilow >= self->count) {
         ilow = self->count;
     }
     if (ihigh < 0) {
@@ -401,8 +384,7 @@ path_getslice(PyPathObject *self, Py_ssize_t ilow, Py_ssize_t ihigh)
     }
     if (ihigh < ilow) {
         ihigh = ilow;
-    }
-    else if (ihigh > self->count) {
+    } else if (ihigh > self->count) {
         ihigh = self->count;
     }
 
@@ -492,8 +474,7 @@ path_tolist(PyPathObject *self, PyObject *args)
             }
             PyList_SetItem(list, i, item);
         }
-    }
-    else {
+    } else {
         list = PyList_New(self->count);
         for (i = 0; i < self->count; i++) {
             PyObject *item;
@@ -536,8 +517,7 @@ path_transform(PyPathObject *self, PyObject *args)
             xy[i + i] = a * xy[i + i] + c;
             xy[i + i + 1] = e * xy[i + i + 1] + f;
         }
-    }
-    else {
+    } else {
         /* affine transform */
         for (i = 0; i < self->count; i++) {
             double x = xy[i + i];
@@ -597,16 +577,13 @@ path_subscript(PyPathObject *self, PyObject *item)
         if (slicelength <= 0) {
             double *xy = alloc_array(0);
             return (PyObject *)path_new(0, xy, 0);
-        }
-        else if (step == 1) {
+        } else if (step == 1) {
             return path_getslice(self, start, stop);
-        }
-        else {
+        } else {
             PyErr_SetString(PyExc_TypeError, "slice steps not supported");
             return NULL;
         }
-    }
-    else {
+    } else {
         PyErr_Format(PyExc_TypeError, "Path indices must be integers, not %.200s",
                      Py_TYPE(item)->tp_name);
         return NULL;

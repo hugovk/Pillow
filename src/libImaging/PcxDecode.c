@@ -52,8 +52,7 @@ ImagingPcxDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
 
             ptr += 2;
             bytes -= 2;
-        }
-        else {
+        } else {
             /* Literal */
             state->buffer[state->x++] = ptr[0];
             ptr++;

@@ -151,8 +151,7 @@ la2lA(UINT8 *out, const UINT8 *in, int xsize)
         alpha = in[3];
         if (alpha == 255 || alpha == 0) {
             pixel = in[0];
-        }
-        else {
+        } else {
             pixel = CLIP8((255 * in[0]) / alpha);
         }
         *out++ = (UINT8)pixel;
@@ -339,8 +338,7 @@ rgb2hsv_row(UINT8 *out, const UINT8 *in)
     if (minc == maxc) {
         uh = 0;
         us = 0;
-    }
-    else {
+    } else {
         cr = (float)(maxc - minc);
         s = cr / (float)maxc;
         rc = ((float)(maxc - r)) / cr;
@@ -348,11 +346,9 @@ rgb2hsv_row(UINT8 *out, const UINT8 *in)
         bc = ((float)(maxc - b)) / cr;
         if (r == maxc) {
             h = bc - gc;
-        }
-        else if (g == maxc) {
+        } else if (g == maxc) {
             h = 2.0 + rc - bc;
-        }
-        else {
+        } else {
             h = 4.0 + gc - rc;
         }
         // incorrect hue happens if h/6 is negative.
@@ -395,8 +391,7 @@ hsv2rgb(UINT8 *out, const UINT8 *in, int xsize)
             *out++ = v;
             *out++ = v;
             *out++ = v;
-        }
-        else {
+        } else {
             i = floor((float)h * 6.0 / 255.0);      // 0 - 6
             f = (float)h * 6.0 / 255.0 - (float)i;  // 0-1 : remainder.
             fs = ((float)s) / 255.0;
@@ -513,8 +508,7 @@ rgba2rgbA(UINT8 *out, const UINT8 *in, int xsize)
             *out++ = in[0];
             *out++ = in[1];
             *out++ = in[2];
-        }
-        else {
+        } else {
             *out++ = CLIP8((255 * in[0]) / alpha);
             *out++ = CLIP8((255 * in[1]) / alpha);
             *out++ = CLIP8((255 * in[2]) / alpha);
@@ -657,11 +651,9 @@ i2l(UINT8 *out, const UINT8 *in_, int xsize)
         memcpy(&v, in_, sizeof(v));
         if (v <= 0) {
             *out = 0;
-        }
-        else if (v >= 255) {
+        } else if (v >= 255) {
             *out = 255;
-        }
-        else {
+        } else {
             *out = (UINT8)v;
         }
     }
@@ -688,11 +680,9 @@ i2rgb(UINT8 *out, const UINT8 *in_, int xsize)
     for (x = 0; x < xsize; x++, in++, out += 4) {
         if (*in <= 0) {
             out[0] = out[1] = out[2] = 0;
-        }
-        else if (*in >= 255) {
+        } else if (*in >= 255) {
             out[0] = out[1] = out[2] = 255;
-        }
-        else {
+        } else {
             out[0] = out[1] = out[2] = (UINT8)*in;
         }
         out[3] = 255;
@@ -709,11 +699,9 @@ i2hsv(UINT8 *out, const UINT8 *in_, int xsize)
         out[1] = 0;
         if (*in <= 0) {
             out[2] = 0;
-        }
-        else if (*in >= 255) {
+        } else if (*in >= 255) {
             out[2] = 255;
-        }
-        else {
+        } else {
             out[2] = (UINT8)*in;
         }
         out[3] = 255;
@@ -753,11 +741,9 @@ f2l(UINT8 *out, const UINT8 *in_, int xsize)
         memcpy(&v, in_, sizeof(v));
         if (v <= 0.0) {
             *out = 0;
-        }
-        else if (v >= 255.0) {
+        } else if (v >= 255.0) {
             *out = 255;
-        }
-        else {
+        } else {
             *out = (UINT8)v;
         }
     }
@@ -922,8 +908,7 @@ I16L_L(UINT8 *out, const UINT8 *in, int xsize)
     for (x = 0; x < xsize; x++, in += 2) {
         if (in[1] != 0) {
             *out++ = 255;
-        }
-        else {
+        } else {
             *out++ = in[0];
         }
     }
@@ -936,8 +921,7 @@ I16B_L(UINT8 *out, const UINT8 *in, int xsize)
     for (x = 0; x < xsize; x++, in += 2) {
         if (in[0] != 0) {
             *out++ = 255;
-        }
-        else {
+        } else {
             *out++ = in[1];
         }
     }
@@ -1303,41 +1287,29 @@ frompalette(Imaging imOut, Imaging imIn, const char *mode)
 
     if (strcmp(mode, "1") == 0) {
         convert = alpha ? pa2bit : p2bit;
-    }
-    else if (strcmp(mode, "L") == 0) {
+    } else if (strcmp(mode, "L") == 0) {
         convert = alpha ? pa2l : p2l;
-    }
-    else if (strcmp(mode, "LA") == 0) {
+    } else if (strcmp(mode, "LA") == 0) {
         convert = alpha ? pa2la : p2la;
-    }
-    else if (strcmp(mode, "PA") == 0) {
+    } else if (strcmp(mode, "PA") == 0) {
         convert = p2pa;
-    }
-    else if (strcmp(mode, "I") == 0) {
+    } else if (strcmp(mode, "I") == 0) {
         convert = alpha ? pa2i : p2i;
-    }
-    else if (strcmp(mode, "F") == 0) {
+    } else if (strcmp(mode, "F") == 0) {
         convert = alpha ? pa2f : p2f;
-    }
-    else if (strcmp(mode, "RGB") == 0) {
+    } else if (strcmp(mode, "RGB") == 0) {
         convert = alpha ? pa2rgb : p2rgb;
-    }
-    else if (strcmp(mode, "RGBA") == 0) {
+    } else if (strcmp(mode, "RGBA") == 0) {
         convert = alpha ? pa2rgba : p2rgba;
-    }
-    else if (strcmp(mode, "RGBX") == 0) {
+    } else if (strcmp(mode, "RGBX") == 0) {
         convert = alpha ? pa2rgba : p2rgba;
-    }
-    else if (strcmp(mode, "CMYK") == 0) {
+    } else if (strcmp(mode, "CMYK") == 0) {
         convert = alpha ? pa2cmyk : p2cmyk;
-    }
-    else if (strcmp(mode, "YCbCr") == 0) {
+    } else if (strcmp(mode, "YCbCr") == 0) {
         convert = alpha ? pa2ycbcr : p2ycbcr;
-    }
-    else if (strcmp(mode, "HSV") == 0) {
+    } else if (strcmp(mode, "HSV") == 0) {
         convert = alpha ? pa2hsv : p2hsv;
-    }
-    else {
+    } else {
         return (Imaging)ImagingError_ValueError("conversion not supported");
     }
 
@@ -1380,8 +1352,7 @@ topalette(Imaging imOut, Imaging imIn, const char *mode, ImagingPalette inpalett
         /* FIXME: make user configurable */
         if (imIn->bands == 1) {
             palette = ImagingPaletteNew("RGB"); /* Initialised to grey ramp */
-        }
-        else {
+        } else {
             palette = ImagingPaletteNewBrowser(); /* Standard colour cube */
         }
     }
@@ -1409,14 +1380,12 @@ topalette(Imaging imOut, Imaging imIn, const char *mode, ImagingPalette inpalett
         for (y = 0; y < imIn->ysize; y++) {
             if (alpha) {
                 l2la((UINT8 *)imOut->image[y], (UINT8 *)imIn->image[y], imIn->xsize);
-            }
-            else {
+            } else {
                 memcpy(imOut->image[y], imIn->image[y], imIn->linesize);
             }
         }
         ImagingSectionLeave(&cookie);
-    }
-    else {
+    } else {
         /* colour image */
 
         /* Create mapping cache */
@@ -1468,8 +1437,7 @@ topalette(Imaging imOut, Imaging imIn, const char *mode, ImagingPalette inpalett
                     if (alpha) {
                         out[x * 4] = out[x * 4 + 1] = out[x * 4 + 2] = (UINT8)cache[0];
                         out[x * 4 + 3] = 255;
-                    }
-                    else {
+                    } else {
                         out[x] = (UINT8)cache[0];
                     }
 
@@ -1512,8 +1480,7 @@ topalette(Imaging imOut, Imaging imIn, const char *mode, ImagingPalette inpalett
             }
             ImagingSectionLeave(&cookie);
             free(errors);
-        }
-        else {
+        } else {
             /* closest colour */
             ImagingSectionEnter(&cookie);
             for (y = 0; y < imIn->ysize; y++) {
@@ -1536,8 +1503,7 @@ topalette(Imaging imOut, Imaging imIn, const char *mode, ImagingPalette inpalett
                     if (alpha) {
                         out[x * 4] = out[x * 4 + 1] = out[x * 4 + 2] = (UINT8)cache[0];
                         out[x * 4 + 3] = 255;
-                    }
-                    else {
+                    } else {
                         out[x] = (UINT8)cache[0];
                     }
                 }
@@ -1609,8 +1575,7 @@ tobilevel(Imaging imOut, Imaging imIn, int dither)
             errors[x] = l0;
         }
         ImagingSectionLeave(&cookie);
-    }
-    else {
+    } else {
         /* map each pixel to black or white, using error diffusion */
         ImagingSectionEnter(&cookie);
         for (y = 0; y < imIn->ysize; y++) {
@@ -1668,8 +1633,7 @@ convert(Imaging imOut, Imaging imIn, const char *mode, ImagingPalette palette,
             return (Imaging)ImagingError_ModeError();
         }
         mode = imIn->palette->mode;
-    }
-    else {
+    } else {
         /* Same mode? */
         if (!strcmp(imIn->mode, mode)) {
             return ImagingCopy2(imOut, imIn);
@@ -1770,15 +1734,12 @@ ImagingConvertTransparent(Imaging imIn, const char *mode, int r, int g, int b)
 
     if (strcmp(imIn->mode, "RGB") == 0) {
         convert = rgb2rgba;
-    }
-    else {
+    } else {
         if (strcmp(imIn->mode, "1") == 0) {
             convert = bit2rgb;
-        }
-        else if (strcmp(imIn->mode, "I") == 0) {
+        } else if (strcmp(imIn->mode, "I") == 0) {
             convert = i2rgb;
-        }
-        else {
+        } else {
             convert = l2rgb;
         }
         g = b = r;
@@ -1809,11 +1770,9 @@ ImagingConvertInPlace(Imaging imIn, const char *mode)
     /* limited support for inplace conversion */
     if (strcmp(imIn->mode, "L") == 0 && strcmp(mode, "1") == 0) {
         convert = l2bit;
-    }
-    else if (strcmp(imIn->mode, "1") == 0 && strcmp(mode, "L") == 0) {
+    } else if (strcmp(imIn->mode, "1") == 0 && strcmp(mode, "L") == 0) {
         convert = bit2l;
-    }
-    else {
+    } else {
         return ImagingError_ModeError();
     }
 

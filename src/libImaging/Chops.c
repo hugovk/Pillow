@@ -33,11 +33,9 @@
             int temp = operation;               \
             if (temp <= 0) {                    \
                 out[x] = 0;                     \
-            }                                   \
-            else if (temp >= 255) {             \
+            } else if (temp >= 255) {           \
                 out[x] = 255;                   \
-            }                                   \
-            else {                              \
+            } else {                            \
                 out[x] = temp;                  \
             }                                   \
         }                                       \

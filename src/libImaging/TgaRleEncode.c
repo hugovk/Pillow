@@ -21,8 +21,7 @@ ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
         if (state->ystep < 0) {
             state->ystep = -1;
             state->y = state->ysize - 1;
-        }
-        else {
+        } else {
             state->ystep = 1;
         }
 
@@ -97,8 +96,7 @@ ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                     while (state->x < maxLookup) {
                         if (!comparePixels(row, state->x, bytesPerPixel)) {
                             ++state->x;
-                        }
-                        else {
+                        } else {
                             /* Two identical pixels will go to RLE packet. */
                             --state->x;
                             break;
@@ -106,15 +104,13 @@ ImagingTgaRleEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                     }
 
                     state->count += (state->x - startX) * bytesPerPixel;
-                }
-                else {
+                } else {
                     descriptor |= 0x80;
 
                     while (state->x < maxLookup) {
                         if (comparePixels(row, state->x, bytesPerPixel)) {
                             ++state->x;
-                        }
-                        else {
+                        } else {
                             break;
                         }
                     }

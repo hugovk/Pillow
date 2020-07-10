@@ -279,8 +279,7 @@ normalize_coeffs_8bpc(int outSize, int ksize, double *prekk)
     for (x = 0; x < outSize * ksize; x++) {
         if (prekk[x] < 0) {
             kk[x] = (int)(-0.5 + prekk[x] * (1 << PRECISION_BITS));
-        }
-        else {
+        } else {
             kk[x] = (int)(0.5 + prekk[x] * (1 << PRECISION_BITS));
         }
     }
@@ -313,8 +312,7 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset, int ksiz
                 imOut->image8[yy][xx] = clip8(ss0);
             }
         }
-    }
-    else if (imIn->type == IMAGING_TYPE_UINT8) {
+    } else if (imIn->type == IMAGING_TYPE_UINT8) {
         if (imIn->bands == 2) {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 for (xx = 0; xx < imOut->xsize; xx++) {
@@ -333,8 +331,7 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset, int ksiz
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
                 }
             }
-        }
-        else if (imIn->bands == 3) {
+        } else if (imIn->bands == 3) {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 for (xx = 0; xx < imOut->xsize; xx++) {
                     UINT32 v;
@@ -354,8 +351,7 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset, int ksiz
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
                 }
             }
-        }
-        else {
+        } else {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 for (xx = 0; xx < imOut->xsize; xx++) {
                     UINT32 v;
@@ -409,8 +405,7 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
                 imOut->image8[yy][xx] = clip8(ss0);
             }
         }
-    }
-    else if (imIn->type == IMAGING_TYPE_UINT8) {
+    } else if (imIn->type == IMAGING_TYPE_UINT8) {
         if (imIn->bands == 2) {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 k = &kk[yy * ksize];
@@ -427,8 +422,7 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
                 }
             }
-        }
-        else if (imIn->bands == 3) {
+        } else if (imIn->bands == 3) {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 k = &kk[yy * ksize];
                 ymin = bounds[yy * 2 + 0];
@@ -445,8 +439,7 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
                 }
             }
-        }
-        else {
+        } else {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 k = &kk[yy * ksize];
                 ymin = bounds[yy * 2 + 0];
@@ -578,12 +571,10 @@ ImagingResample(Imaging imIn, int xsize, int ysize, int filter, float box[4])
 
     if (imIn->type == IMAGING_TYPE_SPECIAL) {
         return (Imaging)ImagingError_ModeError();
-    }
-    else if (imIn->image8) {
+    } else if (imIn->image8) {
         ResampleHorizontal = ImagingResampleHorizontal_8bpc;
         ResampleVertical = ImagingResampleVertical_8bpc;
-    }
-    else {
+    } else {
         switch (imIn->type) {
             case IMAGING_TYPE_UINT8:
                 ResampleHorizontal = ImagingResampleHorizontal_8bpc;
@@ -680,8 +671,7 @@ ImagingResampleInner(Imaging imIn, int xsize, int ysize, struct filter *filterp,
             return NULL;
         }
         imOut = imIn = imTemp;
-    }
-    else {
+    } else {
         // Free in any case
         free(bounds_horiz);
         free(kk_horiz);
@@ -702,8 +692,7 @@ ImagingResampleInner(Imaging imIn, int xsize, int ysize, struct filter *filterp,
         if (!imOut) {
             return NULL;
         }
-    }
-    else {
+    } else {
         // Free in any case
         free(bounds_vert);
         free(kk_vert);

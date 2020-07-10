@@ -60,14 +60,12 @@ ImagingUnsharpMask(Imaging imOut, Imaging imIn, float radius, int percent,
                 if (abs(diff) > threshold) {
                     /* add the diff*percent to the original pixel */
                     lineOut8[x] = clip8(lineIn8[x] + diff * percent / 100);
-                }
-                else {
+                } else {
                     /* new pixel is the same as imIn */
                     lineOut8[x] = lineIn8[x];
                 }
             }
-        }
-        else {
+        } else {
             lineIn = (pixel *)imIn->image32[y];
             lineOut = (pixel *)imOut->image32[y];
             for (x = 0; x < imIn->xsize; x++) {

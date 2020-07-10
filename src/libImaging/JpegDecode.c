@@ -92,8 +92,7 @@ skip_input_data(j_decompress_ptr cinfo, long num_bytes)
         source->skip = num_bytes - source->pub.bytes_in_buffer;
         source->pub.next_input_byte += source->pub.bytes_in_buffer;
         source->pub.bytes_in_buffer = 0;
-    }
-    else {
+    } else {
         /* Skip portion of the buffer */
         source->pub.bytes_in_buffer -= num_bytes;
         source->pub.next_input_byte += num_bytes;
@@ -195,17 +194,13 @@ ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t by
                trust the decoder */
             if (strcmp(context->jpegmode, "L") == 0) {
                 context->cinfo.jpeg_color_space = JCS_GRAYSCALE;
-            }
-            else if (strcmp(context->jpegmode, "RGB") == 0) {
+            } else if (strcmp(context->jpegmode, "RGB") == 0) {
                 context->cinfo.jpeg_color_space = JCS_RGB;
-            }
-            else if (strcmp(context->jpegmode, "CMYK") == 0) {
+            } else if (strcmp(context->jpegmode, "CMYK") == 0) {
                 context->cinfo.jpeg_color_space = JCS_CMYK;
-            }
-            else if (strcmp(context->jpegmode, "YCbCr") == 0) {
+            } else if (strcmp(context->jpegmode, "YCbCr") == 0) {
                 context->cinfo.jpeg_color_space = JCS_YCbCr;
-            }
-            else if (strcmp(context->jpegmode, "YCbCrK") == 0) {
+            } else if (strcmp(context->jpegmode, "YCbCrK") == 0) {
                 context->cinfo.jpeg_color_space = JCS_YCCK;
             }
 
@@ -213,8 +208,7 @@ ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t by
                set, conversions are disabled */
             if (strcmp(context->rawmode, "L") == 0) {
                 context->cinfo.out_color_space = JCS_GRAYSCALE;
-            }
-            else if (strcmp(context->rawmode, "RGB") == 0) {
+            } else if (strcmp(context->rawmode, "RGB") == 0) {
                 context->cinfo.out_color_space = JCS_RGB;
             }
 #ifdef JCS_EXTENSIONS
@@ -225,14 +219,11 @@ ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t by
             else if (strcmp(context->rawmode, "CMYK") == 0 ||
                      strcmp(context->rawmode, "CMYK;I") == 0) {
                 context->cinfo.out_color_space = JCS_CMYK;
-            }
-            else if (strcmp(context->rawmode, "YCbCr") == 0) {
+            } else if (strcmp(context->rawmode, "YCbCr") == 0) {
                 context->cinfo.out_color_space = JCS_YCbCr;
-            }
-            else if (strcmp(context->rawmode, "YCbCrK") == 0) {
+            } else if (strcmp(context->rawmode, "YCbCrK") == 0) {
                 context->cinfo.out_color_space = JCS_YCCK;
-            }
-            else {
+            } else {
                 /* Disable decoder conversions */
                 context->cinfo.jpeg_color_space = JCS_UNKNOWN;
                 context->cinfo.out_color_space = JCS_UNKNOWN;

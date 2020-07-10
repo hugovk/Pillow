@@ -44,8 +44,7 @@ ImagingConvertMatrix(Imaging im, const char *mode, float m[])
                 in += 4;
             }
         }
-    }
-    else if (strlen(mode) == 3 && im->bands == 3) {
+    } else if (strlen(mode) == 3 && im->bands == 3) {
         imOut = ImagingNewDirty(mode, im->xsize, im->ysize);
         if (!imOut) {
             return NULL;
@@ -66,8 +65,7 @@ ImagingConvertMatrix(Imaging im, const char *mode, float m[])
                 out += 4;
             }
         }
-    }
-    else {
+    } else {
         return (Imaging)ImagingError_ModeError();
     }
 

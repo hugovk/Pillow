@@ -202,11 +202,9 @@ mapping_readimage(ImagingMapperObject *mapper, PyObject *args)
         /* FIXME: maybe we should call ImagingNewPrologue instead */
         if (!strcmp(mode, "L") || !strcmp(mode, "P")) {
             stride = xsize;
-        }
-        else if (!strcmp(mode, "I;16") || !strcmp(mode, "I;16B")) {
+        } else if (!strcmp(mode, "I;16") || !strcmp(mode, "I;16B")) {
             stride = xsize * 2;
-        }
-        else {
+        } else {
             stride = xsize * 4;
         }
     }
@@ -228,8 +226,7 @@ mapping_readimage(ImagingMapperObject *mapper, PyObject *args)
         for (y = 0; y < ysize; y++) {
             im->image[y] = mapper->base + mapper->offset + y * stride;
         }
-    }
-    else {
+    } else {
         for (y = 0; y < ysize; y++) {
             im->image[ysize - y - 1] = mapper->base + mapper->offset + y * stride;
         }
@@ -341,11 +338,9 @@ PyImaging_MapBuffer(PyObject *self, PyObject *args)
     if (stride <= 0) {
         if (!strcmp(mode, "L") || !strcmp(mode, "P")) {
             stride = xsize;
-        }
-        else if (!strncmp(mode, "I;16", 4)) {
+        } else if (!strncmp(mode, "I;16", 4)) {
             stride = xsize * 2;
-        }
-        else {
+        } else {
             stride = xsize * 4;
         }
     }
@@ -389,8 +384,7 @@ PyImaging_MapBuffer(PyObject *self, PyObject *args)
         for (y = 0; y < ysize; y++) {
             im->image[y] = (char *)view.buf + offset + y * stride;
         }
-    }
-    else {
+    } else {
         for (y = 0; y < ysize; y++) {
             im->image[ysize - y - 1] = (char *)view.buf + offset + y * stride;
         }

@@ -123,8 +123,7 @@ _hashtable_resize(HashTable *h)
     newSize = oldSize;
     if (h->count * RESIZE_FACTOR < h->length) {
         newSize = _findPrime(h->length / 2 - 1, -1);
-    }
-    else if (h->length * RESIZE_FACTOR < h->count) {
+    } else if (h->length * RESIZE_FACTOR < h->count) {
         newSize = _findPrime(h->length * 2 + 1, +1);
     }
     if (newSize < MIN_LENGTH) {
@@ -152,15 +151,13 @@ _hashtable_insert_node(HashTable *h, HashNode *node, int resize, int update,
                 cf(h, &(nv->key), &(nv->value), node->key, node->value);
                 free(node);
                 return 1;
-            }
-            else {
+            } else {
                 nv->key = node->key;
                 nv->value = node->value;
                 free(node);
                 return 1;
             }
-        }
-        else if (i > 0) {
+        } else if (i > 0) {
             break;
         }
     }
@@ -172,8 +169,7 @@ _hashtable_insert_node(HashTable *h, HashNode *node, int resize, int update,
             _hashtable_resize(h);
         }
         return 1;
-    }
-    else {
+    } else {
         return 0;
     }
 }
@@ -192,8 +188,7 @@ _hashtable_insert(HashTable *h, HashKey_t key, HashVal_t val, int resize, int up
         if (!i) {
             nv->value = val;
             return 1;
-        }
-        else if (i > 0) {
+        } else if (i > 0) {
             break;
         }
     }
@@ -211,8 +206,7 @@ _hashtable_insert(HashTable *h, HashKey_t key, HashVal_t val, int resize, int up
             _hashtable_resize(h);
         }
         return 1;
-    }
-    else {
+    } else {
         return 0;
     }
 }
@@ -232,13 +226,11 @@ hashtable_insert_or_update_computed(HashTable *h, HashKey_t key, ComputeFunc new
         if (!i) {
             if (existsFunc) {
                 existsFunc(h, nv->key, &(nv->value));
-            }
-            else {
+            } else {
                 return 0;
             }
             return 1;
-        }
-        else if (i > 0) {
+        } else if (i > 0) {
             break;
         }
     }
@@ -251,8 +243,7 @@ hashtable_insert_or_update_computed(HashTable *h, HashKey_t key, ComputeFunc new
     *n = t;
     if (newFunc) {
         newFunc(h, t->key, &(t->value));
-    }
-    else {
+    } else {
         free(t);
         return 0;
     }
@@ -333,8 +324,7 @@ hashtable_lookup(const HashTable *h, const HashKey_t key, HashVal_t *valp)
         if (!i) {
             *valp = n->value;
             return 1;
-        }
-        else if (i > 0) {
+        } else if (i > 0) {
             break;
         }
     }

@@ -86,8 +86,7 @@ ImagingGetHistogram(Imaging im, Imaging imMask, void *minmax)
                 }
             }
             ImagingSectionLeave(&cookie);
-        }
-        else { /* yes, we need the braces. C isn't Python! */
+        } else { /* yes, we need the braces. C isn't Python! */
             if (im->type != IMAGING_TYPE_UINT8) {
                 ImagingHistogramDelete(h);
                 return ImagingError_ModeError();
@@ -101,16 +100,14 @@ ImagingGetHistogram(Imaging im, Imaging imMask, void *minmax)
                         h->histogram[(*in++) + 256]++;
                         h->histogram[(*in++) + 512]++;
                         h->histogram[(*in++) + 768]++;
-                    }
-                    else {
+                    } else {
                         in += 4;
                     }
                 }
             }
             ImagingSectionLeave(&cookie);
         }
-    }
-    else {
+    } else {
         /* mask not given; process pixels in image */
         if (im->image8) {
             ImagingSectionEnter(&cookie);
@@ -120,8 +117,7 @@ ImagingGetHistogram(Imaging im, Imaging imMask, void *minmax)
                 }
             }
             ImagingSectionLeave(&cookie);
-        }
-        else {
+        } else {
             switch (im->type) {
                 case IMAGING_TYPE_UINT8:
                     ImagingSectionEnter(&cookie);

@@ -359,8 +359,7 @@ PyImaging_GrabScreenWin32(PyObject *self, PyObject *args)
         y = GetSystemMetrics(SM_YVIRTUALSCREEN);
         width = GetSystemMetrics(SM_CXVIRTUALSCREEN);
         height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
-    }
-    else {
+    } else {
         width = GetDeviceCaps(screen, HORZRES);
         height = GetDeviceCaps(screen, VERTRES);
     }
@@ -439,8 +438,7 @@ list_windows_callback(HWND hwnd, LPARAM lParam)
         if (title) {
             GetWindowTextW(hwnd, PyUnicode_AS_UNICODE(title), title_size + 1);
         }
-    }
-    else {
+    } else {
         title = PyUnicode_FromString("");
     }
     if (!title) {
@@ -591,8 +589,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
                     (PyThreadState *)GetWindowLongPtr(wnd, sizeof(PyObject *));
                 current_threadstate = PyThreadState_Swap(NULL);
                 PyEval_RestoreThread(threadstate);
-            }
-            else {
+            } else {
                 return DefWindowProc(wnd, message, wParam, lParam);
             }
     }
@@ -611,8 +608,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
                                            ps.rcPaint.bottom);
             if (result) {
                 Py_DECREF(result);
-            }
-            else {
+            } else {
                 callback_error("window damage callback");
             }
 
@@ -621,8 +617,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
                                       rect.right - rect.left, rect.bottom - rect.top);
             if (result) {
                 Py_DECREF(result);
-            }
-            else {
+            } else {
                 callback_error("window clear callback");
             }
 
@@ -631,8 +626,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
                                       rect.right - rect.left, rect.bottom - rect.top);
             if (result) {
                 Py_DECREF(result);
-            }
-            else {
+            } else {
                 callback_error("window repair callback");
             }
 
@@ -647,8 +641,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (result) {
                 InvalidateRect(wnd, NULL, 1);
                 Py_DECREF(result);
-            }
-            else {
+            } else {
                 callback_error("window resize callback");
             }
             break;
@@ -658,8 +651,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
             result = PyObject_CallFunction(callback, "s", "destroy");
             if (result) {
                 Py_DECREF(result);
-            }
-            else {
+            } else {
                 callback_error("window destroy callback");
             }
             Py_DECREF(callback);
@@ -780,12 +772,10 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args)
     if (datasize > 22 && GET32(data, 0) == 0x9ac6cdd7) {
         /* placeable windows metafile (22-byte aldus header) */
         meta = SetWinMetaFileBits(datasize - 22, data + 22, NULL, NULL);
-    }
-    else if (datasize > 80 && GET32(data, 0) == 1 && GET32(data, 40) == 0x464d4520) {
+    } else if (datasize > 80 && GET32(data, 0) == 1 && GET32(data, 40) == 0x464d4520) {
         /* enhanced metafile */
         meta = SetEnhMetaFileBits(datasize, data);
-    }
-    else {
+    } else {
         /* unknown meta format */
         meta = NULL;
     }
@@ -926,8 +916,7 @@ PyImaging_GrabScreenX11(PyObject *self, PyObject *args)
     if (reply->depth == 24) {
         buffer = PyBytes_FromStringAndSize((char *)xcb_get_image_data(reply),
                                            xcb_get_image_data_length(reply));
-    }
-    else {
+    } else {
         PyErr_Format(PyExc_OSError, "unsupported bit depth: %i", reply->depth);
     }
 

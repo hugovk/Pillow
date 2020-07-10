@@ -113,8 +113,7 @@ ImagingSplit(Imaging imIn, Imaging bands[4])
                 in += 4;
             }
         }
-    }
-    else if (imIn->bands == 3) {
+    } else if (imIn->bands == 3) {
         for (y = 0; y < imIn->ysize; y++) {
             UINT8 *in = (UINT8 *)imIn->image[y];
             UINT8 *out0 = bands[0]->image8[y];
@@ -137,8 +136,7 @@ ImagingSplit(Imaging imIn, Imaging bands[4])
                 in += 4;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < imIn->ysize; y++) {
             UINT8 *in = (UINT8 *)imIn->image[y];
             UINT8 *out0 = bands[0]->image8[y];
@@ -295,8 +293,7 @@ ImagingMerge(const char *mode, Imaging bands[4])
                 out[x] = MAKE_UINT32(in0[x], 0, 0, in1[x]);
             }
         }
-    }
-    else if (imOut->bands == 3) {
+    } else if (imOut->bands == 3) {
         for (y = 0; y < imOut->ysize; y++) {
             UINT8 *in0 = bands[0]->image8[y];
             UINT8 *in1 = bands[1]->image8[y];
@@ -306,8 +303,7 @@ ImagingMerge(const char *mode, Imaging bands[4])
                 out[x] = MAKE_UINT32(in0[x], in1[x], in2[x], 0);
             }
         }
-    }
-    else if (imOut->bands == 4) {
+    } else if (imOut->bands == 4) {
         for (y = 0; y < imOut->ysize; y++) {
             UINT8 *in0 = bands[0]->image8[y];
             UINT8 *in1 = bands[1]->image8[y];

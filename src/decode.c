@@ -81,8 +81,7 @@ PyImaging_DecoderNew(int contextsize)
             (void)PyErr_NoMemory();
             return NULL;
         }
-    }
-    else {
+    } else {
         context = 0;
     }
 
@@ -183,8 +182,7 @@ _setimage(ImagingDecoderObject *decoder, PyObject *args)
     if (x0 == 0 && x1 == 0) {
         state->xsize = im->xsize;
         state->ysize = im->ysize;
-    }
-    else {
+    } else {
         state->xoff = x0;
         state->yoff = y0;
         state->xsize = x1 - x0;
@@ -917,14 +915,11 @@ PyImaging_Jpeg2KDecoderNew(PyObject *self, PyObject *args)
 
     if (strcmp(format, "j2k") == 0) {
         codec_format = OPJ_CODEC_J2K;
-    }
-    else if (strcmp(format, "jpt") == 0) {
+    } else if (strcmp(format, "jpt") == 0) {
         codec_format = OPJ_CODEC_JPT;
-    }
-    else if (strcmp(format, "jp2") == 0) {
+    } else if (strcmp(format, "jp2") == 0) {
         codec_format = OPJ_CODEC_JP2;
-    }
-    else {
+    } else {
         return NULL;
     }
 

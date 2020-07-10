@@ -51,8 +51,7 @@ ImagingAlphaComposite(Imaging imDst, Imaging imSrc)
             if (src->a == 0) {
                 // Copy 4 bytes at once.
                 *out = *dst;
-            }
-            else {
+            } else {
                 // Integer implementation with increased precision.
                 // Each variable has extra meaningful bits.
                 // Divisions are rounded.

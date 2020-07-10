@@ -100,8 +100,7 @@ ImagingFliDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
                                 return -1;
                             }
                             local_buf = (UINT8 *)im->image[y];
-                        }
-                        else {
+                        } else {
                             /* store last byte (used if line width is odd) */
                             local_buf[state->xsize - 1] = (UINT8)packets;
                         }
@@ -123,8 +122,7 @@ ImagingFliDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
                                 local_buf[x++] = data[3];
                             }
                             data += 2 + 2;
-                        }
-                        else {
+                        } else {
                             i = 2 * (int)data[1]; /* chunk */
                             if (x + i > state->xsize) {
                                 break;
@@ -166,8 +164,7 @@ ImagingFliDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
                             ERR_IF_DATA_OOB(3)
                             memset(out + x, data[2], i);
                             data += 3;
-                        }
-                        else {
+                        } else {
                             i = data[1]; /* chunk */
                             if (x + i > state->xsize) {
                                 break;
@@ -209,8 +206,7 @@ ImagingFliDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
                             ERR_IF_DATA_OOB(i + 1)
                             memcpy(out + x, data + 1, i);
                             data += i + 1;
-                        }
-                        else {
+                        } else {
                             i = data[0];
                             if (x + i > state->xsize) {
                                 break; /* safety first */

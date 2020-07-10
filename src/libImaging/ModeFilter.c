@@ -70,8 +70,7 @@ ImagingModeFilter(Imaging im, int size)
 
             if (maxcount > 2) {
                 out[x] = maxpixel;
-            }
-            else {
+            } else {
                 out[x] = IMAGING_PIXEL_L(im, x, y);
             }
         }

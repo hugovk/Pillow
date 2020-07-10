@@ -39,8 +39,7 @@ ImagingRawEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
             }
             state->count = state->bytes;
             state->bytes = bytes;
-        }
-        else {
+        } else {
             state->count = state->bytes;
         }
 
@@ -49,8 +48,7 @@ ImagingRawEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
         if (state->ystep < 0) {
             state->y = state->ysize - 1;
             state->ystep = -1;
-        }
-        else {
+        } else {
             state->ystep = 1;
         }
 

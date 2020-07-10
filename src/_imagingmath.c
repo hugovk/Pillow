@@ -97,8 +97,7 @@ powi(int x, int y)
     }
     if (v < MIN_INT32) {
         v = MIN_INT32;
-    }
-    else if (v > MAX_INT32) {
+    } else if (v > MAX_INT32) {
         v = MAX_INT32;
     }
     return (int)v;

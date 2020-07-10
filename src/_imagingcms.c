@@ -260,35 +260,25 @@ findLCMStype(char *PILmode)
 {
     if (strcmp(PILmode, "RGB") == 0) {
         return TYPE_RGBA_8;
-    }
-    else if (strcmp(PILmode, "RGBA") == 0) {
+    } else if (strcmp(PILmode, "RGBA") == 0) {
         return TYPE_RGBA_8;
-    }
-    else if (strcmp(PILmode, "RGBX") == 0) {
+    } else if (strcmp(PILmode, "RGBX") == 0) {
         return TYPE_RGBA_8;
-    }
-    else if (strcmp(PILmode, "RGBA;16B") == 0) {
+    } else if (strcmp(PILmode, "RGBA;16B") == 0) {
         return TYPE_RGBA_16;
-    }
-    else if (strcmp(PILmode, "CMYK") == 0) {
+    } else if (strcmp(PILmode, "CMYK") == 0) {
         return TYPE_CMYK_8;
-    }
-    else if (strcmp(PILmode, "L") == 0) {
+    } else if (strcmp(PILmode, "L") == 0) {
         return TYPE_GRAY_8;
-    }
-    else if (strcmp(PILmode, "L;16") == 0) {
+    } else if (strcmp(PILmode, "L;16") == 0) {
         return TYPE_GRAY_16;
-    }
-    else if (strcmp(PILmode, "L;16B") == 0) {
+    } else if (strcmp(PILmode, "L;16B") == 0) {
         return TYPE_GRAY_16_SE;
-    }
-    else if (strcmp(PILmode, "YCCA") == 0) {
+    } else if (strcmp(PILmode, "YCCA") == 0) {
         return TYPE_YCbCr_8;
-    }
-    else if (strcmp(PILmode, "YCC") == 0) {
+    } else if (strcmp(PILmode, "YCC") == 0) {
         return TYPE_YCbCr_8;
-    }
-    else if (strcmp(PILmode, "LAB") == 0) {
+    } else if (strcmp(PILmode, "LAB") == 0) {
         // LabX equivalent like ALab, but not reversed -- no #define in lcms2
         return (COLORSPACE_SH(PT_LabV2) | CHANNELS_SH(3) | BYTES_SH(1) | EXTRA_SH(1));
     }
@@ -311,25 +301,20 @@ pyCMSgetAuxChannelChannel(cmsUInt32Number format, int auxChannelNdx)
         // reverse order, before anything but last extra is shifted last
         if (auxChannelNdx == numExtras - 1) {
             return numColors + numExtras - 1;
-        }
-        else {
+        } else {
             return numExtras - 2 - auxChannelNdx;
         }
-    }
-    else if (T_SWAPFIRST(format)) {
+    } else if (T_SWAPFIRST(format)) {
         // in order, after color channels, but last extra is shifted to first
         if (auxChannelNdx == numExtras - 1) {
             return 0;
-        }
-        else {
+        } else {
             return numColors + 1 + auxChannelNdx;
         }
-    }
-    else if (T_DOSWAP(format)) {
+    } else if (T_DOSWAP(format)) {
         // reverse order, before anything
         return numExtras - 1 - auxChannelNdx;
-    }
-    else {
+    } else {
         // in order, after color channels
         return numColors + auxChannelNdx;
     }
@@ -591,18 +576,14 @@ createProfile(PyObject *self, PyObject *args)
                 return NULL;
             }
             hProfile = cmsCreateLab2Profile(&whitePoint);
-        }
-        else {
+        } else {
             hProfile = cmsCreateLab2Profile(NULL);
         }
-    }
-    else if (strcmp(sColorSpace, "XYZ") == 0) {
+    } else if (strcmp(sColorSpace, "XYZ") == 0) {
         hProfile = cmsCreateXYZProfile();
-    }
-    else if (strcmp(sColorSpace, "sRGB") == 0) {
+    } else if (strcmp(sColorSpace, "sRGB") == 0) {
         hProfile = cmsCreate_sRGBProfile();
-    }
-    else {
+    } else {
         hProfile = NULL;
     }
 
@@ -662,8 +643,7 @@ cms_get_display_profile_win32(PyObject *self, PyObject *args)
 
     if (is_dc) {
         ok = GetICMProfile((HDC)handle, &filename_size, filename);
-    }
-    else {
+    } else {
         HDC dc = GetDC((HWND)handle);
         ok = GetICMProfile(dc, &filename_size, filename);
         ReleaseDC((HWND)handle, dc);
@@ -798,8 +778,7 @@ _profile_read_ciexyz(CmsProfileObject *self, cmsTagSignature info, int multi)
     }
     if (multi) {
         return _xyz3_py(XYZ);
-    }
-    else {
+    } else {
         return _xyz_py(XYZ);
     }
 }
@@ -904,8 +883,7 @@ _check_intent(int clut, cmsHPROFILE hProfile, cmsUInt32Number Intent,
 {
     if (clut) {
         return cmsIsCLUT(hProfile, Intent, UsedDirection);
-    }
-    else {
+    } else {
         return cmsIsIntentSupported(hProfile, Intent, UsedDirection);
     }
 }
@@ -1451,11 +1429,9 @@ cms_profile_getattr_icc_measurement_condition(CmsProfileObject *self, void *clos
 
     if (mc->Geometry == 1) {
         geo = "45/0, 0/45";
-    }
-    else if (mc->Geometry == 2) {
+    } else if (mc->Geometry == 2) {
         geo = "0d, d/0";
-    }
-    else {
+    } else {
         geo = "unknown";
     }
 

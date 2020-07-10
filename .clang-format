@@ -4,7 +4,7 @@ BasedOnStyle: Google
 AlwaysBreakAfterReturnType: All
 AllowShortIfStatementsOnASingleLine: false
 AlignAfterOpenBracket: Align
-BreakBeforeBraces: Stroustrup
+BreakBeforeBraces: Linux
 ColumnLimit: 88
 DerivePointerAlignment: false
 IndentWidth: 4

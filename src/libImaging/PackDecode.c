@@ -52,8 +52,7 @@ ImagingPackbitsDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_
 
             ptr += 2;
             bytes -= 2;
-        }
-        else {
+        } else {
             /* Literal */
             n = ptr[0] + 2;
 

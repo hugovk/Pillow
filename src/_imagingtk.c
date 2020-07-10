@@ -44,8 +44,7 @@ _tkinit(PyObject *self, PyObject *args)
 
     if (is_interp) {
         interp = (Tcl_Interp *)PyLong_AsVoidPtr(arg);
-    }
-    else {
+    } else {
         TkappObject *app;
         /* Do it the hard way.  This will break if the TkappObject
         layout changes */

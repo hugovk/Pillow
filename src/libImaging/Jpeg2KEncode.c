@@ -230,8 +230,7 @@ j2k_set_cinema_params(Imaging im, int components, opj_cparameters_t *params)
             rate = 0;
             if (params->tcp_rates[0] == 0) {
                 params->tcp_rates[n] = max_rate;
-            }
-            else {
+            } else {
                 rate = ((float)(components * im->xsize * im->ysize * 8) /
                         (params->tcp_rates[n] * 8));
                 if (rate > CINEMA_24_CS_LENGTH) {
@@ -241,8 +240,7 @@ j2k_set_cinema_params(Imaging im, int components, opj_cparameters_t *params)
         }
 
         params->max_comp_size = COMP_24_CS_MAX_LENGTH;
-    }
-    else {
+    } else {
         float max_rate = ((float)(components * im->xsize * im->ysize * 8) /
                           (CINEMA_48_CS_LENGTH * 8));
 
@@ -250,8 +248,7 @@ j2k_set_cinema_params(Imaging im, int components, opj_cparameters_t *params)
             rate = 0;
             if (params->tcp_rates[0] == 0) {
                 params->tcp_rates[n] = max_rate;
-            }
-            else {
+            } else {
                 rate = ((float)(components * im->xsize * im->ysize * 8) /
                         (params->tcp_rates[n] * 8));
                 if (rate > CINEMA_48_CS_LENGTH) {
@@ -311,42 +308,35 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
         components = 1;
         color_space = OPJ_CLRSPC_GRAY;
         pack = j2k_pack_l;
-    }
-    else if (strcmp(im->mode, "I;16") == 0) {
+    } else if (strcmp(im->mode, "I;16") == 0) {
         components = 1;
         color_space = OPJ_CLRSPC_GRAY;
         pack = j2k_pack_i16;
         prec = 16;
         bpp = 12;
-    }
-    else if (strcmp(im->mode, "I;16B") == 0) {
+    } else if (strcmp(im->mode, "I;16B") == 0) {
         components = 1;
         color_space = OPJ_CLRSPC_GRAY;
         pack = j2k_pack_i16;
         prec = 16;
         bpp = 12;
-    }
-    else if (strcmp(im->mode, "LA") == 0) {
+    } else if (strcmp(im->mode, "LA") == 0) {
         components = 2;
         color_space = OPJ_CLRSPC_GRAY;
         pack = j2k_pack_la;
-    }
-    else if (strcmp(im->mode, "RGB") == 0) {
+    } else if (strcmp(im->mode, "RGB") == 0) {
         components = 3;
         color_space = OPJ_CLRSPC_SRGB;
         pack = j2k_pack_rgb;
-    }
-    else if (strcmp(im->mode, "YCbCr") == 0) {
+    } else if (strcmp(im->mode, "YCbCr") == 0) {
         components = 3;
         color_space = OPJ_CLRSPC_SYCC;
         pack = j2k_pack_rgb;
-    }
-    else if (strcmp(im->mode, "RGBA") == 0) {
+    } else if (strcmp(im->mode, "RGBA") == 0) {
         components = 4;
         color_space = OPJ_CLRSPC_SRGB;
         pack = j2k_pack_rgba;
-    }
-    else {
+    } else {
         state->errcode = IMAGING_CODEC_BROKEN;
         state->state = J2K_STATE_FAILED;
         goto quick_exit;
@@ -386,8 +376,7 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
 
         tile_width = params.cp_tdx;
         tile_height = params.cp_tdy;
-    }
-    else {
+    } else {
         params.cp_tx0 = 0;
         params.cp_ty0 = 0;
         params.cp_tdx = 1;
@@ -414,8 +403,7 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
                 params.cp_disto_alloc = params.cp_fixed_alloc = 0;
                 params.cp_fixed_quality = 1;
                 pq = params.tcp_distoratio;
-            }
-            else {
+            } else {
                 params.cp_disto_alloc = 1;
                 params.cp_fixed_alloc = params.cp_fixed_quality = 0;
                 pq = params.tcp_rates;
@@ -426,8 +414,7 @@ j2k_encode_entry(Imaging im, ImagingCodecState state)
                 pq[n] = PyFloat_AsDouble(obj);
             }
         }
-    }
-    else {
+    } else {
         params.tcp_numlayers = 1;
         params.tcp_rates[0] = 0;
         params.cp_disto_alloc = 1;

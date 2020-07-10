@@ -113,8 +113,7 @@ ImagingNewDIB(const char *mode, int xsize, int ysize)
 
     if (dib->pixelsize == 1) {
         dib->pack = dib->unpack = (ImagingShuffler)memcpy;
-    }
-    else {
+    } else {
         dib->pack = ImagingPackBGR;
         dib->unpack = ImagingPackBGR;
     }
@@ -158,8 +157,7 @@ ImagingNewDIB(const char *mode, int xsize, int ysize)
             }
 
             dib->palette = CreatePalette(pal);
-        }
-        else if (strcmp(mode, "RGB") == 0) {
+        } else if (strcmp(mode, "RGB") == 0) {
 #ifdef CUBE216
 
             /* Colour DIB.  Create a 6x6x6 colour cube (216 entries) and
@@ -245,8 +243,7 @@ ImagingDrawDIB(ImagingDIB dib, void *dc, int dst[4], int src[4])
         StretchDIBits((HDC)dc, dst[0], dst[1], dst[2] - dst[0], dst[3] - dst[1], src[0],
                       src[1], src[2] - src[0], src[3] - src[1], dib->bits, dib->info,
                       DIB_RGB_COLORS, SRCCOPY);
-    }
-    else {
+    } else {
         /* stretchblt (displays) */
         if (dib->palette != 0) {
             SelectPalette((HDC)dc, dib->palette, FALSE);
@@ -270,8 +267,7 @@ ImagingQueryPaletteDIB(ImagingDIB dib, void *dc)
 
         /* Restore palette */
         SelectPalette((HDC)dc, now, FALSE);
-    }
-    else {
+    } else {
         n = 0;
     }
 

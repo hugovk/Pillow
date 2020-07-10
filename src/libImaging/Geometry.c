@@ -44,12 +44,10 @@ ImagingFlipLeftRight(Imaging imOut, Imaging imIn)
     if (imIn->image8) {
         if (strncmp(imIn->mode, "I;16", 4) == 0) {
             FLIP_LEFT_RIGHT(UINT16, image8)
-        }
-        else {
+        } else {
             FLIP_LEFT_RIGHT(UINT8, image8)
         }
-    }
-    else {
+    } else {
         FLIP_LEFT_RIGHT(INT32, image32)
     }
 
@@ -134,12 +132,10 @@ ImagingRotate90(Imaging imOut, Imaging imIn)
     if (imIn->image8) {
         if (strncmp(imIn->mode, "I;16", 4) == 0) {
             ROTATE_90(UINT16, image8);
-        }
-        else {
+        } else {
             ROTATE_90(UINT8, image8);
         }
-    }
-    else {
+    } else {
         ROTATE_90(INT32, image32);
     }
 
@@ -196,12 +192,10 @@ ImagingTranspose(Imaging imOut, Imaging imIn)
     if (imIn->image8) {
         if (strncmp(imIn->mode, "I;16", 4) == 0) {
             TRANSPOSE(UINT16, image8);
-        }
-        else {
+        } else {
             TRANSPOSE(UINT8, image8);
         }
-    }
-    else {
+    } else {
         TRANSPOSE(INT32, image32);
     }
 
@@ -260,12 +254,10 @@ ImagingTransverse(Imaging imOut, Imaging imIn)
     if (imIn->image8) {
         if (strncmp(imIn->mode, "I;16", 4) == 0) {
             TRANSVERSE(UINT16, image8);
-        }
-        else {
+        } else {
             TRANSVERSE(UINT8, image8);
         }
-    }
-    else {
+    } else {
         TRANSVERSE(INT32, image32);
     }
 
@@ -307,12 +299,10 @@ ImagingRotate180(Imaging imOut, Imaging imIn)
     if (imIn->image8) {
         if (strncmp(imIn->mode, "I;16", 4) == 0) {
             ROTATE_180(UINT16, image8)
-        }
-        else {
+        } else {
             ROTATE_180(UINT8, image8)
         }
-    }
-    else {
+    } else {
         ROTATE_180(INT32, image32)
     }
 
@@ -370,12 +360,10 @@ ImagingRotate270(Imaging imOut, Imaging imIn)
     if (imIn->image8) {
         if (strncmp(imIn->mode, "I;16", 4) == 0) {
             ROTATE_270(UINT16, image8);
-        }
-        else {
+        } else {
             ROTATE_270(UINT8, image8);
         }
-    }
-    else {
+    } else {
         ROTATE_270(INT32, image32);
     }
 
@@ -529,8 +517,7 @@ nearest_filter32(void *out, Imaging im, double xin, double yin)
         if (y + 1 >= 0 && y + 1 < im->ysize) {         \
             in = (type *)((image)[y + 1] + offset);    \
             BILINEAR(v2, in[x0], in[x1], dx);          \
-        }                                              \
-        else {                                         \
+        } else {                                       \
             v2 = v1;                                   \
         }                                              \
         BILINEAR(v1, v1, v2, dy);                      \
@@ -635,22 +622,19 @@ bilinear_filter32RGB(void *out, Imaging im, double xin, double yin)
         if (y + 1 >= 0 && y + 1 < im->ysize) {               \
             in = (type *)((image)[y + 1] + offset);          \
             BICUBIC(v2, in[x0], in[x1], in[x2], in[x3], dx); \
-        }                                                    \
-        else {                                               \
+        } else {                                             \
             v2 = v1;                                         \
         }                                                    \
         if (y + 2 >= 0 && y + 2 < im->ysize) {               \
             in = (type *)((image)[y + 2] + offset);          \
             BICUBIC(v3, in[x0], in[x1], in[x2], in[x3], dx); \
-        }                                                    \
-        else {                                               \
+        } else {                                             \
             v3 = v2;                                         \
         }                                                    \
         if (y + 3 >= 0 && y + 3 < im->ysize) {               \
             in = (type *)((image)[y + 3] + offset);          \
             BICUBIC(v4, in[x0], in[x1], in[x2], in[x3], dx); \
-        }                                                    \
-        else {                                               \
+        } else {                                             \
             v4 = v3;                                         \
         }                                                    \
         BICUBIC(v1, v1, v2, v3, v4, dy);                     \
@@ -663,11 +647,9 @@ bicubic_filter8(void *out, Imaging im, double xin, double yin)
     BICUBIC_BODY(UINT8, im->image8, 1, 0);
     if (v1 <= 0.0) {
         ((UINT8 *)out)[0] = 0;
-    }
-    else if (v1 >= 255.0) {
+    } else if (v1 >= 255.0) {
         ((UINT8 *)out)[0] = 255;
-    }
-    else {
+    } else {
         ((UINT8 *)out)[0] = (UINT8)v1;
     }
     return 1;
@@ -704,13 +686,11 @@ bicubic_filter32LA(void *out, Imaging im, double xin, double yin)
         ((UINT8 *)out)[0] = 0;
         ((UINT8 *)out)[1] = 0;
         ((UINT8 *)out)[2] = 0;
-    }
-    else if (v1 >= 255.0) {
+    } else if (v1 >= 255.0) {
         ((UINT8 *)out)[0] = 255;
         ((UINT8 *)out)[1] = 255;
         ((UINT8 *)out)[2] = 255;
-    }
-    else {
+    } else {
         ((UINT8 *)out)[0] = (UINT8)v1;
         ((UINT8 *)out)[1] = (UINT8)v1;
         ((UINT8 *)out)[2] = (UINT8)v1;
@@ -718,11 +698,9 @@ bicubic_filter32LA(void *out, Imaging im, double xin, double yin)
     BICUBIC_BODY(UINT8, im->image, 4, 3);
     if (v1 <= 0.0) {
         ((UINT8 *)out)[3] = 0;
-    }
-    else if (v1 >= 255.0) {
+    } else if (v1 >= 255.0) {
         ((UINT8 *)out)[3] = 255;
-    }
-    else {
+    } else {
         ((UINT8 *)out)[3] = (UINT8)v1;
     }
     return 1;
@@ -737,11 +715,9 @@ bicubic_filter32RGB(void *out, Imaging im, double xin, double yin)
         BICUBIC_BODY(UINT8, im->image, 4, b);
         if (v1 <= 0.0) {
             ((UINT8 *)out)[b] = 0;
-        }
-        else if (v1 >= 255.0) {
+        } else if (v1 >= 255.0) {
             ((UINT8 *)out)[b] = 255;
-        }
-        else {
+        } else {
             ((UINT8 *)out)[b] = (UINT8)v1;
         }
     }
@@ -771,22 +747,19 @@ getfilter(Imaging im, int filterid)
                                 return nearest_filter32;
                         }
                 }
-            }
-            else {
+            } else {
                 return nearest_filter32;
             }
             break;
         case IMAGING_TRANSFORM_BILINEAR:
             if (im->image8) {
                 return bilinear_filter8;
-            }
-            else if (im->image32) {
+            } else if (im->image32) {
                 switch (im->type) {
                     case IMAGING_TYPE_UINT8:
                         if (im->bands == 2) {
                             return bilinear_filter32LA;
-                        }
-                        else {
+                        } else {
                             return bilinear_filter32RGB;
                         }
                     case IMAGING_TYPE_INT32:
@@ -799,14 +772,12 @@ getfilter(Imaging im, int filterid)
         case IMAGING_TRANSFORM_BICUBIC:
             if (im->image8) {
                 return bicubic_filter8;
-            }
-            else if (im->image32) {
+            } else if (im->image32) {
                 switch (im->type) {
                     case IMAGING_TYPE_UINT8:
                         if (im->bands == 2) {
                             return bicubic_filter32LA;
-                        }
-                        else {
+                        } else {
                             return bicubic_filter32RGB;
                         }
                     case IMAGING_TYPE_INT32:
@@ -959,8 +930,7 @@ ImagingScaleAffine(Imaging imOut, Imaging imIn, int x0, int y0, int x1, int y1,
 
     if (imIn->image8) {
         AFFINE_SCALE(UINT8, image8);
-    }
-    else {
+    } else {
         AFFINE_SCALE(INT32, image32);
     }
 
@@ -1039,8 +1009,7 @@ affine_fixed(Imaging imOut, Imaging imIn, int x0, int y0, int x1, int y1, double
 
     if (imIn->image8) {
         AFFINE_TRANSFORM_FIXED(UINT8, image8)
-    }
-    else {
+    } else {
         AFFINE_TRANSFORM_FIXED(INT32, image32)
     }
 
@@ -1140,8 +1109,7 @@ ImagingTransformAffine(Imaging imOut, Imaging imIn, int x0, int y0, int x1, int 
 
     if (imIn->image8) {
         AFFINE_TRANSFORM(UINT8, image8)
-    }
-    else {
+    } else {
         AFFINE_TRANSFORM(INT32, image32)
     }
 

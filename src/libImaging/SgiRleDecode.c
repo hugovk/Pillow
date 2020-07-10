@@ -50,8 +50,7 @@ expandrow(UINT8 *dest, UINT8 *src, int n, int z, int xsize)
                 *dest = *src++;
                 dest += z;
             }
-        }
-        else {
+        } else {
             pixel = *src++;
             while (count--) {
                 *dest = pixel;
@@ -89,8 +88,7 @@ expandrow2(UINT8 *dest, const UINT8 *src, int n, int z, int xsize)
                 src += 2;
                 dest += z * 2;
             }
-        }
-        else {
+        } else {
             while (count--) {
                 memcpy(dest, src, 2);
                 dest += z * 2;
@@ -126,8 +124,7 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t 
     state->y = 0;
     if (state->ystep < 0) {
         state->y = im->ysize - 1;
-    }
-    else {
+    } else {
         state->ystep = 1;
     }
 
@@ -177,16 +174,14 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t 
             if (c->bpc == 1) {
                 status = expandrow(&state->buffer[c->channo], &ptr[c->rleoffset],
                                    c->rlelength, im->bands, im->xsize);
-            }
-            else {
+            } else {
                 status = expandrow2(&state->buffer[c->channo * 2], &ptr[c->rleoffset],
                                     c->rlelength, im->bands, im->xsize);
             }
             if (status == -1) {
                 state->errcode = IMAGING_CODEC_OVERRUN;
                 return -1;
-            }
-            else if (status == 1) {
+            } else if (status == 1) {
                 goto sgi_finish_decode;
             }
 

@@ -122,8 +122,7 @@ ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                     context->cinfo.input_components = 3;
                     if (strcmp(im->mode, "YCbCr") == 0) {
                         context->cinfo.in_color_space = JCS_YCbCr;
-                    }
-                    else {
+                    } else {
                         context->cinfo.in_color_space = JCS_RGB;
                     }
                     break;
@@ -169,8 +168,7 @@ ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                 for (i = last_q; i < context->cinfo.num_components; i++) {
                     context->cinfo.comp_info[i].quant_tbl_no = last_q;
                 }
-            }
-            else if (context->quality != -1) {
+            } else if (context->quality != -1) {
                 jpeg_set_quality(&context->cinfo, context->quality, 1);
             }
 
@@ -271,12 +269,10 @@ ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                 context->extra_offset += n;
                 if (context->extra_offset >= context->extra_size) {
                     state->state++;
-                }
-                else {
+                } else {
                     break;
                 }
-            }
-            else {
+            } else {
                 state->state++;
             }
 

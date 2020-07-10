@@ -112,14 +112,11 @@ MakeRankFunction(UINT8) MakeRankFunction(INT32) MakeRankFunction(FLOAT32)
 
     if (im->image8) {
         RANK_BODY(UINT8);
-    }
-    else if (im->type == IMAGING_TYPE_INT32) {
+    } else if (im->type == IMAGING_TYPE_INT32) {
         RANK_BODY(INT32);
-    }
-    else if (im->type == IMAGING_TYPE_FLOAT32) {
+    } else if (im->type == IMAGING_TYPE_FLOAT32) {
         RANK_BODY(FLOAT32);
-    }
-    else {
+    } else {
         /* safety net (we shouldn't end up here) */
         ImagingDelete(imOut);
         return (Imaging)ImagingError_ModeError();

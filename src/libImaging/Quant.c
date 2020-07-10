@@ -90,16 +90,13 @@ unshifted_pixel_cmp(const HashTable *h, const Pixel pixel1, const Pixel pixel2)
         if (pixel1.c.g == pixel2.c.g) {
             if (pixel1.c.b == pixel2.c.b) {
                 return 0;
-            }
-            else {
+            } else {
                 return (int)(pixel1.c.b) - (int)(pixel2.c.b);
             }
-        }
-        else {
+        } else {
             return (int)(pixel1.c.g) - (int)(pixel2.c.g);
         }
-    }
-    else {
+    } else {
         return (int)(pixel1.c.r) - (int)(pixel2.c.r);
     }
 }
@@ -221,8 +218,7 @@ compute_box_volume(BoxNode *b)
     }
     if (!b->head[0]) {
         b->volume = 0;
-    }
-    else {
+    } else {
         rh = b->head[0]->p.c.r;
         rl = b->tail[0]->p.c.r;
         gh = b->head[1]->p.c.g;
@@ -292,8 +288,7 @@ mergesort_pixels(PixelList *head, int i)
         if (a->p.a.v[i] > b->p.a.v[i]) {
             c = a;
             a = a->next[i];
-        }
-        else {
+        } else {
             c = b;
             b = b->next[i];
         }
@@ -310,8 +305,7 @@ mergesort_pixels(PixelList *head, int i)
     if (a) {
         c->next[i] = a;
         a->prev[i] = c;
-    }
-    else if (b) {
+    } else if (b) {
         c->next[i] = b;
         b->prev[i] = c;
     }
@@ -462,18 +456,15 @@ splitlists(PixelList *h[3], PixelList *t[3], PixelList *nh[2][3], PixelList *nt[
             if (c->flag) { /* move pixel to right  list*/
                 if (r) {
                     r->next[i] = c;
-                }
-                else {
+                } else {
                     nh[1][i] = c;
                 }
                 c->prev[i] = r;
                 r = c;
-            }
-            else { /* move pixel to left list */
+            } else { /* move pixel to left list */
                 if (l) {
                     l->next[i] = c;
-                }
-                else {
+                } else {
                     nh[0][i] = c;
                 }
                 c->prev[i] = l;
@@ -854,8 +845,7 @@ map_image_pixels(Pixel *pixelData, uint32_t nPixels, Pixel *paletteData,
                         bestdist = dist;
                         bestmatch = idx;
                     }
-                }
-                else {
+                } else {
                     break;
                 }
             }
@@ -899,8 +889,7 @@ map_image_pixels_from_quantized_pixels(Pixel *pixelData, uint32_t nPixels,
                         bestdist = dist;
                         bestmatch = idx;
                     }
-                }
-                else {
+                } else {
                     break;
                 }
             }
@@ -963,8 +952,7 @@ map_image_pixels_from_median_box(Pixel *pixelData, uint32_t nPixels, Pixel *pale
                     bestdist = dist;
                     bestmatch = idx;
                 }
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -1171,8 +1159,7 @@ k_means(Pixel *pixelData, uint32_t nPixels, Pixel *paletteData,
             build_distance_tables(avgDist, avgDistSortKey, paletteData,
                                   nPaletteEntries);
             built = 1;
-        }
-        else {
+        } else {
             recompute_palette_from_averages(paletteData, nPaletteEntries, avg, count);
             resort_distance_tables(avgDist, avgDistSortKey, paletteData,
                                    nPaletteEntries);
@@ -1375,8 +1362,7 @@ quantize(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels, Pixel **pale
         for (i = 0; i < nPixels; i++) {
             if (hashtable_lookup(h2, pixelData[i], &paletteEntry)) {
                 bestmatch = paletteEntry;
-            }
-            else {
+            } else {
                 bestmatch = 0;
                 bestdist = _SQR(pixelData[i].c.r - p[0].c.r) +
                            _SQR(pixelData[i].c.g - p[0].c.g) +
@@ -1649,8 +1635,7 @@ ImagingQuantize(Imaging im, int colors, int mode, int kmeans)
                 p[i].c.a = 255;
             }
         }
-    }
-    else if (!strcmp(im->mode, "P")) {
+    } else if (!strcmp(im->mode, "P")) {
         /* palette */
 
         pp = im->palette->palette;
@@ -1664,8 +1649,7 @@ ImagingQuantize(Imaging im, int colors, int mode, int kmeans)
                 p[i].c.a = pp[v * 4 + 3];
             }
         }
-    }
-    else if (!strcmp(im->mode, "RGB") || !strcmp(im->mode, "RGBA")) {
+    } else if (!strcmp(im->mode, "RGB") || !strcmp(im->mode, "RGBA")) {
         /* true colour */
 
         for (i = y = 0; y < im->ysize; y++) {
@@ -1673,8 +1657,7 @@ ImagingQuantize(Imaging im, int colors, int mode, int kmeans)
                 p[i].v = im->image32[y][x];
             }
         }
-    }
-    else {
+    } else {
         free(p);
         return (Imaging)ImagingError_ValueError("internal error");
     }
@@ -1738,8 +1721,7 @@ ImagingQuantize(Imaging im, int colors, int mode, int kmeans)
             *pp++ = palette[i].c.b;
             if (withAlpha) {
                 *pp++ = palette[i].c.a;
-            }
-            else {
+            } else {
                 *pp++ = 255;
             }
         }
@@ -1758,8 +1740,7 @@ ImagingQuantize(Imaging im, int colors, int mode, int kmeans)
         ImagingSectionLeave(&cookie);
 
         return imOut;
-    }
-    else {
+    } else {
         if (result == -1) {
             return (Imaging)ImagingError_ValueError(
                 "dependency required by this method was not "

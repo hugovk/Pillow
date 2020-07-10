@@ -424,11 +424,9 @@ packI16B(UINT8 *out, const UINT8 *in_, int pixels)
         memcpy(&in, in_, sizeof(in));
         if (in <= 0) {
             tmp_ = 0;
-        }
-        else if (in > 65535) {
+        } else if (in > 65535) {
             tmp_ = 65535;
-        }
-        else {
+        } else {
             tmp_ = in;
         }
         C16B;

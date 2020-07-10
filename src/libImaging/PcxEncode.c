@@ -117,8 +117,7 @@ ImagingPcxEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                             /* extend the current run */
                             state->x += 1;
                             state->count += 1;
-                        }
-                        else {
+                        } else {
                             /* start a new run */
                             if (state->count == 1 && (state->LAST < 0xc0)) {
                                 if (bytes < 1) {
@@ -127,8 +126,7 @@ ImagingPcxEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                                 ptr[0] = state->LAST;
                                 ptr += 1;
                                 bytes -= 1;
-                            }
-                            else {
+                            } else {
                                 if (state->count > 0) {
                                     if (bytes < 2) {
                                         return ptr - buf;
@@ -155,8 +153,7 @@ ImagingPcxEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                         ptr[0] = state->LAST;
                         ptr += 1;
                         bytes -= 1;
-                    }
-                    else {
+                    } else {
                         if (state->count > 0) {
                             if (bytes < 2 + padding) {
                                 return ptr - buf;

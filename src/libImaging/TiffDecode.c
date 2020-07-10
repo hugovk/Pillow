@@ -283,8 +283,7 @@ ReadStrip(TIFF *tiff, UINT32 row, UINT32 *buffer)
             ok = TIFFRGBAImageGet(&img, buffer, img.width, rows_to_read);
 
             TIFFRGBAImageEnd(&img);
-        }
-        else {
+        } else {
             ok = 0;
         }
 
@@ -349,8 +348,7 @@ ImagingLibTiffDecode(Imaging im, ImagingCodecState state, UINT8 *buffer,
         lseek(clientstate->fp, 0,
               SEEK_SET);  // Sometimes, I get it set to the end.
         tiff = TIFFFdOpen(clientstate->fp, filename, mode);
-    }
-    else {
+    } else {
         TRACE(("Opening from string\n"));
         tiff = TIFFClientOpen(filename, mode, (thandle_t)clientstate, _tiffReadProc,
                               _tiffWriteProc, _tiffSeekProc, _tiffCloseProc,
@@ -445,8 +443,7 @@ ImagingLibTiffDecode(Imaging im, ImagingCodecState state, UINT8 *buffer,
                 }
             }
         }
-    }
-    else {
+    } else {
         UINT32 strip_row, row_byte_size;
         UINT8 *new_data;
         UINT32 rows_per_strip;
@@ -566,8 +563,7 @@ ImagingLibTiffEncodeInit(ImagingCodecState state, char *filename, int fp)
     if (fp) {
         TRACE(("Opening using fd: %d for writing \n", clientstate->fp));
         clientstate->tiff = TIFFFdOpen(clientstate->fp, filename, mode);
-    }
-    else {
+    } else {
         // malloc a buffer to write the tif, we're going to need to realloc or
         // something if we need bigger.
         TRACE(("Opening a buffer for writing \n"));

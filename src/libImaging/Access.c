@@ -72,8 +72,7 @@ get_pixel(Imaging im, int x, int y, void *color)
 
     if (im->image8) {
         out[0] = im->image8[y][x];
-    }
-    else {
+    } else {
         UINT8 *p = (UINT8 *)&im->image32[y][x];
         if (im->type == IMAGING_TYPE_UINT8 && im->bands == 2) {
             out[0] = p[0];
@@ -152,8 +151,7 @@ put_pixel(Imaging im, int x, int y, const void *color)
 {
     if (im->image8) {
         im->image8[y][x] = *((UINT8 *)color);
-    }
-    else {
+    } else {
         memcpy(&im->image32[y][x], color, sizeof(INT32));
     }
 }

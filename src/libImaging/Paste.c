@@ -61,8 +61,7 @@ paste_mask_1(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy, int sx
                 out++, in++;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < ysize; y++) {
             INT32 *out = imOut->image32[y + dy] + dx;
             INT32 *in = imIn->image32[y + sy] + sx;
@@ -96,8 +95,7 @@ paste_mask_L(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy, int sx
                 out++, in++, mask++;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < ysize; y++) {
             UINT8 *out = (UINT8 *)(imOut->image32[y + dy] + dx);
             UINT8 *in = (UINT8 *)(imIn->image32[y + sy] + sx);
@@ -135,8 +133,7 @@ paste_mask_RGBA(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy, int
                 out++, in++, mask += 4;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < ysize; y++) {
             UINT8 *out = (UINT8 *)(imOut->image32[y + dy] + dx);
             UINT8 *in = (UINT8 *)(imIn->image32[y + sy] + sx);
@@ -174,8 +171,7 @@ paste_mask_RGBa(Imaging imOut, Imaging imIn, Imaging imMask, int dx, int dy, int
                 out++, in++, mask += 4;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < ysize; y++) {
             UINT8 *out = (UINT8 *)(imOut->image32[y + dy] + dx);
             UINT8 *in = (UINT8 *)(imIn->image32[y + sy] + sx);
@@ -246,30 +242,25 @@ ImagingPaste(Imaging imOut, Imaging imIn, Imaging imMask, int dx0, int dy0, int 
         ImagingSectionEnter(&cookie);
         paste(imOut, imIn, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
-    }
-    else if (strcmp(imMask->mode, "1") == 0) {
+    } else if (strcmp(imMask->mode, "1") == 0) {
         ImagingSectionEnter(&cookie);
         paste_mask_1(imOut, imIn, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
-    }
-    else if (strcmp(imMask->mode, "L") == 0) {
+    } else if (strcmp(imMask->mode, "L") == 0) {
         ImagingSectionEnter(&cookie);
         paste_mask_L(imOut, imIn, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
-    }
-    else if (strcmp(imMask->mode, "RGBA") == 0) {
+    } else if (strcmp(imMask->mode, "RGBA") == 0) {
         ImagingSectionEnter(&cookie);
         paste_mask_RGBA(imOut, imIn, imMask, dx0, dy0, sx0, sy0, xsize, ysize,
                         pixelsize);
         ImagingSectionLeave(&cookie);
-    }
-    else if (strcmp(imMask->mode, "RGBa") == 0) {
+    } else if (strcmp(imMask->mode, "RGBa") == 0) {
         ImagingSectionEnter(&cookie);
         paste_mask_RGBa(imOut, imIn, imMask, dx0, dy0, sx0, sy0, xsize, ysize,
                         pixelsize);
         ImagingSectionLeave(&cookie);
-    }
-    else {
+    } else {
         (void)ImagingError_ValueError("bad transparency mask");
         return -1;
     }
@@ -296,8 +287,7 @@ fill(Imaging imOut, const void *ink_, int dx, int dy, int xsize, int ysize,
         for (y = 0; y < ysize; y++) {
             memset(imOut->image[y + dy] + dx, ink8, xsize);
         }
-    }
-    else {
+    } else {
         for (y = 0; y < ysize; y++) {
             INT32 *out = imOut->image32[y + dy] + dx;
             for (x = 0; x < xsize; x++) {
@@ -331,8 +321,7 @@ fill_mask_1(Imaging imOut, const void *ink_, Imaging imMask, int dx, int dy, int
                 out++;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < ysize; y++) {
             INT32 *out = imOut->image32[y + dy] + dx;
             UINT8 *mask = imMask->image8[y + sy] + sx;
@@ -364,8 +353,7 @@ fill_mask_L(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy, int
                 out++, mask++;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < ysize; y++) {
             UINT8 *out = (UINT8 *)imOut->image[y + dy] + dx * pixelsize;
             UINT8 *mask = (UINT8 *)imMask->image[y + sy] + sx;
@@ -409,8 +397,7 @@ fill_mask_RGBA(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy, 
                 out++, mask += 4;
             }
         }
-    }
-    else {
+    } else {
         dx *= pixelsize;
         sx = sx * 4 + 3;
         for (y = 0; y < ysize; y++) {
@@ -446,8 +433,7 @@ fill_mask_RGBa(Imaging imOut, const UINT8 *ink, Imaging imMask, int dx, int dy, 
                 out++, mask += 4;
             }
         }
-    }
-    else {
+    } else {
         dx *= pixelsize;
         sx = sx * 4 + 3;
         for (y = 0; y < ysize; y++) {
@@ -511,28 +497,23 @@ ImagingFill2(Imaging imOut, const void *ink, Imaging imMask, int dx0, int dy0, i
         ImagingSectionEnter(&cookie);
         fill(imOut, ink, dx0, dy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
-    }
-    else if (strcmp(imMask->mode, "1") == 0) {
+    } else if (strcmp(imMask->mode, "1") == 0) {
         ImagingSectionEnter(&cookie);
         fill_mask_1(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
-    }
-    else if (strcmp(imMask->mode, "L") == 0) {
+    } else if (strcmp(imMask->mode, "L") == 0) {
         ImagingSectionEnter(&cookie);
         fill_mask_L(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
-    }
-    else if (strcmp(imMask->mode, "RGBA") == 0) {
+    } else if (strcmp(imMask->mode, "RGBA") == 0) {
         ImagingSectionEnter(&cookie);
         fill_mask_RGBA(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
-    }
-    else if (strcmp(imMask->mode, "RGBa") == 0) {
+    } else if (strcmp(imMask->mode, "RGBa") == 0) {
         ImagingSectionEnter(&cookie);
         fill_mask_RGBa(imOut, ink, imMask, dx0, dy0, sx0, sy0, xsize, ysize, pixelsize);
         ImagingSectionLeave(&cookie);
-    }
-    else {
+    } else {
         (void)ImagingError_ValueError("bad transparency mask");
         return -1;
     }

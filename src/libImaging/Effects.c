@@ -96,8 +96,7 @@ ImagingEffectNoise(int xsize, int ysize, float sigma)
             if (nextok) {
                 this = next;
                 nextok = 0;
-            }
-            else {
+            } else {
                 /* after numerical recipes */
                 double v1, v2, radius, factor;
                 do {
@@ -138,8 +137,7 @@ ImagingEffectSpread(Imaging imIn, int distance)
             if (xx >= 0 && xx < imIn->xsize && yy >= 0 && yy < imIn->ysize) { \
                 imOut->image[yy][xx] = imIn->image[y][x];                     \
                 imOut->image[y][x] = imIn->image[yy][xx];                     \
-            }                                                                 \
-            else {                                                            \
+            } else {                                                          \
                 imOut->image[y][x] = imIn->image[y][x];                       \
             }                                                                 \
         }                                                                     \
@@ -147,8 +145,7 @@ ImagingEffectSpread(Imaging imIn, int distance)
 
     if (imIn->image8) {
         SPREAD(UINT8, image8);
-    }
-    else {
+    } else {
         SPREAD(INT32, image32);
     }
 

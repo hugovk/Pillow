@@ -73,8 +73,7 @@ void static inline ImagingLineBoxBlur32(pixel *lineOut, pixel *lineIn, int lastx
             ADD_FAR(bulk, acc, x - radius - 1, lastx);
             SAVE(x, bulk);
         }
-    }
-    else {
+    } else {
         for (x = 0; x < edgeB; x++) {
             MOVE_ACC(acc, 0, x + radius);
             ADD_FAR(bulk, acc, 0, x + radius + 1);
@@ -134,8 +133,7 @@ void static inline ImagingLineBoxBlur8(UINT8 *lineOut, UINT8 *lineIn, int lastx,
             ADD_FAR(bulk, acc, x - radius - 1, lastx);
             SAVE(x, bulk);
         }
-    }
-    else {
+    } else {
         for (x = 0; x < edgeB; x++) {
             MOVE_ACC(acc, 0, x + radius);
             ADD_FAR(bulk, acc, 0, x + radius + 1);
@@ -191,8 +189,7 @@ ImagingHorizontalBoxBlur(Imaging imOut, Imaging imIn, float floatRadius)
                 memcpy(imOut->image8[y], lineOut, imIn->xsize);
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < imIn->ysize; y++) {
             ImagingLineBoxBlur32(
                 imIn == imOut ? (pixel *)lineOut : (pixel *)imOut->image32[y],

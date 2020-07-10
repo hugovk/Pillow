@@ -59,8 +59,7 @@ HandleMuxError(WebPMuxError err, char *chunk)
     if (chunk == NULL) {
         message_len =
             sprintf(message, "could not assemble chunks: %s", kErrorMessages[-err]);
-    }
-    else {
+    } else {
         message_len = sprintf(message, "could not set %.4s chunk: %s", chunk,
                               kErrorMessages[-err]);
     }
@@ -228,11 +227,9 @@ _anim_encoder_add(PyObject *self, PyObject *args)
     frame->use_argb = 1;  // Don't convert RGB pixels to YUV
     if (strcmp(mode, "RGBA") == 0) {
         WebPPictureImportRGBA(frame, rgb, 4 * width);
-    }
-    else if (strcmp(mode, "RGBX") == 0) {
+    } else if (strcmp(mode, "RGBX") == 0) {
         WebPPictureImportRGBX(frame, rgb, 4 * width);
-    }
-    else {
+    } else {
         WebPPictureImportRGB(frame, rgb, 3 * width);
     }
 
@@ -617,8 +614,7 @@ WebPEncode_wrapper(PyObject *self, PyObject *args)
 
     if (rgba_mode) {
         WebPPictureImportRGBA(&pic, rgb, channels * width);
-    }
-    else {
+    } else {
         WebPPictureImportRGB(&pic, rgb, channels * width);
     }
 
@@ -803,8 +799,7 @@ WebPDecode_wrapper(PyObject *self, PyObject *args)
     if (config.output.colorspace < MODE_YUV) {
         bytes = PyBytes_FromStringAndSize((char *)config.output.u.RGBA.rgba,
                                           config.output.u.RGBA.size);
-    }
-    else {
+    } else {
         // Skipping YUV for now. Need Test Images.
         // UNDONE -- unclear if we'll ever get here if we set mode_rgb*
         bytes = PyBytes_FromStringAndSize((char *)config.output.u.YUVA.y,

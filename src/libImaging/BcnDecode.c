@@ -97,8 +97,7 @@ decode_bc1_color(rgba *dst, const UINT8 *src)
         p[3].g = (1 * g0 + 2 * g1) / 3;
         p[3].b = (1 * b0 + 2 * b1) / 3;
         p[3].a = 0xff;
-    }
-    else {
+    } else {
         p[2].r = (r0 + r1) / 2;
         p[2].g = (g0 + g1) / 2;
         p[2].b = (b0 + b1) / 2;
@@ -134,8 +133,7 @@ decode_bc3_alpha(char *dst, const UINT8 *src, int stride, int o)
         a[5] = (3 * a0 + 4 * a1) / 7;
         a[6] = (2 * a0 + 5 * a1) / 7;
         a[7] = (1 * a0 + 6 * a1) / 7;
-    }
-    else {
+    } else {
         a[2] = (4 * a0 + 1 * a1) / 5;
         a[3] = (3 * a0 + 2 * a1) / 5;
         a[4] = (2 * a0 + 3 * a1) / 5;
@@ -219,8 +217,7 @@ get_bits(const UINT8 *src, int bit, int count)
     }
     if (bit + count <= 8) {
         v = (src[by] >> bit) & ((1 << count) - 1);
-    }
-    else {
+    } else {
         x = src[by] | (src[by + 1] << 8);
         v = (x >> bit) & ((1 << count) - 1);
     }
@@ -400,8 +397,7 @@ decode_bc7_block(rgba *col, const UINT8 *src)
     for (i = 0; i < numep; i++) {
         if (ab) {
             LOAD(val, ab);
-        }
-        else {
+        } else {
             val = 255;
         }
         endpoints[i].a = val;
@@ -462,17 +458,14 @@ decode_bc7_block(rgba *col, const UINT8 *src)
         ib = info->ib;
         if (i == 0) {
             ib--;
-        }
-        else if (info->ns == 2) {
+        } else if (info->ns == 2) {
             if (i == bc7_ai0[partition]) {
                 ib--;
             }
-        }
-        else if (info->ns == 3) {
+        } else if (info->ns == 3) {
             if (i == bc7_ai1[partition]) {
                 ib--;
-            }
-            else if (i == bc7_ai2[partition]) {
+            } else if (i == bc7_ai2[partition]) {
                 ib--;
             }
         }
@@ -488,12 +481,10 @@ decode_bc7_block(rgba *col, const UINT8 *src)
             aibit += ib2;
             if (index_sel) {
                 bc7_lerp(&col[i], &endpoints[s], aw[i1], cw[i0]);
-            }
-            else {
+            } else {
                 bc7_lerp(&col[i], &endpoints[s], cw[i0], aw[i1]);
             }
-        }
-        else {
+        } else {
             bc7_lerp(&col[i], &endpoints[s], cw[i0], cw[i0]);
         }
 #define ROTATE(x, y) \
@@ -502,11 +493,9 @@ decode_bc7_block(rgba *col, const UINT8 *src)
     y = val
         if (rotation == 1) {
             ROTATE(col[i].r, col[i].a);
-        }
-        else if (rotation == 2) {
+        } else if (rotation == 2) {
             ROTATE(col[i].g, col[i].a);
-        }
-        else if (rotation == 3) {
+        } else if (rotation == 3) {
             ROTATE(col[i].b, col[i].a);
         }
 #undef ROTATE
@@ -636,8 +625,7 @@ bc6_unquantize(UINT16 v, int prec, int sign)
             return 0xffff;
         }
         return ((x << 15) + 0x4000) >> (prec - 1);
-    }
-    else {
+    } else {
         x = (INT16)v;
         if (prec >= 16) {
             return x;
@@ -650,8 +638,7 @@ bc6_unquantize(UINT16 v, int prec, int sign)
         if (x != 0) {
             if (x >= ((1 << (prec - 1)) - 1)) {
                 x = 0x7fff;
-            }
-            else {
+            } else {
                 x = ((x << 15) + 0x4000) >> (prec - 1);
             }
         }
@@ -689,12 +676,10 @@ bc6_finalize(int v, int sign)
         if (v < 0) {
             v = ((-v) * 31) / 32;
             return half_to_float((UINT16)(0x8000 | v));
-        }
-        else {
+        } else {
             return half_to_float((UINT16)((v * 31) / 32));
         }
-    }
-    else {
+    } else {
         return half_to_float((UINT16)((v * 31) / 64));
     }
 }
@@ -728,12 +713,10 @@ decode_bc6_block(rgb32f *col, const UINT8 *src, int sign)
     if ((mode & 3) == 0 || (mode & 3) == 1) {
         mode &= 3;
         bit = 2;
-    }
-    else if ((mode & 3) == 2) {
+    } else if ((mode & 3) == 2) {
         mode = 2 + (mode >> 2);
         epbits = 72;
-    }
-    else {
+    } else {
         mode = 10 + (mode >> 2);
         epbits = 60;
         ib = 4;
@@ -791,8 +774,7 @@ decode_bc6_block(rgb32f *col, const UINT8 *src, int sign)
         ib2 = ib;
         if (i == 0) {
             ib2--;
-        }
-        else if (info->ns == 2) {
+        } else if (info->ns == 2) {
             if (i == bc7_ai0[partition]) {
                 ib2--;
             }
@@ -830,8 +812,7 @@ put_block(Imaging im, ImagingCodecState state, const char *col, int sz, int C)
                 }
                 memcpy(dst + sz * x, col + sz * (j * 4 + i), sz);
             }
-        }
-        else {
+        } else {
             if (state->ystep < 0) {
                 y = state->yoff + ymax - y - 1;
             }
@@ -900,8 +881,7 @@ ImagingBcnDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
     int height = state->ysize;
     if ((width & 3) | (height & 3)) {
         return decode_bcn(im, state, buf, bytes, N, 1);
-    }
-    else {
+    } else {
         return decode_bcn(im, state, buf, bytes, N, 0);
     }
 }

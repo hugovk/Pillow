@@ -125,8 +125,7 @@ im_point_32_8(Imaging imOut, Imaging imIn, im_point_context *context)
             int v = in[x];
             if (v < 0) {
                 v = 0;
-            }
-            else if (v > 65535) {
+            } else if (v > 65535) {
                 v = 65535;
             }
             out[x] = table[v];
@@ -156,8 +155,7 @@ ImagingPoint(Imaging imIn, const char *mode, const void *table)
         if (imIn->type != IMAGING_TYPE_INT32 || strcmp(mode, "L") != 0) {
             goto mode_mismatch;
         }
-    }
-    else if (!imIn->image8 && strcmp(imIn->mode, mode) != 0) {
+    } else if (!imIn->image8 && strcmp(imIn->mode, mode) != 0) {
         goto mode_mismatch;
     }
 
@@ -187,12 +185,10 @@ ImagingPoint(Imaging imIn, const char *mode, const void *table)
                     point = im_point_8_8;
                     break;
             }
-        }
-        else {
+        } else {
             point = im_point_8_32;
         }
-    }
-    else {
+    } else {
         point = im_point_32_8;
     }
 

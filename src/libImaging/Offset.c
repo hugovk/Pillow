@@ -57,8 +57,7 @@ ImagingOffset(Imaging im, int xoffset, int yoffset)
 
     if (im->image8) {
         OFFSET(image8)
-    }
-    else {
+    } else {
         OFFSET(image32)
     }
 

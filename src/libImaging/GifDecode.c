@@ -83,8 +83,7 @@ ImagingGifDecode(Imaging im, ImagingCodecState state, UINT8 *buffer, Py_ssize_t 
         if (context->interlace) {
             context->interlace = 1;
             context->step = context->repeat = 8;
-        }
-        else {
+        } else {
             context->step = 1;
         }
 
@@ -115,8 +114,7 @@ ImagingGifDecode(Imaging im, ImagingCodecState state, UINT8 *buffer, Py_ssize_t 
             p = &context->buffer[context->bufferindex];
 
             context->bufferindex = GIFBUFFER;
-        }
-        else {
+        } else {
             /* Get current symbol */
 
             while (context->bitcount < context->codesize) {
@@ -130,8 +128,7 @@ ImagingGifDecode(Imaging im, ImagingCodecState state, UINT8 *buffer, Py_ssize_t 
                     /* New bits are shifted in from from the left. */
                     context->bitbuffer |= (INT32)c << context->bitcount;
                     context->bitcount += 8;
-                }
-                else {
+                } else {
                     /* New GIF block */
 
                     /* We don't start decoding unless we have a full block */
@@ -184,8 +181,7 @@ ImagingGifDecode(Imaging im, ImagingCodecState state, UINT8 *buffer, Py_ssize_t 
 
                 context->lastdata = context->lastcode = c;
                 state->state = 3;
-            }
-            else {
+            } else {
                 thiscode = c;
 
                 if (c > context->next) {
@@ -259,8 +255,7 @@ ImagingGifDecode(Imaging im, ImagingCodecState state, UINT8 *buffer, Py_ssize_t 
                 state->x++;
                 continue;
             }
-        }
-        else if (state->x + i <= state->xsize) {
+        } else if (state->x + i <= state->xsize) {
             /* This string fits into current line. */
             memcpy(out, p, i);
             out += i;

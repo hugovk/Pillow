@@ -880,11 +880,9 @@ unpackRGBa16L(UINT8 *_out, const UINT8 *in, int pixels)
         UINT32 iv;
         if (!a) {
             iv = 0;
-        }
-        else if (a == 255) {
+        } else if (a == 255) {
             iv = MAKE_UINT32(in[1], in[3], in[5], a);
-        }
-        else {
+        } else {
             iv = MAKE_UINT32(CLIP8(in[1] * 255 / a), CLIP8(in[3] * 255 / a),
                              CLIP8(in[5] * 255 / a), a);
         }
@@ -904,11 +902,9 @@ unpackRGBa16B(UINT8 *_out, const UINT8 *in, int pixels)
         UINT32 iv;
         if (!a) {
             iv = 0;
-        }
-        else if (a == 255) {
+        } else if (a == 255) {
             iv = MAKE_UINT32(in[0], in[2], in[4], a);
-        }
-        else {
+        } else {
             iv = MAKE_UINT32(CLIP8(in[0] * 255 / a), CLIP8(in[2] * 255 / a),
                              CLIP8(in[4] * 255 / a), a);
         }
@@ -928,11 +924,9 @@ unpackRGBa(UINT8 *_out, const UINT8 *in, int pixels)
         UINT32 iv;
         if (!a) {
             iv = 0;
-        }
-        else if (a == 255) {
+        } else if (a == 255) {
             iv = MAKE_UINT32(in[0], in[1], in[2], a);
-        }
-        else {
+        } else {
             iv = MAKE_UINT32(CLIP8(in[0] * 255 / a), CLIP8(in[1] * 255 / a),
                              CLIP8(in[2] * 255 / a), a);
         }
@@ -952,11 +946,9 @@ unpackRGBaskip1(UINT8 *_out, const UINT8 *in, int pixels)
         int a = in[3];
         if (!a) {
             out[i] = 0;
-        }
-        else if (a == 255) {
+        } else if (a == 255) {
             out[i] = MAKE_UINT32(in[0], in[1], in[2], a);
-        }
-        else {
+        } else {
             out[i] = MAKE_UINT32(CLIP8(in[0] * 255 / a), CLIP8(in[1] * 255 / a),
                                  CLIP8(in[2] * 255 / a), a);
         }
@@ -974,11 +966,9 @@ unpackRGBaskip2(UINT8 *_out, const UINT8 *in, int pixels)
         int a = in[3];
         if (!a) {
             out[i] = 0;
-        }
-        else if (a == 255) {
+        } else if (a == 255) {
             out[i] = MAKE_UINT32(in[0], in[1], in[2], a);
-        }
-        else {
+        } else {
             out[i] = MAKE_UINT32(CLIP8(in[0] * 255 / a), CLIP8(in[1] * 255 / a),
                                  CLIP8(in[2] * 255 / a), a);
         }
@@ -996,11 +986,9 @@ unpackBGRa(UINT8 *_out, const UINT8 *in, int pixels)
         UINT32 iv;
         if (!a) {
             iv = 0;
-        }
-        else if (a == 255) {
+        } else if (a == 255) {
             iv = MAKE_UINT32(in[2], in[1], in[0], a);
-        }
-        else {
+        } else {
             iv = MAKE_UINT32(CLIP8(in[2] * 255 / a), CLIP8(in[1] * 255 / a),
                              CLIP8(in[0] * 255 / a), a);
         }

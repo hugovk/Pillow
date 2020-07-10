@@ -55,15 +55,13 @@ ImagingGetBBox(Imaging im, int bbox[4])
 
     if (im->image8) {
         GETBBOX(image8, 0xff);
-    }
-    else {
+    } else {
         INT32 mask = 0xffffffff;
         if (im->bands == 3) {
             ((UINT8 *)&mask)[3] = 0;
-        }
-        else if (strcmp(im->mode, "RGBa") == 0 || strcmp(im->mode, "RGBA") == 0 ||
-                 strcmp(im->mode, "La") == 0 || strcmp(im->mode, "LA") == 0 ||
-                 strcmp(im->mode, "PA") == 0) {
+        } else if (strcmp(im->mode, "RGBa") == 0 || strcmp(im->mode, "RGBA") == 0 ||
+                   strcmp(im->mode, "La") == 0 || strcmp(im->mode, "LA") == 0 ||
+                   strcmp(im->mode, "PA") == 0) {
 #ifdef WORDS_BIGENDIAN
             mask = 0x000000ff;
 #else
@@ -109,8 +107,7 @@ ImagingGetProjection(Imaging im, UINT8 *xproj, UINT8 *yproj)
 
     if (im->image8) {
         GETPROJ(image8, 0xff);
-    }
-    else {
+    } else {
         INT32 mask = 0xffffffff;
         if (im->bands == 3) {
             ((UINT8 *)&mask)[3] = 0;
@@ -145,8 +142,7 @@ ImagingGetExtrema(Imaging im, void *extrema)
                 for (x = 0; x < im->xsize; x++) {
                     if (imin > in[x]) {
                         imin = in[x];
-                    }
-                    else if (imax < in[x]) {
+                    } else if (imax < in[x]) {
                         imax = in[x];
                     }
                 }
@@ -161,8 +157,7 @@ ImagingGetExtrema(Imaging im, void *extrema)
                 for (x = 0; x < im->xsize; x++) {
                     if (imin > in[x]) {
                         imin = in[x];
-                    }
-                    else if (imax < in[x]) {
+                    } else if (imax < in[x]) {
                         imax = in[x];
                     }
                 }
@@ -177,8 +172,7 @@ ImagingGetExtrema(Imaging im, void *extrema)
                 for (x = 0; x < im->xsize; x++) {
                     if (fmin > in[x]) {
                         fmin = in[x];
-                    }
-                    else if (fmax < in[x]) {
+                    } else if (fmax < in[x]) {
                         fmax = in[x];
                     }
                 }
@@ -206,8 +200,7 @@ ImagingGetExtrema(Imaging im, void *extrema)
 #endif
                         if (imin > v) {
                             imin = v;
-                        }
-                        else if (imax < v) {
+                        } else if (imax < v) {
                             imax = v;
                         }
                     }
@@ -315,8 +308,7 @@ getcolors32(Imaging im, int maxcolors, int *size)
                 v->pixel = pixel;
                 v->count = 1;
                 continue;
-            }
-            else if (v->pixel == pixel) {
+            } else if (v->pixel == pixel) {
                 v->count++;
                 continue;
             }
@@ -337,8 +329,7 @@ getcolors32(Imaging im, int maxcolors, int *size)
                     v->pixel = pixel;
                     v->count = 1;
                     break;
-                }
-                else if (v->pixel == pixel) {
+                } else if (v->pixel == pixel) {
                     v->count++;
                     break;
                 }

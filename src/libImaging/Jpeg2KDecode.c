@@ -84,8 +84,7 @@ j2ku_shift(unsigned x, int n)
 {
     if (n < 0) {
         return x >> -n;
-    }
-    else {
+    } else {
         return x << n;
     }
 }
@@ -659,8 +658,7 @@ j2k_decode_entry(Imaging im, ImagingCodecState state)
        the box lengths in OpenJPEG are currently 32 bit. */
     if (context->length < 0) {
         opj_stream_set_user_data_length(stream, 0xffffffff);
-    }
-    else {
+    } else {
         opj_stream_set_user_data_length(stream, context->length);
     }
 #endif

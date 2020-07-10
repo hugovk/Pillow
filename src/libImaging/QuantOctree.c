@@ -167,8 +167,7 @@ avg_color_from_color_bucket(const ColorBucket bucket, Pixel *dst)
         dst->c.g = CLIP8((int)(bucket->g / count));
         dst->c.b = CLIP8((int)(bucket->b / count));
         dst->c.a = CLIP8((int)(bucket->a / count));
-    }
-    else {
+    } else {
         dst->c.r = 0;
         dst->c.g = 0;
         dst->c.b = 0;
@@ -231,32 +230,28 @@ copy_color_cube(const ColorCube cube, unsigned int rBits, unsigned int gBits,
     if (cube->rBits > rBits) {
         dst_reduce[0] = cube->rBits - result->rBits;
         width[0] = cube->rWidth;
-    }
-    else {
+    } else {
         src_reduce[0] = result->rBits - cube->rBits;
         width[0] = result->rWidth;
     }
     if (cube->gBits > gBits) {
         dst_reduce[1] = cube->gBits - result->gBits;
         width[1] = cube->gWidth;
-    }
-    else {
+    } else {
         src_reduce[1] = result->gBits - cube->gBits;
         width[1] = result->gWidth;
     }
     if (cube->bBits > bBits) {
         dst_reduce[2] = cube->bBits - result->bBits;
         width[2] = cube->bWidth;
-    }
-    else {
+    } else {
         src_reduce[2] = result->bBits - cube->bBits;
         width[2] = result->bWidth;
     }
     if (cube->aBits > aBits) {
         dst_reduce[3] = cube->aBits - result->aBits;
         width[3] = cube->aWidth;
-    }
-    else {
+    } else {
         src_reduce[3] = result->aBits - cube->aBits;
         width[3] = result->aWidth;
     }
@@ -398,8 +393,7 @@ quantize_octree(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels,
 
     if (withAlpha) {
         cubeBits = CUBE_LEVELS_ALPHA;
-    }
-    else {
+    } else {
         cubeBits = CUBE_LEVELS;
     }
 

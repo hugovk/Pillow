@@ -29,8 +29,7 @@ ImagingTgaRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t 
         if (state->ystep < 0) {
             state->y = state->ysize - 1;
             state->ystep = -1;
-        }
-        else {
+        } else {
             state->ystep = 1;
         }
 
@@ -60,8 +59,7 @@ ImagingTgaRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t 
 
             if (depth == 1) {
                 memset(state->buffer + state->x, ptr[1], n);
-            }
-            else {
+            } else {
                 int i;
                 for (i = 0; i < n; i += depth) {
                     memcpy(state->buffer + state->x + i, ptr + 1, depth);
@@ -70,8 +68,7 @@ ImagingTgaRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t 
 
             ptr += 1 + depth;
             bytes -= 1 + depth;
-        }
-        else {
+        } else {
             /* Literal (1+n+1 bytes block) */
             n = depth * (ptr[0] + 1);
 

@@ -37,8 +37,7 @@ _copy(Imaging imOut, Imaging imIn)
     ImagingSectionEnter(&cookie);
     if (imIn->block != NULL && imOut->block != NULL) {
         memcpy(imOut->block, imIn->block, imIn->ysize * imIn->linesize);
-    }
-    else {
+    } else {
         for (y = 0; y < imIn->ysize; y++) {
             memcpy(imOut->image[y], imIn->image[y], imIn->linesize);
         }

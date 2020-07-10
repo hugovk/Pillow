@@ -63,8 +63,7 @@ ImagingXbmEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
             }
 
             state->y++;
-        }
-        else {
+        } else {
             /* last line */
             for (n = 0; n < state->xsize; n += 8) {
                 i = state->buffer[n / 8];
@@ -81,8 +80,7 @@ ImagingXbmEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                         bytes--;
                         state->count = 0;
                     }
-                }
-                else {
+                } else {
                     *ptr++ = '\n';
                 }
 
