@@ -28,8 +28,7 @@
    Returns number of changed pixels.
 */
 static PyObject *
-apply(PyObject *self, PyObject *args)
-{
+apply(PyObject *self, PyObject *args) {
     const char *lut;
     PyObject *py_lut;
     Py_ssize_t lut_len, i0, i1;
@@ -127,8 +126,7 @@ apply(PyObject *self, PyObject *args)
    Returns list of matching pixels.
 */
 static PyObject *
-match(PyObject *self, PyObject *args)
-{
+match(PyObject *self, PyObject *args) {
     const char *lut;
     PyObject *py_lut;
     Py_ssize_t lut_len, i0;
@@ -206,8 +204,7 @@ match(PyObject *self, PyObject *args)
    This is faster than match as only 1x1 lookup is made.
 */
 static PyObject *
-get_on_pixels(PyObject *self, PyObject *args)
-{
+get_on_pixels(PyObject *self, PyObject *args) {
     Py_ssize_t i0;
     Imaging img;
     UINT8 **rows;
@@ -238,8 +235,7 @@ get_on_pixels(PyObject *self, PyObject *args)
 }
 
 static int
-setup_module(PyObject *m)
-{
+setup_module(PyObject *m) {
     PyObject *d = PyModule_GetDict(m);
 
     PyDict_SetItemString(d, "__version", PyUnicode_FromString("0.1"));
@@ -255,8 +251,7 @@ static PyMethodDef functions[] = {
     {NULL, NULL, 0, NULL}};
 
 PyMODINIT_FUNC
-PyInit__imagingmorph(void)
-{
+PyInit__imagingmorph(void) {
     PyObject *m;
 
     static PyModuleDef module_def = {

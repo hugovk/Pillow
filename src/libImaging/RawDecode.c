@@ -18,8 +18,7 @@
 #include "Raw.h"
 
 int
-ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
-{
+ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes) {
     enum { LINE = 1, SKIP };
     RAWSTATE *rawstate = state->context;
 
@@ -36,8 +35,7 @@ ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
                 state->errcode = IMAGING_CODEC_CONFIG;
                 return -1;
             }
-        }
-        else {
+        } else {
             rawstate->skip = 0;
         }
 
@@ -45,8 +43,7 @@ ImagingRawDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
         if (state->ystep < 0) {
             state->y = state->ysize - 1;
             state->ystep = -1;
-        }
-        else {
+        } else {
             state->ystep = 1;
         }
 

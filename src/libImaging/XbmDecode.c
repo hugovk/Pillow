@@ -22,8 +22,7 @@
                                   : (v >= 'A' && v <= 'F') ? v - 'A' + 10 : 0)
 
 int
-ImagingXbmDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
-{
+ImagingXbmDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes) {
     enum { BYTE = 1, SKIP };
 
     UINT8 *ptr;

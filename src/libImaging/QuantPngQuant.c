@@ -20,8 +20,7 @@
 int
 quantize_pngquant(Pixel *pixelData, unsigned int width, unsigned int height,
                   uint32_t quantPixels, Pixel **palette, uint32_t *paletteLength,
-                  uint32_t **quantizedPixels, int withAlpha)
-{
+                  uint32_t **quantizedPixels, int withAlpha) {
     int result = 0;
     liq_image *image = NULL;
     liq_attr *attr = NULL;
@@ -117,8 +116,7 @@ err:
 }
 
 const char *
-ImagingImageQuantVersion(void)
-{
+ImagingImageQuantVersion(void) {
     static char version[20];
     int number = liq_version();
     sprintf(version, "%d.%d.%d", number / 10000, (number / 100) % 100, number % 100);

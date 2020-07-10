@@ -54,8 +54,7 @@ typedef struct _ColorCube {
 #define MAX(a, b) (a) > (b) ? (a) : (b)
 
 static ColorCube
-new_color_cube(int r, int g, int b, int a)
-{
+new_color_cube(int r, int g, int b, int a) {
     ColorCube cube;
 
     /* malloc check ok, small constant allocation */
@@ -101,8 +100,7 @@ new_color_cube(int r, int g, int b, int a)
 }
 
 static void
-free_color_cube(ColorCube cube)
-{
+free_color_cube(ColorCube cube) {
     if (cube != NULL) {
         free(cube->buckets);
         free(cube);
@@ -111,15 +109,13 @@ free_color_cube(ColorCube cube)
 
 static long
 color_bucket_offset_pos(const ColorCube cube, unsigned int r, unsigned int g,
-                        unsigned int b, unsigned int a)
-{
+                        unsigned int b, unsigned int a) {
     return r << cube->rOffset | g << cube->gOffset | b << cube->bOffset |
            a << cube->aOffset;
 }
 
 static long
-color_bucket_offset(const ColorCube cube, const Pixel *p)
-{
+color_bucket_offset(const ColorCube cube, const Pixel *p) {
     unsigned int r = p->c.r >> (8 - cube->rBits);
     unsigned int g = p->c.g >> (8 - cube->gBits);
     unsigned int b = p->c.b >> (8 - cube->bBits);
@@ -128,15 +124,13 @@ color_bucket_offset(const ColorCube cube, const Pixel *p)
 }
 
 static ColorBucket
-color_bucket_from_cube(const ColorCube cube, const Pixel *p)
-{
+color_bucket_from_cube(const ColorCube cube, const Pixel *p) {
     unsigned int offset = color_bucket_offset(cube, p);
     return &cube->buckets[offset];
 }
 
 static void
-add_color_to_color_cube(const ColorCube cube, const Pixel *p)
-{
+add_color_to_color_cube(const ColorCube cube, const Pixel *p) {
     ColorBucket bucket = color_bucket_from_cube(cube, p);
     bucket->count += 1;
     bucket->r += p->c.r;
@@ -146,8 +140,7 @@ add_color_to_color_cube(const ColorCube cube, const Pixel *p)
 }
 
 static unsigned long
-count_used_color_buckets(const ColorCube cube)
-{
+count_used_color_buckets(const ColorCube cube) {
     unsigned long usedBuckets = 0;
     unsigned long i;
     for (i = 0; i < cube->size; i++) {
@@ -159,16 +152,14 @@ count_used_color_buckets(const ColorCube cube)
 }
 
 static void
-avg_color_from_color_bucket(const ColorBucket bucket, Pixel *dst)
-{
+avg_color_from_color_bucket(const ColorBucket bucket, Pixel *dst) {
     float count = bucket->count;
     if (count != 0) {
         dst->c.r = CLIP8((int)(bucket->r / count));
         dst->c.g = CLIP8((int)(bucket->g / count));
         dst->c.b = CLIP8((int)(bucket->b / count));
         dst->c.a = CLIP8((int)(bucket->a / count));
-    }
-    else {
+    } else {
         dst->c.r = 0;
         dst->c.g = 0;
         dst->c.b = 0;
@@ -177,14 +168,12 @@ avg_color_from_color_bucket(const ColorBucket bucket, Pixel *dst)
 }
 
 static int
-compare_bucket_count(const ColorBucket a, const ColorBucket b)
-{
+compare_bucket_count(const ColorBucket a, const ColorBucket b) {
     return b->count - a->count;
 }
 
 static ColorBucket
-create_sorted_color_palette(const ColorCube cube)
-{
+create_sorted_color_palette(const ColorCube cube) {
     ColorBucket buckets;
     if (cube->size > LONG_MAX / sizeof(struct _ColorBucket)) {
         return NULL;
@@ -203,8 +192,7 @@ create_sorted_color_palette(const ColorCube cube)
 }
 
 void
-add_bucket_values(ColorBucket src, ColorBucket dst)
-{
+add_bucket_values(ColorBucket src, ColorBucket dst) {
     dst->count += src->count;
     dst->r += src->r;
     dst->g += src->g;
@@ -215,8 +203,7 @@ add_bucket_values(ColorBucket src, ColorBucket dst)
 /* expand or shrink a given cube to level */
 static ColorCube
 copy_color_cube(const ColorCube cube, unsigned int rBits, unsigned int gBits,
-                unsigned int bBits, unsigned int aBits)
-{
+                unsigned int bBits, unsigned int aBits) {
     unsigned int r, g, b, a;
     long src_pos, dst_pos;
     unsigned int src_reduce[4] = {0}, dst_reduce[4] = {0};
@@ -231,32 +218,28 @@ copy_color_cube(const ColorCube cube, unsigned int rBits, unsigned int gBits,
     if (cube->rBits > rBits) {
         dst_reduce[0] = cube->rBits - result->rBits;
         width[0] = cube->rWidth;
-    }
-    else {
+    } else {
         src_reduce[0] = result->rBits - cube->rBits;
         width[0] = result->rWidth;
     }
     if (cube->gBits > gBits) {
         dst_reduce[1] = cube->gBits - result->gBits;
         width[1] = cube->gWidth;
-    }
-    else {
+    } else {
         src_reduce[1] = result->gBits - cube->gBits;
         width[1] = result->gWidth;
     }
     if (cube->bBits > bBits) {
         dst_reduce[2] = cube->bBits - result->bBits;
         width[2] = cube->bWidth;
-    }
-    else {
+    } else {
         src_reduce[2] = result->bBits - cube->bBits;
         width[2] = result->bWidth;
     }
     if (cube->aBits > aBits) {
         dst_reduce[3] = cube->aBits - result->aBits;
         width[3] = cube->aWidth;
-    }
-    else {
+    } else {
         src_reduce[3] = result->aBits - cube->aBits;
         width[3] = result->aWidth;
     }
@@ -281,8 +264,7 @@ copy_color_cube(const ColorCube cube, unsigned int rBits, unsigned int gBits,
 }
 
 void
-subtract_color_buckets(ColorCube cube, ColorBucket buckets, long nBuckets)
-{
+subtract_color_buckets(ColorCube cube, ColorBucket buckets, long nBuckets) {
     ColorBucket minuend, subtrahend;
     long i;
     Pixel p;
@@ -305,22 +287,19 @@ subtract_color_buckets(ColorCube cube, ColorBucket buckets, long nBuckets)
 }
 
 static void
-set_lookup_value(const ColorCube cube, const Pixel *p, long value)
-{
+set_lookup_value(const ColorCube cube, const Pixel *p, long value) {
     ColorBucket bucket = color_bucket_from_cube(cube, p);
     bucket->count = value;
 }
 
 uint64_t
-lookup_color(const ColorCube cube, const Pixel *p)
-{
+lookup_color(const ColorCube cube, const Pixel *p) {
     ColorBucket bucket = color_bucket_from_cube(cube, p);
     return bucket->count;
 }
 
 void
-add_lookup_buckets(ColorCube cube, ColorBucket palette, long nColors, long offset)
-{
+add_lookup_buckets(ColorCube cube, ColorBucket palette, long nColors, long offset) {
     long i;
     Pixel p;
     for (i = offset; i < offset + nColors; i++) {
@@ -331,8 +310,7 @@ add_lookup_buckets(ColorCube cube, ColorBucket palette, long nColors, long offse
 
 ColorBucket
 combined_palette(ColorBucket bucketsA, unsigned long nBucketsA, ColorBucket bucketsB,
-                 unsigned long nBucketsB)
-{
+                 unsigned long nBucketsB) {
     ColorBucket result;
     if (nBucketsA > LONG_MAX - nBucketsB ||
         (nBucketsA + nBucketsB) > LONG_MAX / sizeof(struct _ColorBucket)) {
@@ -349,8 +327,7 @@ combined_palette(ColorBucket bucketsA, unsigned long nBucketsA, ColorBucket buck
 }
 
 static Pixel *
-create_palette_array(const ColorBucket palette, unsigned int paletteLength)
-{
+create_palette_array(const ColorBucket palette, unsigned int paletteLength) {
     Pixel *paletteArray;
     unsigned int i;
 
@@ -368,8 +345,7 @@ create_palette_array(const ColorBucket palette, unsigned int paletteLength)
 
 static void
 map_image_pixels(const Pixel *pixelData, uint32_t nPixels, const ColorCube lookupCube,
-                 uint32_t *pixelArray)
-{
+                 uint32_t *pixelArray) {
     long i;
     for (i = 0; i < nPixels; i++) {
         pixelArray[i] = lookup_color(lookupCube, &pixelData[i]);
@@ -382,8 +358,7 @@ const unsigned int CUBE_LEVELS_ALPHA[8] = {3, 4, 3, 3, 2, 2, 2, 2};
 int
 quantize_octree(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels,
                 Pixel **palette, uint32_t *paletteLength, uint32_t **quantizedPixels,
-                int withAlpha)
-{
+                int withAlpha) {
     ColorCube fineCube = NULL;
     ColorCube coarseCube = NULL;
     ColorCube lookupCube = NULL;
@@ -398,8 +373,7 @@ quantize_octree(Pixel *pixelData, uint32_t nPixels, uint32_t nQuantPixels,
 
     if (withAlpha) {
         cubeBits = CUBE_LEVELS_ALPHA;
-    }
-    else {
+    } else {
         cubeBits = CUBE_LEVELS;
     }
 

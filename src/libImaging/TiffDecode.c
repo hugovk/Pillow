@@ -21,8 +21,7 @@
 #include "TiffDecode.h"
 
 void
-dump_state(const TIFFSTATE *state)
-{
+dump_state(const TIFFSTATE *state) {
     TRACE(("State: Location %u size %d eof %d data: %p ifd: %d\n", (uint)state->loc,
            (int)state->size, (uint)state->eof, state->data, state->ifd));
 }
@@ -32,8 +31,7 @@ dump_state(const TIFFSTATE *state)
 */
 
 tsize_t
-_tiffReadProc(thandle_t hdata, tdata_t buf, tsize_t size)
-{
+_tiffReadProc(thandle_t hdata, tdata_t buf, tsize_t size) {
     TIFFSTATE *state = (TIFFSTATE *)hdata;
     tsize_t to_read;
 
@@ -51,8 +49,7 @@ _tiffReadProc(thandle_t hdata, tdata_t buf, tsize_t size)
 }
 
 tsize_t
-_tiffWriteProc(thandle_t hdata, tdata_t buf, tsize_t size)
-{
+_tiffWriteProc(thandle_t hdata, tdata_t buf, tsize_t size) {
     TIFFSTATE *state = (TIFFSTATE *)hdata;
     tsize_t to_write;
 
@@ -93,8 +90,7 @@ _tiffWriteProc(thandle_t hdata, tdata_t buf, tsize_t size)
 }
 
 toff_t
-_tiffSeekProc(thandle_t hdata, toff_t off, int whence)
-{
+_tiffSeekProc(thandle_t hdata, toff_t off, int whence) {
     TIFFSTATE *state = (TIFFSTATE *)hdata;
 
     TRACE(("_tiffSeekProc: off: %u whence: %d \n", (uint)off, whence));
@@ -115,8 +111,7 @@ _tiffSeekProc(thandle_t hdata, toff_t off, int whence)
 }
 
 int
-_tiffCloseProc(thandle_t hdata)
-{
+_tiffCloseProc(thandle_t hdata) {
     TIFFSTATE *state = (TIFFSTATE *)hdata;
 
     TRACE(("_tiffCloseProc \n"));
@@ -126,8 +121,7 @@ _tiffCloseProc(thandle_t hdata)
 }
 
 toff_t
-_tiffSizeProc(thandle_t hdata)
-{
+_tiffSizeProc(thandle_t hdata) {
     TIFFSTATE *state = (TIFFSTATE *)hdata;
 
     TRACE(("_tiffSizeProc \n"));
@@ -137,8 +131,7 @@ _tiffSizeProc(thandle_t hdata)
 }
 
 int
-_tiffMapProc(thandle_t hdata, tdata_t *pbase, toff_t *psize)
-{
+_tiffMapProc(thandle_t hdata, tdata_t *pbase, toff_t *psize) {
     TIFFSTATE *state = (TIFFSTATE *)hdata;
 
     TRACE(("_tiffMapProc input size: %u, data: %p\n", (uint)*psize, *pbase));
@@ -151,8 +144,7 @@ _tiffMapProc(thandle_t hdata, tdata_t *pbase, toff_t *psize)
 }
 
 int
-_tiffNullMapProc(thandle_t hdata, tdata_t *pbase, toff_t *psize)
-{
+_tiffNullMapProc(thandle_t hdata, tdata_t *pbase, toff_t *psize) {
     (void)hdata;
     (void)pbase;
     (void)psize;
@@ -160,8 +152,7 @@ _tiffNullMapProc(thandle_t hdata, tdata_t *pbase, toff_t *psize)
 }
 
 void
-_tiffUnmapProc(thandle_t hdata, tdata_t base, toff_t size)
-{
+_tiffUnmapProc(thandle_t hdata, tdata_t base, toff_t size) {
     TRACE(("_tiffUnMapProc\n"));
     (void)hdata;
     (void)base;
@@ -169,8 +160,7 @@ _tiffUnmapProc(thandle_t hdata, tdata_t base, toff_t size)
 }
 
 int
-ImagingLibTiffInit(ImagingCodecState state, int fp, uint32 offset)
-{
+ImagingLibTiffInit(ImagingCodecState state, int fp, uint32 offset) {
     TIFFSTATE *clientstate = (TIFFSTATE *)state->context;
 
     TRACE(("initing libtiff\n"));
@@ -193,8 +183,7 @@ ImagingLibTiffInit(ImagingCodecState state, int fp, uint32 offset)
 }
 
 int
-ReadTile(TIFF *tiff, UINT32 col, UINT32 row, UINT32 *buffer)
-{
+ReadTile(TIFF *tiff, UINT32 col, UINT32 row, UINT32 *buffer) {
     uint16 photometric = 0;
 
     TIFFGetField(tiff, TIFFTAG_PHOTOMETRIC, &photometric);
@@ -252,8 +241,7 @@ ReadTile(TIFF *tiff, UINT32 col, UINT32 row, UINT32 *buffer)
 }
 
 int
-ReadStrip(TIFF *tiff, UINT32 row, UINT32 *buffer)
-{
+ReadStrip(TIFF *tiff, UINT32 row, UINT32 *buffer) {
     uint16 photometric = 0;  // init to not PHOTOMETRIC_YCBCR
     TIFFGetField(tiff, TIFFTAG_PHOTOMETRIC, &photometric);
 
@@ -283,8 +271,7 @@ ReadStrip(TIFF *tiff, UINT32 row, UINT32 *buffer)
             ok = TIFFRGBAImageGet(&img, buffer, img.width, rows_to_read);
 
             TIFFRGBAImageEnd(&img);
-        }
-        else {
+        } else {
             ok = 0;
         }
 
@@ -307,8 +294,7 @@ ReadStrip(TIFF *tiff, UINT32 row, UINT32 *buffer)
 
 int
 ImagingLibTiffDecode(Imaging im, ImagingCodecState state, UINT8 *buffer,
-                     Py_ssize_t bytes)
-{
+                     Py_ssize_t bytes) {
     TIFFSTATE *clientstate = (TIFFSTATE *)state->context;
     char *filename = "tempfile.tif";
     char *mode = "r";
@@ -349,8 +335,7 @@ ImagingLibTiffDecode(Imaging im, ImagingCodecState state, UINT8 *buffer,
         lseek(clientstate->fp, 0,
               SEEK_SET);  // Sometimes, I get it set to the end.
         tiff = TIFFFdOpen(clientstate->fp, filename, mode);
-    }
-    else {
+    } else {
         TRACE(("Opening from string\n"));
         tiff = TIFFClientOpen(filename, mode, (thandle_t)clientstate, _tiffReadProc,
                               _tiffWriteProc, _tiffSeekProc, _tiffCloseProc,
@@ -445,8 +430,7 @@ ImagingLibTiffDecode(Imaging im, ImagingCodecState state, UINT8 *buffer,
                 }
             }
         }
-    }
-    else {
+    } else {
         UINT32 strip_row, row_byte_size;
         UINT8 *new_data;
         UINT32 rows_per_strip;
@@ -532,8 +516,7 @@ ImagingLibTiffDecode(Imaging im, ImagingCodecState state, UINT8 *buffer,
 }
 
 int
-ImagingLibTiffEncodeInit(ImagingCodecState state, char *filename, int fp)
-{
+ImagingLibTiffEncodeInit(ImagingCodecState state, char *filename, int fp) {
     // Open the FD or the pointer as a tiff file, for writing.
     // We may have to do some monkeying around to make this really work.
     // If we have a fp, then we're good.
@@ -566,8 +549,7 @@ ImagingLibTiffEncodeInit(ImagingCodecState state, char *filename, int fp)
     if (fp) {
         TRACE(("Opening using fd: %d for writing \n", clientstate->fp));
         clientstate->tiff = TIFFFdOpen(clientstate->fp, filename, mode);
-    }
-    else {
+    } else {
         // malloc a buffer to write the tif, we're going to need to realloc or
         // something if we need bigger.
         TRACE(("Opening a buffer for writing \n"));
@@ -597,8 +579,7 @@ ImagingLibTiffEncodeInit(ImagingCodecState state, char *filename, int fp)
 
 int
 ImagingLibTiffMergeFieldInfo(ImagingCodecState state, TIFFDataType field_type, int key,
-                             int is_var_length)
-{
+                             int is_var_length) {
     // Refer to libtiff docs
     // (http://www.simplesystems.org/libtiff/addingtags.html)
     TIFFSTATE *clientstate = (TIFFSTATE *)state->context;
@@ -638,8 +619,7 @@ ImagingLibTiffMergeFieldInfo(ImagingCodecState state, TIFFDataType field_type, i
 }
 
 int
-ImagingLibTiffSetField(ImagingCodecState state, ttag_t tag, ...)
-{
+ImagingLibTiffSetField(ImagingCodecState state, ttag_t tag, ...) {
     // after tif_dir.c->TIFFSetField.
     TIFFSTATE *clientstate = (TIFFSTATE *)state->context;
     va_list ap;
@@ -652,8 +632,7 @@ ImagingLibTiffSetField(ImagingCodecState state, ttag_t tag, ...)
 }
 
 int
-ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int bytes)
-{
+ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int bytes) {
     /* One shot encoder. Encode everything to the tiff in the clientstate.
        If we're running off of a FD, then run once, we're good, everything
        ends up in the file, we close and we're done.
@@ -744,8 +723,7 @@ ImagingLibTiffEncode(Imaging im, ImagingCodecState state, UINT8 *buffer, int byt
 }
 
 const char *
-ImagingTiffVersion(void)
-{
+ImagingTiffVersion(void) {
     return TIFFGetVersion();
 }
 

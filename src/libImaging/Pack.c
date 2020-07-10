@@ -68,8 +68,7 @@
 #endif
 
 static void
-pack1(UINT8 *out, const UINT8 *in, int pixels)
-{
+pack1(UINT8 *out, const UINT8 *in, int pixels) {
     int i, m, b;
     /* bilevel (black is 0) */
     b = 0;
@@ -91,8 +90,7 @@ pack1(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-pack1I(UINT8 *out, const UINT8 *in, int pixels)
-{
+pack1I(UINT8 *out, const UINT8 *in, int pixels) {
     int i, m, b;
     /* bilevel (black is 1) */
     b = 0;
@@ -114,8 +112,7 @@ pack1I(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-pack1R(UINT8 *out, const UINT8 *in, int pixels)
-{
+pack1R(UINT8 *out, const UINT8 *in, int pixels) {
     int i, m, b;
     /* bilevel, lsb first (black is 0) */
     b = 0;
@@ -137,8 +134,7 @@ pack1R(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-pack1IR(UINT8 *out, const UINT8 *in, int pixels)
-{
+pack1IR(UINT8 *out, const UINT8 *in, int pixels) {
     int i, m, b;
     /* bilevel, lsb first (black is 1) */
     b = 0;
@@ -160,8 +156,7 @@ pack1IR(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-pack1L(UINT8 *out, const UINT8 *in, int pixels)
-{
+pack1L(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* bilevel, stored as bytes */
     for (i = 0; i < pixels; i++) {
@@ -170,8 +165,7 @@ pack1L(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-packP4(UINT8 *out, const UINT8 *in, int pixels)
-{
+packP4(UINT8 *out, const UINT8 *in, int pixels) {
     while (pixels >= 2) {
         *out++ = (in[0] << 4) | (in[1] & 15);
         in += 2;
@@ -184,8 +178,7 @@ packP4(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-packP2(UINT8 *out, const UINT8 *in, int pixels)
-{
+packP2(UINT8 *out, const UINT8 *in, int pixels) {
     while (pixels >= 4) {
         *out++ = (in[0] << 6) | ((in[1] & 3) << 4) | ((in[2] & 3) << 2) | (in[3] & 3);
         in += 4;
@@ -205,8 +198,7 @@ packP2(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-packL16(UINT8 *out, const UINT8 *in, int pixels)
-{
+packL16(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* L -> L;16, e.g: \xff77 -> \x00\xff\x00\x77 */
     for (i = 0; i < pixels; i++) {
@@ -217,8 +209,7 @@ packL16(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-packL16B(UINT8 *out, const UINT8 *in, int pixels)
-{
+packL16B(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* L -> L;16B, e.g: \xff77 -> \xff\x00\x77\x00 */
     for (i = 0; i < pixels; i++) {
@@ -229,8 +220,7 @@ packL16B(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-packLA(UINT8 *out, const UINT8 *in, int pixels)
-{
+packLA(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* LA, pixel interleaved */
     for (i = 0; i < pixels; i++) {
@@ -242,8 +232,7 @@ packLA(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-packLAL(UINT8 *out, const UINT8 *in, int pixels)
-{
+packLAL(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* LA, line interleaved */
     for (i = 0; i < pixels; i++) {
@@ -254,8 +243,7 @@ packLAL(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 void
-ImagingPackRGB(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingPackRGB(UINT8 *out, const UINT8 *in, int pixels) {
     int i = 0;
     /* RGB triplets */
 #ifdef __sparc
@@ -282,8 +270,7 @@ ImagingPackRGB(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 void
-ImagingPackXRGB(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingPackXRGB(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* XRGB, triplets with left padding */
     for (i = 0; i < pixels; i++) {
@@ -297,8 +284,7 @@ ImagingPackXRGB(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 void
-ImagingPackBGR(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingPackBGR(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* RGB, reversed bytes */
     for (i = 0; i < pixels; i++) {
@@ -311,8 +297,7 @@ ImagingPackBGR(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 void
-ImagingPackBGRX(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingPackBGRX(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* BGRX, reversed bytes with right padding */
     for (i = 0; i < pixels; i++) {
@@ -326,8 +311,7 @@ ImagingPackBGRX(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 void
-ImagingPackXBGR(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingPackXBGR(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* XBGR, reversed bytes with left padding */
     for (i = 0; i < pixels; i++) {
@@ -341,8 +325,7 @@ ImagingPackXBGR(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 void
-ImagingPackBGRA(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingPackBGRA(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* BGRX, reversed bytes with right padding */
     for (i = 0; i < pixels; i++) {
@@ -356,8 +339,7 @@ ImagingPackBGRA(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 void
-ImagingPackABGR(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingPackABGR(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* XBGR, reversed bytes with left padding */
     for (i = 0; i < pixels; i++) {
@@ -371,8 +353,7 @@ ImagingPackABGR(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 void
-ImagingPackBGRa(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingPackBGRa(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* BGRa, reversed bytes with premultiplied alpha */
     for (i = 0; i < pixels; i++) {
@@ -387,8 +368,7 @@ ImagingPackBGRa(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-packRGBL(UINT8 *out, const UINT8 *in, int pixels)
-{
+packRGBL(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* RGB, line interleaved */
     for (i = 0; i < pixels; i++) {
@@ -400,8 +380,7 @@ packRGBL(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-packRGBXL(UINT8 *out, const UINT8 *in, int pixels)
-{
+packRGBXL(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* RGBX, line interleaved */
     for (i = 0; i < pixels; i++) {
@@ -414,8 +393,7 @@ packRGBXL(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-packI16B(UINT8 *out, const UINT8 *in_, int pixels)
-{
+packI16B(UINT8 *out, const UINT8 *in_, int pixels) {
     int i;
     UINT16 tmp_;
     UINT8 *tmp = (UINT8 *)&tmp_;
@@ -424,11 +402,9 @@ packI16B(UINT8 *out, const UINT8 *in_, int pixels)
         memcpy(&in, in_, sizeof(in));
         if (in <= 0) {
             tmp_ = 0;
-        }
-        else if (in > 65535) {
+        } else if (in > 65535) {
             tmp_ = 65535;
-        }
-        else {
+        } else {
             tmp_ = in;
         }
         C16B;
@@ -438,8 +414,7 @@ packI16B(UINT8 *out, const UINT8 *in_, int pixels)
 }
 
 static void
-packI16N_I16B(UINT8 *out, const UINT8 *in, int pixels)
-{
+packI16N_I16B(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     UINT8 *tmp = (UINT8 *)in;
     for (i = 0; i < pixels; i++) {
@@ -449,8 +424,7 @@ packI16N_I16B(UINT8 *out, const UINT8 *in, int pixels)
     }
 }
 static void
-packI16N_I16(UINT8 *out, const UINT8 *in, int pixels)
-{
+packI16N_I16(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     UINT8 *tmp = (UINT8 *)in;
     for (i = 0; i < pixels; i++) {
@@ -461,8 +435,7 @@ packI16N_I16(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-packI32S(UINT8 *out, const UINT8 *in, int pixels)
-{
+packI32S(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     UINT8 *tmp = (UINT8 *)in;
     for (i = 0; i < pixels; i++) {
@@ -473,8 +446,7 @@ packI32S(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 void
-ImagingPackLAB(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingPackLAB(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* LAB triplets */
     for (i = 0; i < pixels; i++) {
@@ -487,36 +459,31 @@ ImagingPackLAB(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-copy1(UINT8 *out, const UINT8 *in, int pixels)
-{
+copy1(UINT8 *out, const UINT8 *in, int pixels) {
     /* L, P */
     memcpy(out, in, pixels);
 }
 
 static void
-copy2(UINT8 *out, const UINT8 *in, int pixels)
-{
+copy2(UINT8 *out, const UINT8 *in, int pixels) {
     /* I;16, etc */
     memcpy(out, in, pixels * 2);
 }
 
 static void
-copy3(UINT8 *out, const UINT8 *in, int pixels)
-{
+copy3(UINT8 *out, const UINT8 *in, int pixels) {
     /* BGR;24, etc */
     memcpy(out, in, pixels * 3);
 }
 
 static void
-copy4(UINT8 *out, const UINT8 *in, int pixels)
-{
+copy4(UINT8 *out, const UINT8 *in, int pixels) {
     /* RGBA, CMYK quadruples */
     memcpy(out, in, 4 * pixels);
 }
 
 static void
-copy4I(UINT8 *out, const UINT8 *in, int pixels)
-{
+copy4I(UINT8 *out, const UINT8 *in, int pixels) {
     /* RGBA, CMYK quadruples, inverted */
     int i;
     for (i = 0; i < pixels * 4; i++) {
@@ -525,8 +492,7 @@ copy4I(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-band0(UINT8 *out, const UINT8 *in, int pixels)
-{
+band0(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     for (i = 0; i < pixels; i++, in += 4) {
         out[i] = in[0];
@@ -534,8 +500,7 @@ band0(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-band1(UINT8 *out, const UINT8 *in, int pixels)
-{
+band1(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     for (i = 0; i < pixels; i++, in += 4) {
         out[i] = in[1];
@@ -543,8 +508,7 @@ band1(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-band2(UINT8 *out, const UINT8 *in, int pixels)
-{
+band2(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     for (i = 0; i < pixels; i++, in += 4) {
         out[i] = in[2];
@@ -552,8 +516,7 @@ band2(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 static void
-band3(UINT8 *out, const UINT8 *in, int pixels)
-{
+band3(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     for (i = 0; i < pixels; i++, in += 4) {
         out[i] = in[3];
@@ -695,8 +658,7 @@ static struct {
 };
 
 ImagingShuffler
-ImagingFindPacker(const char *mode, const char *rawmode, int *bits_out)
-{
+ImagingFindPacker(const char *mode, const char *rawmode, int *bits_out) {
     int i;
 
     /* find a suitable pixel packer */

@@ -18,8 +18,7 @@
 #include "Imaging.h"
 
 static Imaging
-_copy(Imaging imOut, Imaging imIn)
-{
+_copy(Imaging imOut, Imaging imIn) {
     ImagingSectionCookie cookie;
     int y;
 
@@ -37,8 +36,7 @@ _copy(Imaging imOut, Imaging imIn)
     ImagingSectionEnter(&cookie);
     if (imIn->block != NULL && imOut->block != NULL) {
         memcpy(imOut->block, imIn->block, imIn->ysize * imIn->linesize);
-    }
-    else {
+    } else {
         for (y = 0; y < imIn->ysize; y++) {
             memcpy(imOut->image[y], imIn->image[y], imIn->linesize);
         }
@@ -49,13 +47,11 @@ _copy(Imaging imOut, Imaging imIn)
 }
 
 Imaging
-ImagingCopy(Imaging imIn)
-{
+ImagingCopy(Imaging imIn) {
     return _copy(NULL, imIn);
 }
 
 Imaging
-ImagingCopy2(Imaging imOut, Imaging imIn)
-{
+ImagingCopy2(Imaging imOut, Imaging imIn) {
     return _copy(imOut, imIn);
 }

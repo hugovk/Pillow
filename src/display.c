@@ -46,8 +46,7 @@ typedef struct {
 static PyTypeObject ImagingDisplayType;
 
 static ImagingDisplayObject *
-_new(const char *mode, int xsize, int ysize)
-{
+_new(const char *mode, int xsize, int ysize) {
     ImagingDisplayObject *display;
 
     if (PyType_Ready(&ImagingDisplayType) < 0) {
@@ -69,8 +68,7 @@ _new(const char *mode, int xsize, int ysize)
 }
 
 static void
-_delete(ImagingDisplayObject *display)
-{
+_delete(ImagingDisplayObject *display) {
     if (display->dib) {
         ImagingDeleteDIB(display->dib);
     }
@@ -78,8 +76,7 @@ _delete(ImagingDisplayObject *display)
 }
 
 static PyObject *
-_expose(ImagingDisplayObject *display, PyObject *args)
-{
+_expose(ImagingDisplayObject *display, PyObject *args) {
     HDC hdc;
     if (!PyArg_ParseTuple(args, F_HANDLE, &hdc)) {
         return NULL;
@@ -92,8 +89,7 @@ _expose(ImagingDisplayObject *display, PyObject *args)
 }
 
 static PyObject *
-_draw(ImagingDisplayObject *display, PyObject *args)
-{
+_draw(ImagingDisplayObject *display, PyObject *args) {
     HDC hdc;
     int dst[4];
     int src[4];
@@ -112,8 +108,7 @@ extern Imaging
 PyImaging_AsImaging(PyObject *op);
 
 static PyObject *
-_paste(ImagingDisplayObject *display, PyObject *args)
-{
+_paste(ImagingDisplayObject *display, PyObject *args) {
     Imaging im;
 
     PyObject *op;
@@ -141,8 +136,7 @@ _paste(ImagingDisplayObject *display, PyObject *args)
 }
 
 static PyObject *
-_query_palette(ImagingDisplayObject *display, PyObject *args)
-{
+_query_palette(ImagingDisplayObject *display, PyObject *args) {
     HDC hdc;
     int status;
 
@@ -156,8 +150,7 @@ _query_palette(ImagingDisplayObject *display, PyObject *args)
 }
 
 static PyObject *
-_getdc(ImagingDisplayObject *display, PyObject *args)
-{
+_getdc(ImagingDisplayObject *display, PyObject *args) {
     HWND window;
     HDC dc;
 
@@ -175,8 +168,7 @@ _getdc(ImagingDisplayObject *display, PyObject *args)
 }
 
 static PyObject *
-_releasedc(ImagingDisplayObject *display, PyObject *args)
-{
+_releasedc(ImagingDisplayObject *display, PyObject *args) {
     HWND window;
     HDC dc;
 
@@ -191,8 +183,7 @@ _releasedc(ImagingDisplayObject *display, PyObject *args)
 }
 
 static PyObject *
-_frombytes(ImagingDisplayObject *display, PyObject *args)
-{
+_frombytes(ImagingDisplayObject *display, PyObject *args) {
     char *ptr;
     int bytes;
 
@@ -212,8 +203,7 @@ _frombytes(ImagingDisplayObject *display, PyObject *args)
 }
 
 static PyObject *
-_tobytes(ImagingDisplayObject *display, PyObject *args)
-{
+_tobytes(ImagingDisplayObject *display, PyObject *args) {
     if (!PyArg_ParseTuple(args, ":tobytes")) {
         return NULL;
     }
@@ -237,14 +227,12 @@ static struct PyMethodDef methods[] = {
 };
 
 static PyObject *
-_getattr_mode(ImagingDisplayObject *self, void *closure)
-{
+_getattr_mode(ImagingDisplayObject *self, void *closure) {
     return Py_BuildValue("s", self->dib->mode);
 }
 
 static PyObject *
-_getattr_size(ImagingDisplayObject *self, void *closure)
-{
+_getattr_size(ImagingDisplayObject *self, void *closure) {
     return Py_BuildValue("ii", self->dib->xsize, self->dib->ysize);
 }
 
@@ -285,8 +273,7 @@ static PyTypeObject ImagingDisplayType = {
 };
 
 PyObject *
-PyImaging_DisplayWin32(PyObject *self, PyObject *args)
-{
+PyImaging_DisplayWin32(PyObject *self, PyObject *args) {
     ImagingDisplayObject *display;
     char *mode;
     int xsize, ysize;
@@ -304,8 +291,7 @@ PyImaging_DisplayWin32(PyObject *self, PyObject *args)
 }
 
 PyObject *
-PyImaging_DisplayModeWin32(PyObject *self, PyObject *args)
-{
+PyImaging_DisplayModeWin32(PyObject *self, PyObject *args) {
     char *mode;
     int size[2];
 
@@ -320,8 +306,7 @@ PyImaging_DisplayModeWin32(PyObject *self, PyObject *args)
 typedef HANDLE(__stdcall *Func_SetThreadDpiAwarenessContext)(HANDLE);
 
 PyObject *
-PyImaging_GrabScreenWin32(PyObject *self, PyObject *args)
-{
+PyImaging_GrabScreenWin32(PyObject *self, PyObject *args) {
     int x = 0, y = 0, width, height;
     int includeLayeredWindows = 0, all_screens = 0;
     HBITMAP bitmap;
@@ -359,8 +344,7 @@ PyImaging_GrabScreenWin32(PyObject *self, PyObject *args)
         y = GetSystemMetrics(SM_YVIRTUALSCREEN);
         width = GetSystemMetrics(SM_CXVIRTUALSCREEN);
         height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
-    }
-    else {
+    } else {
         width = GetDeviceCaps(screen, HORZRES);
         height = GetDeviceCaps(screen, VERTRES);
     }
@@ -423,8 +407,7 @@ error:
 }
 
 static BOOL CALLBACK
-list_windows_callback(HWND hwnd, LPARAM lParam)
-{
+list_windows_callback(HWND hwnd, LPARAM lParam) {
     PyObject *window_list = (PyObject *)lParam;
     PyObject *item;
     PyObject *title;
@@ -439,8 +422,7 @@ list_windows_callback(HWND hwnd, LPARAM lParam)
         if (title) {
             GetWindowTextW(hwnd, PyUnicode_AS_UNICODE(title), title_size + 1);
         }
-    }
-    else {
+    } else {
         title = PyUnicode_FromString("");
     }
     if (!title) {
@@ -470,8 +452,7 @@ list_windows_callback(HWND hwnd, LPARAM lParam)
 }
 
 PyObject *
-PyImaging_ListWindowsWin32(PyObject *self, PyObject *args)
-{
+PyImaging_ListWindowsWin32(PyObject *self, PyObject *args) {
     PyObject *window_list;
 
     window_list = PyList_New(0);
@@ -493,8 +474,7 @@ PyImaging_ListWindowsWin32(PyObject *self, PyObject *args)
 /* Windows clipboard grabber */
 
 PyObject *
-PyImaging_GrabClipboardWin32(PyObject *self, PyObject *args)
-{
+PyImaging_GrabClipboardWin32(PyObject *self, PyObject *args) {
     int clip;
     HANDLE handle = NULL;
     int size;
@@ -547,8 +527,7 @@ PyImaging_GrabClipboardWin32(PyObject *self, PyObject *args)
 static int mainloop = 0;
 
 static void
-callback_error(const char *handler)
-{
+callback_error(const char *handler) {
     PyObject *sys_stderr;
 
     sys_stderr = PySys_GetObject("stderr");
@@ -564,8 +543,7 @@ callback_error(const char *handler)
 }
 
 static LRESULT CALLBACK
-windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
+windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam) {
     PAINTSTRUCT ps;
     PyObject *callback = NULL;
     PyObject *result;
@@ -591,8 +569,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
                     (PyThreadState *)GetWindowLongPtr(wnd, sizeof(PyObject *));
                 current_threadstate = PyThreadState_Swap(NULL);
                 PyEval_RestoreThread(threadstate);
-            }
-            else {
+            } else {
                 return DefWindowProc(wnd, message, wParam, lParam);
             }
     }
@@ -611,8 +588,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
                                            ps.rcPaint.bottom);
             if (result) {
                 Py_DECREF(result);
-            }
-            else {
+            } else {
                 callback_error("window damage callback");
             }
 
@@ -621,8 +597,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
                                       rect.right - rect.left, rect.bottom - rect.top);
             if (result) {
                 Py_DECREF(result);
-            }
-            else {
+            } else {
                 callback_error("window clear callback");
             }
 
@@ -631,8 +606,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
                                       rect.right - rect.left, rect.bottom - rect.top);
             if (result) {
                 Py_DECREF(result);
-            }
-            else {
+            } else {
                 callback_error("window repair callback");
             }
 
@@ -647,8 +621,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (result) {
                 InvalidateRect(wnd, NULL, 1);
                 Py_DECREF(result);
-            }
-            else {
+            } else {
                 callback_error("window resize callback");
             }
             break;
@@ -658,8 +631,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
             result = PyObject_CallFunction(callback, "s", "destroy");
             if (result) {
                 Py_DECREF(result);
-            }
-            else {
+            } else {
                 callback_error("window destroy callback");
             }
             Py_DECREF(callback);
@@ -679,8 +651,7 @@ windowCallback(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 PyObject *
-PyImaging_CreateWindowWin32(PyObject *self, PyObject *args)
-{
+PyImaging_CreateWindowWin32(PyObject *self, PyObject *args) {
     HWND wnd;
     WNDCLASS windowClass;
 
@@ -735,12 +706,10 @@ PyImaging_CreateWindowWin32(PyObject *self, PyObject *args)
 }
 
 PyObject *
-PyImaging_EventLoopWin32(PyObject *self, PyObject *args)
-{
+PyImaging_EventLoopWin32(PyObject *self, PyObject *args) {
     MSG msg;
 
-    Py_BEGIN_ALLOW_THREADS while (mainloop && GetMessage(&msg, NULL, 0, 0))
-    {
+    Py_BEGIN_ALLOW_THREADS while (mainloop && GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
@@ -756,8 +725,7 @@ PyImaging_EventLoopWin32(PyObject *self, PyObject *args)
 #define GET32(p, o) ((DWORD *)(p + o))[0]
 
 PyObject *
-PyImaging_DrawWmf(PyObject *self, PyObject *args)
-{
+PyImaging_DrawWmf(PyObject *self, PyObject *args) {
     HBITMAP bitmap;
     HENHMETAFILE meta;
     BITMAPCOREHEADER core;
@@ -780,12 +748,10 @@ PyImaging_DrawWmf(PyObject *self, PyObject *args)
     if (datasize > 22 && GET32(data, 0) == 0x9ac6cdd7) {
         /* placeable windows metafile (22-byte aldus header) */
         meta = SetWinMetaFileBits(datasize - 22, data + 22, NULL, NULL);
-    }
-    else if (datasize > 80 && GET32(data, 0) == 1 && GET32(data, 40) == 0x464d4520) {
+    } else if (datasize > 80 && GET32(data, 0) == 1 && GET32(data, 40) == 0x464d4520) {
         /* enhanced metafile */
         meta = SetEnhMetaFileBits(datasize, data);
-    }
-    else {
+    } else {
         /* unknown meta format */
         meta = NULL;
     }
@@ -861,8 +827,7 @@ error:
 /* X11 screen grabber */
 
 PyObject *
-PyImaging_GrabScreenX11(PyObject *self, PyObject *args)
-{
+PyImaging_GrabScreenX11(PyObject *self, PyObject *args) {
     int width, height;
     char *display_name;
     xcb_connection_t *connection;
@@ -926,8 +891,7 @@ PyImaging_GrabScreenX11(PyObject *self, PyObject *args)
     if (reply->depth == 24) {
         buffer = PyBytes_FromStringAndSize((char *)xcb_get_image_data(reply),
                                            xcb_get_image_data_length(reply));
-    }
-    else {
+    } else {
         PyErr_Format(PyExc_OSError, "unsupported bit depth: %i", reply->depth);
     }
 

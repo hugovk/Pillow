@@ -20,8 +20,7 @@
 #include <math.h>
 
 Imaging
-ImagingEffectMandelbrot(int xsize, int ysize, double extent[4], int quality)
-{
+ImagingEffectMandelbrot(int xsize, int ysize, double extent[4], int quality) {
     /* Generate a Mandelbrot set covering the given extent */
 
     Imaging im;
@@ -73,8 +72,7 @@ ImagingEffectMandelbrot(int xsize, int ysize, double extent[4], int quality)
 }
 
 Imaging
-ImagingEffectNoise(int xsize, int ysize, float sigma)
-{
+ImagingEffectNoise(int xsize, int ysize, float sigma) {
     /* Generate Gaussian noise centered around 128 */
 
     Imaging imOut;
@@ -96,8 +94,7 @@ ImagingEffectNoise(int xsize, int ysize, float sigma)
             if (nextok) {
                 this = next;
                 nextok = 0;
-            }
-            else {
+            } else {
                 /* after numerical recipes */
                 double v1, v2, radius, factor;
                 do {
@@ -117,8 +114,7 @@ ImagingEffectNoise(int xsize, int ysize, float sigma)
 }
 
 Imaging
-ImagingEffectSpread(Imaging imIn, int distance)
-{
+ImagingEffectSpread(Imaging imIn, int distance) {
     /* Randomly spread pixels in an image */
 
     Imaging imOut;
@@ -138,8 +134,7 @@ ImagingEffectSpread(Imaging imIn, int distance)
             if (xx >= 0 && xx < imIn->xsize && yy >= 0 && yy < imIn->ysize) { \
                 imOut->image[yy][xx] = imIn->image[y][x];                     \
                 imOut->image[y][x] = imIn->image[yy][xx];                     \
-            }                                                                 \
-            else {                                                            \
+            } else {                                                          \
                 imOut->image[y][x] = imIn->image[y][x];                       \
             }                                                                 \
         }                                                                     \
@@ -147,8 +142,7 @@ ImagingEffectSpread(Imaging imIn, int distance)
 
     if (imIn->image8) {
         SPREAD(UINT8, image8);
-    }
-    else {
+    } else {
         SPREAD(INT32, image32);
     }
 

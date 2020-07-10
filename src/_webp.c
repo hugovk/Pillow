@@ -22,14 +22,12 @@
 #endif
 
 void
-ImagingSectionEnter(ImagingSectionCookie *cookie)
-{
+ImagingSectionEnter(ImagingSectionCookie *cookie) {
     *cookie = (PyThreadState *)PyEval_SaveThread();
 }
 
 void
-ImagingSectionLeave(ImagingSectionCookie *cookie)
-{
+ImagingSectionLeave(ImagingSectionCookie *cookie) {
     PyEval_RestoreThread((PyThreadState *)*cookie);
 }
 
@@ -44,8 +42,7 @@ static const char *const kErrorMessages[-WEBP_MUX_NOT_ENOUGH_DATA + 1] = {
     "WEBP_MUX_MEMORY_ERROR", "WEBP_MUX_NOT_ENOUGH_DATA"};
 
 PyObject *
-HandleMuxError(WebPMuxError err, char *chunk)
-{
+HandleMuxError(WebPMuxError err, char *chunk) {
     char message[100];
     int message_len;
     assert(err <= WEBP_MUX_NOT_FOUND && err >= WEBP_MUX_NOT_ENOUGH_DATA);
@@ -59,8 +56,7 @@ HandleMuxError(WebPMuxError err, char *chunk)
     if (chunk == NULL) {
         message_len =
             sprintf(message, "could not assemble chunks: %s", kErrorMessages[-err]);
-    }
-    else {
+    } else {
         message_len = sprintf(message, "could not set %.4s chunk: %s", chunk,
                               kErrorMessages[-err]);
     }
@@ -116,8 +112,7 @@ static PyTypeObject WebPAnimDecoder_Type;
 
 // Encoder functions
 PyObject *
-_anim_encoder_new(PyObject *self, PyObject *args)
-{
+_anim_encoder_new(PyObject *self, PyObject *args) {
     int width, height;
     uint32_t bgcolor;
     int loop_count;
@@ -171,8 +166,7 @@ _anim_encoder_new(PyObject *self, PyObject *args)
 }
 
 PyObject *
-_anim_encoder_dealloc(PyObject *self)
-{
+_anim_encoder_dealloc(PyObject *self) {
     WebPAnimEncoderObject *encp = (WebPAnimEncoderObject *)self;
     WebPPictureFree(&(encp->frame));
     WebPAnimEncoderDelete(encp->enc);
@@ -180,8 +174,7 @@ _anim_encoder_dealloc(PyObject *self)
 }
 
 PyObject *
-_anim_encoder_add(PyObject *self, PyObject *args)
-{
+_anim_encoder_add(PyObject *self, PyObject *args) {
     uint8_t *rgb;
     Py_ssize_t size;
     int timestamp;
@@ -228,11 +221,9 @@ _anim_encoder_add(PyObject *self, PyObject *args)
     frame->use_argb = 1;  // Don't convert RGB pixels to YUV
     if (strcmp(mode, "RGBA") == 0) {
         WebPPictureImportRGBA(frame, rgb, 4 * width);
-    }
-    else if (strcmp(mode, "RGBX") == 0) {
+    } else if (strcmp(mode, "RGBX") == 0) {
         WebPPictureImportRGBX(frame, rgb, 4 * width);
-    }
-    else {
+    } else {
         WebPPictureImportRGB(frame, rgb, 3 * width);
     }
 
@@ -246,8 +237,7 @@ _anim_encoder_add(PyObject *self, PyObject *args)
 }
 
 PyObject *
-_anim_encoder_assemble(PyObject *self, PyObject *args)
-{
+_anim_encoder_assemble(PyObject *self, PyObject *args) {
     uint8_t *icc_bytes;
     uint8_t *exif_bytes;
     uint8_t *xmp_bytes;
@@ -335,8 +325,7 @@ _anim_encoder_assemble(PyObject *self, PyObject *args)
 
 // Decoder functions
 PyObject *
-_anim_decoder_new(PyObject *self, PyObject *args)
-{
+_anim_decoder_new(PyObject *self, PyObject *args) {
     PyBytesObject *webp_string;
     const uint8_t *webp;
     Py_ssize_t size;
@@ -381,8 +370,7 @@ _anim_decoder_new(PyObject *self, PyObject *args)
 }
 
 PyObject *
-_anim_decoder_dealloc(PyObject *self)
-{
+_anim_decoder_dealloc(PyObject *self) {
     WebPAnimDecoderObject *decp = (WebPAnimDecoderObject *)self;
     WebPDataClear(&(decp->data));
     WebPAnimDecoderDelete(decp->dec);
@@ -390,8 +378,7 @@ _anim_decoder_dealloc(PyObject *self)
 }
 
 PyObject *
-_anim_decoder_get_info(PyObject *self)
-{
+_anim_decoder_get_info(PyObject *self) {
     WebPAnimDecoderObject *decp = (WebPAnimDecoderObject *)self;
     WebPAnimInfo *info = &(decp->info);
 
@@ -401,8 +388,7 @@ _anim_decoder_get_info(PyObject *self)
 }
 
 PyObject *
-_anim_decoder_get_chunk(PyObject *self, PyObject *args)
-{
+_anim_decoder_get_chunk(PyObject *self, PyObject *args) {
     char *mode;
     WebPAnimDecoderObject *decp = (WebPAnimDecoderObject *)self;
     const WebPDemuxer *demux;
@@ -425,8 +411,7 @@ _anim_decoder_get_chunk(PyObject *self, PyObject *args)
 }
 
 PyObject *
-_anim_decoder_get_next(PyObject *self)
-{
+_anim_decoder_get_next(PyObject *self) {
     uint8_t *buf;
     int timestamp;
     PyObject *bytes;
@@ -448,8 +433,7 @@ _anim_decoder_get_next(PyObject *self)
 }
 
 PyObject *
-_anim_decoder_reset(PyObject *self)
-{
+_anim_decoder_reset(PyObject *self) {
     WebPAnimDecoderObject *decp = (WebPAnimDecoderObject *)self;
     WebPAnimDecoderReset(decp->dec);
     Py_RETURN_NONE;
@@ -550,8 +534,7 @@ static PyTypeObject WebPAnimDecoder_Type = {
 /* -------------------------------------------------------------------- */
 
 PyObject *
-WebPEncode_wrapper(PyObject *self, PyObject *args)
-{
+WebPEncode_wrapper(PyObject *self, PyObject *args) {
     int width;
     int height;
     int lossless;
@@ -617,8 +600,7 @@ WebPEncode_wrapper(PyObject *self, PyObject *args)
 
     if (rgba_mode) {
         WebPPictureImportRGBA(&pic, rgb, channels * width);
-    }
-    else {
+    } else {
         WebPPictureImportRGB(&pic, rgb, channels * width);
     }
 
@@ -725,8 +707,7 @@ WebPEncode_wrapper(PyObject *self, PyObject *args)
 }
 
 PyObject *
-WebPDecode_wrapper(PyObject *self, PyObject *args)
-{
+WebPDecode_wrapper(PyObject *self, PyObject *args) {
     PyBytesObject *webp_string;
     const uint8_t *webp;
     Py_ssize_t size;
@@ -803,8 +784,7 @@ WebPDecode_wrapper(PyObject *self, PyObject *args)
     if (config.output.colorspace < MODE_YUV) {
         bytes = PyBytes_FromStringAndSize((char *)config.output.u.RGBA.rgba,
                                           config.output.u.RGBA.size);
-    }
-    else {
+    } else {
         // Skipping YUV for now. Need Test Images.
         // UNDONE -- unclear if we'll ever get here if we set mode_rgb*
         bytes = PyBytes_FromStringAndSize((char *)config.output.u.YUVA.y,
@@ -834,15 +814,13 @@ end:
 // Return the decoder's version number, packed in hexadecimal using 8bits for
 // each of major/minor/revision. E.g: v2.5.7 is 0x020507.
 PyObject *
-WebPDecoderVersion_wrapper()
-{
+WebPDecoderVersion_wrapper() {
     return Py_BuildValue("i", WebPGetDecoderVersion());
 }
 
 // Version as string
 const char *
-WebPDecoderVersion_str(void)
-{
+WebPDecoderVersion_str(void) {
     static char version[20];
     int version_number = WebPGetDecoderVersion();
     sprintf(version, "%d.%d.%d", version_number >> 16, (version_number >> 8) % 0x100,
@@ -855,14 +833,12 @@ WebPDecoderVersion_str(void)
  * alpha well. Files that are valid with 0.3 are reported as being invalid.
  */
 int
-WebPDecoderBuggyAlpha(void)
-{
+WebPDecoderBuggyAlpha(void) {
     return WebPGetDecoderVersion() == 0x0103;
 }
 
 PyObject *
-WebPDecoderBuggyAlpha_wrapper()
-{
+WebPDecoderBuggyAlpha_wrapper() {
     return Py_BuildValue("i", WebPDecoderBuggyAlpha());
 }
 
@@ -883,8 +859,7 @@ static PyMethodDef webpMethods[] = {
     {NULL, NULL}};
 
 void
-addMuxFlagToModule(PyObject *m)
-{
+addMuxFlagToModule(PyObject *m) {
 #ifdef HAVE_WEBPMUX
     PyModule_AddObject(m, "HAVE_WEBPMUX", Py_True);
 #else
@@ -893,8 +868,7 @@ addMuxFlagToModule(PyObject *m)
 }
 
 void
-addAnimFlagToModule(PyObject *m)
-{
+addAnimFlagToModule(PyObject *m) {
 #ifdef HAVE_WEBPANIM
     PyModule_AddObject(m, "HAVE_WEBPANIM", Py_True);
 #else
@@ -903,15 +877,13 @@ addAnimFlagToModule(PyObject *m)
 }
 
 void
-addTransparencyFlagToModule(PyObject *m)
-{
+addTransparencyFlagToModule(PyObject *m) {
     PyModule_AddObject(m, "HAVE_TRANSPARENCY",
                        PyBool_FromLong(!WebPDecoderBuggyAlpha()));
 }
 
 static int
-setup_module(PyObject *m)
-{
+setup_module(PyObject *m) {
     PyObject *d = PyModule_GetDict(m);
     addMuxFlagToModule(m);
     addAnimFlagToModule(m);
@@ -931,8 +903,7 @@ setup_module(PyObject *m)
 }
 
 PyMODINIT_FUNC
-PyInit__webp(void)
-{
+PyInit__webp(void) {
     PyObject *m;
 
     static PyModuleDef module_def = {

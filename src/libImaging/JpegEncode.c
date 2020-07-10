@@ -39,20 +39,17 @@
 /* -------------------------------------------------------------------- */
 
 METHODDEF(void)
-stub(j_compress_ptr cinfo)
-{ /* empty */
+stub(j_compress_ptr cinfo) { /* empty */
 }
 
 METHODDEF(boolean)
-empty_output_buffer(j_compress_ptr cinfo)
-{
+empty_output_buffer(j_compress_ptr cinfo) {
     /* Suspension */
     return FALSE;
 }
 
 GLOBAL(void)
-jpeg_buffer_dest(j_compress_ptr cinfo, JPEGDESTINATION *destination)
-{
+jpeg_buffer_dest(j_compress_ptr cinfo, JPEGDESTINATION *destination) {
     cinfo->dest = (void *)destination;
 
     destination->pub.init_destination = stub;
@@ -65,8 +62,7 @@ jpeg_buffer_dest(j_compress_ptr cinfo, JPEGDESTINATION *destination)
 /* -------------------------------------------------------------------- */
 
 METHODDEF(void)
-error(j_common_ptr cinfo)
-{
+error(j_common_ptr cinfo) {
     JPEGERROR *error;
     error = (JPEGERROR *)cinfo->err;
     (*cinfo->err->output_message)(cinfo);
@@ -78,8 +74,7 @@ error(j_common_ptr cinfo)
 /* -------------------------------------------------------------------- */
 
 int
-ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
-{
+ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
     JPEGENCODERSTATE *context = (JPEGENCODERSTATE *)state->context;
     int ok;
 
@@ -122,8 +117,7 @@ ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                     context->cinfo.input_components = 3;
                     if (strcmp(im->mode, "YCbCr") == 0) {
                         context->cinfo.in_color_space = JCS_YCbCr;
-                    }
-                    else {
+                    } else {
                         context->cinfo.in_color_space = JCS_RGB;
                     }
                     break;
@@ -169,8 +163,7 @@ ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                 for (i = last_q; i < context->cinfo.num_components; i++) {
                     context->cinfo.comp_info[i].quant_tbl_no = last_q;
                 }
-            }
-            else if (context->quality != -1) {
+            } else if (context->quality != -1) {
                 jpeg_set_quality(&context->cinfo, context->quality, 1);
             }
 
@@ -271,12 +264,10 @@ ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                 context->extra_offset += n;
                 if (context->extra_offset >= context->extra_size) {
                     state->state++;
-                }
-                else {
+                } else {
                     break;
                 }
-            }
-            else {
+            } else {
                 state->state++;
             }
 
@@ -337,8 +328,7 @@ ImagingJpegEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
 }
 
 const char *
-ImagingJpegVersion(void)
-{
+ImagingJpegVersion(void) {
     static char version[20];
     sprintf(version, "%d.%d", JPEG_LIB_VERSION / 10, JPEG_LIB_VERSION % 10);
     return version;

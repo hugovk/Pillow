@@ -21,8 +21,7 @@
 #include <math.h>
 
 ImagingPalette
-ImagingPaletteNew(const char *mode)
-{
+ImagingPaletteNew(const char *mode) {
     /* Create a palette object */
 
     int i;
@@ -51,8 +50,7 @@ ImagingPaletteNew(const char *mode)
 }
 
 ImagingPalette
-ImagingPaletteNewBrowser(void)
-{
+ImagingPaletteNewBrowser(void) {
     /* Create a standard "browser" palette object */
 
     int i, r, g, b;
@@ -96,8 +94,7 @@ ImagingPaletteNewBrowser(void)
 }
 
 ImagingPalette
-ImagingPaletteDuplicate(ImagingPalette palette)
-{
+ImagingPaletteDuplicate(ImagingPalette palette) {
     /* Duplicate palette descriptor */
 
     ImagingPalette new_palette;
@@ -120,8 +117,7 @@ ImagingPaletteDuplicate(ImagingPalette palette)
 }
 
 void
-ImagingPaletteDelete(ImagingPalette palette)
-{
+ImagingPaletteDelete(ImagingPalette palette) {
     /* Destroy palette object */
 
     if (palette) {
@@ -168,8 +164,7 @@ ImagingPaletteDelete(ImagingPalette palette)
 #define BOXVOLUME BOX *BOX *BOX
 
 void
-ImagingPaletteCacheUpdate(ImagingPalette palette, int r, int g, int b)
-{
+ImagingPaletteCacheUpdate(ImagingPalette palette, int r, int g, int b) {
     int i, j;
     unsigned int dmin[256], dmax;
     int r0, g0, b0;
@@ -288,8 +283,7 @@ ImagingPaletteCacheUpdate(ImagingPalette palette, int r, int g, int b)
 }
 
 int
-ImagingPaletteCachePrepare(ImagingPalette palette)
-{
+ImagingPaletteCachePrepare(ImagingPalette palette) {
     /* Add a colour cache to a palette */
 
     int i;
@@ -316,8 +310,7 @@ ImagingPaletteCachePrepare(ImagingPalette palette)
 }
 
 void
-ImagingPaletteCacheDelete(ImagingPalette palette)
-{
+ImagingPaletteCacheDelete(ImagingPalette palette) {
     /* Release the colour cache, if any */
 
     if (palette && palette->cache) {

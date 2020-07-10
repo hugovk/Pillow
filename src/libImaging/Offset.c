@@ -17,8 +17,7 @@
 #include "Imaging.h"
 
 Imaging
-ImagingOffset(Imaging im, int xoffset, int yoffset)
-{
+ImagingOffset(Imaging im, int xoffset, int yoffset) {
     int x, y;
     Imaging imOut;
 
@@ -57,8 +56,7 @@ ImagingOffset(Imaging im, int xoffset, int yoffset)
 
     if (im->image8) {
         OFFSET(image8)
-    }
-    else {
+    } else {
         OFFSET(image32)
     }
 

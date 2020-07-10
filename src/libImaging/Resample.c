@@ -10,8 +10,7 @@ struct filter {
 };
 
 static inline double
-box_filter(double x)
-{
+box_filter(double x) {
     if (x > -0.5 && x <= 0.5) {
         return 1.0;
     }
@@ -19,8 +18,7 @@ box_filter(double x)
 }
 
 static inline double
-bilinear_filter(double x)
-{
+bilinear_filter(double x) {
     if (x < 0.0) {
         x = -x;
     }
@@ -31,8 +29,7 @@ bilinear_filter(double x)
 }
 
 static inline double
-hamming_filter(double x)
-{
+hamming_filter(double x) {
     if (x < 0.0) {
         x = -x;
     }
@@ -47,8 +44,7 @@ hamming_filter(double x)
 }
 
 static inline double
-bicubic_filter(double x)
-{
+bicubic_filter(double x) {
     /* https://en.wikipedia.org/wiki/Bicubic_interpolation#Bicubic_convolution_algorithm
      */
 #define a -0.5
@@ -66,8 +62,7 @@ bicubic_filter(double x)
 }
 
 static inline double
-sinc_filter(double x)
-{
+sinc_filter(double x) {
     if (x == 0.0) {
         return 1.0;
     }
@@ -76,8 +71,7 @@ sinc_filter(double x)
 }
 
 static inline double
-lanczos_filter(double x)
-{
+lanczos_filter(double x) {
     /* truncated sinc */
     if (-3.0 <= x && x < 3.0) {
         return sinc_filter(x) * sinc_filter(x / 3);
@@ -180,15 +174,13 @@ UINT8 _clip8_lookups[1280] = {
 UINT8 *clip8_lookups = &_clip8_lookups[640];
 
 static inline UINT8
-clip8(int in)
-{
+clip8(int in) {
     return clip8_lookups[in >> PRECISION_BITS];
 }
 
 int
 precompute_coeffs(int inSize, float in0, float in1, int outSize, struct filter *filterp,
-                  int **boundsp, double **kkp)
-{
+                  int **boundsp, double **kkp) {
     double support, scale, filterscale;
     double center, ww, ss;
     int xx, x, ksize, xmin, xmax;
@@ -268,8 +260,7 @@ precompute_coeffs(int inSize, float in0, float in1, int outSize, struct filter *
 }
 
 void
-normalize_coeffs_8bpc(int outSize, int ksize, double *prekk)
-{
+normalize_coeffs_8bpc(int outSize, int ksize, double *prekk) {
     int x;
     INT32 *kk;
 
@@ -279,8 +270,7 @@ normalize_coeffs_8bpc(int outSize, int ksize, double *prekk)
     for (x = 0; x < outSize * ksize; x++) {
         if (prekk[x] < 0) {
             kk[x] = (int)(-0.5 + prekk[x] * (1 << PRECISION_BITS));
-        }
-        else {
+        } else {
             kk[x] = (int)(0.5 + prekk[x] * (1 << PRECISION_BITS));
         }
     }
@@ -288,8 +278,7 @@ normalize_coeffs_8bpc(int outSize, int ksize, double *prekk)
 
 void
 ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
-                               int *bounds, double *prekk)
-{
+                               int *bounds, double *prekk) {
     ImagingSectionCookie cookie;
     int ss0, ss1, ss2, ss3;
     int xx, yy, x, xmin, xmax;
@@ -313,8 +302,7 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset, int ksiz
                 imOut->image8[yy][xx] = clip8(ss0);
             }
         }
-    }
-    else if (imIn->type == IMAGING_TYPE_UINT8) {
+    } else if (imIn->type == IMAGING_TYPE_UINT8) {
         if (imIn->bands == 2) {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 for (xx = 0; xx < imOut->xsize; xx++) {
@@ -333,8 +321,7 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset, int ksiz
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
                 }
             }
-        }
-        else if (imIn->bands == 3) {
+        } else if (imIn->bands == 3) {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 for (xx = 0; xx < imOut->xsize; xx++) {
                     UINT32 v;
@@ -354,8 +341,7 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset, int ksiz
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
                 }
             }
-        }
-        else {
+        } else {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 for (xx = 0; xx < imOut->xsize; xx++) {
                     UINT32 v;
@@ -384,8 +370,7 @@ ImagingResampleHorizontal_8bpc(Imaging imOut, Imaging imIn, int offset, int ksiz
 
 void
 ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
-                             int *bounds, double *prekk)
-{
+                             int *bounds, double *prekk) {
     ImagingSectionCookie cookie;
     int ss0, ss1, ss2, ss3;
     int xx, yy, y, ymin, ymax;
@@ -409,8 +394,7 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
                 imOut->image8[yy][xx] = clip8(ss0);
             }
         }
-    }
-    else if (imIn->type == IMAGING_TYPE_UINT8) {
+    } else if (imIn->type == IMAGING_TYPE_UINT8) {
         if (imIn->bands == 2) {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 k = &kk[yy * ksize];
@@ -427,8 +411,7 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
                 }
             }
-        }
-        else if (imIn->bands == 3) {
+        } else if (imIn->bands == 3) {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 k = &kk[yy * ksize];
                 ymin = bounds[yy * 2 + 0];
@@ -445,8 +428,7 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
                     memcpy(imOut->image[yy] + xx * sizeof(v), &v, sizeof(v));
                 }
             }
-        }
-        else {
+        } else {
             for (yy = 0; yy < imOut->ysize; yy++) {
                 k = &kk[yy * ksize];
                 ymin = bounds[yy * 2 + 0];
@@ -471,8 +453,7 @@ ImagingResampleVertical_8bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
 
 void
 ImagingResampleHorizontal_32bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
-                                int *bounds, double *kk)
-{
+                                int *bounds, double *kk) {
     ImagingSectionCookie cookie;
     double ss;
     int xx, yy, x, xmin, xmax;
@@ -515,8 +496,7 @@ ImagingResampleHorizontal_32bpc(Imaging imOut, Imaging imIn, int offset, int ksi
 
 void
 ImagingResampleVertical_32bpc(Imaging imOut, Imaging imIn, int offset, int ksize,
-                              int *bounds, double *kk)
-{
+                              int *bounds, double *kk) {
     ImagingSectionCookie cookie;
     double ss;
     int xx, yy, y, ymin, ymax;
@@ -566,8 +546,7 @@ ImagingResampleInner(Imaging imIn, int xsize, int ysize, struct filter *filterp,
                      ResampleFunction ResampleVertical);
 
 Imaging
-ImagingResample(Imaging imIn, int xsize, int ysize, int filter, float box[4])
-{
+ImagingResample(Imaging imIn, int xsize, int ysize, int filter, float box[4]) {
     struct filter *filterp;
     ResampleFunction ResampleHorizontal;
     ResampleFunction ResampleVertical;
@@ -578,12 +557,10 @@ ImagingResample(Imaging imIn, int xsize, int ysize, int filter, float box[4])
 
     if (imIn->type == IMAGING_TYPE_SPECIAL) {
         return (Imaging)ImagingError_ModeError();
-    }
-    else if (imIn->image8) {
+    } else if (imIn->image8) {
         ResampleHorizontal = ImagingResampleHorizontal_8bpc;
         ResampleVertical = ImagingResampleVertical_8bpc;
-    }
-    else {
+    } else {
         switch (imIn->type) {
             case IMAGING_TYPE_UINT8:
                 ResampleHorizontal = ImagingResampleHorizontal_8bpc;
@@ -627,8 +604,7 @@ ImagingResample(Imaging imIn, int xsize, int ysize, int filter, float box[4])
 Imaging
 ImagingResampleInner(Imaging imIn, int xsize, int ysize, struct filter *filterp,
                      float box[4], ResampleFunction ResampleHorizontal,
-                     ResampleFunction ResampleVertical)
-{
+                     ResampleFunction ResampleVertical) {
     Imaging imTemp = NULL;
     Imaging imOut = NULL;
 
@@ -680,8 +656,7 @@ ImagingResampleInner(Imaging imIn, int xsize, int ysize, struct filter *filterp,
             return NULL;
         }
         imOut = imIn = imTemp;
-    }
-    else {
+    } else {
         // Free in any case
         free(bounds_horiz);
         free(kk_horiz);
@@ -702,8 +677,7 @@ ImagingResampleInner(Imaging imIn, int xsize, int ysize, struct filter *filterp,
         if (!imOut) {
             return NULL;
         }
-    }
-    else {
+    } else {
         // Free in any case
         free(bounds_vert);
         free(kk_vert);

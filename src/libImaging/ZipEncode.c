@@ -21,8 +21,7 @@
 #include "Zip.h"
 
 int
-ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
-{
+ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
     ZIPSTATE *context = (ZIPSTATE *)state->context;
     int err;
     int compress_level, compress_type;
@@ -85,8 +84,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
         if (context->compress_type == -1) {
             compress_type =
                 (context->mode == ZIP_PNG) ? Z_FILTERED : Z_DEFAULT_STRATEGY;
-        }
-        else {
+        } else {
             compress_type = context->compress_type;
         }
 
@@ -129,11 +127,9 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
             /* Something went wrong inside the compression library */
             if (err == Z_DATA_ERROR) {
                 state->errcode = IMAGING_CODEC_BROKEN;
-            }
-            else if (err == Z_MEM_ERROR) {
+            } else if (err == Z_MEM_ERROR) {
                 state->errcode = IMAGING_CODEC_MEMORY;
-            }
-            else {
+            } else {
                 state->errcode = IMAGING_CODEC_CONFIG;
             }
             free(context->paeth);
@@ -282,11 +278,9 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                          */
                         if (err == Z_DATA_ERROR) {
                             state->errcode = IMAGING_CODEC_BROKEN;
-                        }
-                        else if (err == Z_MEM_ERROR) {
+                        } else if (err == Z_MEM_ERROR) {
                             state->errcode = IMAGING_CODEC_MEMORY;
-                        }
-                        else {
+                        } else {
                             state->errcode = IMAGING_CODEC_CONFIG;
                         }
                         free(context->paeth);
@@ -350,8 +344,7 @@ ImagingZipEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
 /* -------------------------------------------------------------------- */
 
 int
-ImagingZipEncodeCleanup(ImagingCodecState state)
-{
+ImagingZipEncodeCleanup(ImagingCodecState state) {
     ZIPSTATE *context = (ZIPSTATE *)state->context;
 
     if (context->dictionary) {
@@ -363,8 +356,7 @@ ImagingZipEncodeCleanup(ImagingCodecState state)
 }
 
 const char *
-ImagingZipVersion(void)
-{
+ImagingZipVersion(void) {
     return zlibVersion();
 }
 

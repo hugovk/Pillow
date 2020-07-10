@@ -7,8 +7,7 @@ typedef UINT8 pixel[4];
 
 void static inline ImagingLineBoxBlur32(pixel *lineOut, pixel *lineIn, int lastx,
                                         int radius, int edgeA, int edgeB, UINT32 ww,
-                                        UINT32 fw)
-{
+                                        UINT32 fw) {
     int x;
     UINT32 acc[4];
     UINT32 bulk[4];
@@ -73,8 +72,7 @@ void static inline ImagingLineBoxBlur32(pixel *lineOut, pixel *lineIn, int lastx
             ADD_FAR(bulk, acc, x - radius - 1, lastx);
             SAVE(x, bulk);
         }
-    }
-    else {
+    } else {
         for (x = 0; x < edgeB; x++) {
             MOVE_ACC(acc, 0, x + radius);
             ADD_FAR(bulk, acc, 0, x + radius + 1);
@@ -99,8 +97,7 @@ void static inline ImagingLineBoxBlur32(pixel *lineOut, pixel *lineIn, int lastx
 
 void static inline ImagingLineBoxBlur8(UINT8 *lineOut, UINT8 *lineIn, int lastx,
                                        int radius, int edgeA, int edgeB, UINT32 ww,
-                                       UINT32 fw)
-{
+                                       UINT32 fw) {
     int x;
     UINT32 acc;
     UINT32 bulk;
@@ -134,8 +131,7 @@ void static inline ImagingLineBoxBlur8(UINT8 *lineOut, UINT8 *lineIn, int lastx,
             ADD_FAR(bulk, acc, x - radius - 1, lastx);
             SAVE(x, bulk);
         }
-    }
-    else {
+    } else {
         for (x = 0; x < edgeB; x++) {
             MOVE_ACC(acc, 0, x + radius);
             ADD_FAR(bulk, acc, 0, x + radius + 1);
@@ -159,8 +155,7 @@ void static inline ImagingLineBoxBlur8(UINT8 *lineOut, UINT8 *lineIn, int lastx,
 }
 
 Imaging
-ImagingHorizontalBoxBlur(Imaging imOut, Imaging imIn, float floatRadius)
-{
+ImagingHorizontalBoxBlur(Imaging imOut, Imaging imIn, float floatRadius) {
     ImagingSectionCookie cookie;
 
     int y;
@@ -191,8 +186,7 @@ ImagingHorizontalBoxBlur(Imaging imOut, Imaging imIn, float floatRadius)
                 memcpy(imOut->image8[y], lineOut, imIn->xsize);
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < imIn->ysize; y++) {
             ImagingLineBoxBlur32(
                 imIn == imOut ? (pixel *)lineOut : (pixel *)imOut->image32[y],
@@ -213,8 +207,7 @@ ImagingHorizontalBoxBlur(Imaging imOut, Imaging imIn, float floatRadius)
 }
 
 Imaging
-ImagingBoxBlur(Imaging imOut, Imaging imIn, float radius, int n)
-{
+ImagingBoxBlur(Imaging imOut, Imaging imIn, float radius, int n) {
     int i;
     Imaging imTransposed;
 
@@ -267,8 +260,7 @@ ImagingBoxBlur(Imaging imOut, Imaging imIn, float radius, int n)
 }
 
 Imaging
-ImagingGaussianBlur(Imaging imOut, Imaging imIn, float radius, int passes)
-{
+ImagingGaussianBlur(Imaging imOut, Imaging imIn, float radius, int passes) {
     float sigma2, L, l, a;
 
     sigma2 = radius * radius / passes;

@@ -22,8 +22,7 @@
                                   : (v >= 'A' && v <= 'F') ? v - 'A' + 10 : -1)
 
 int
-ImagingHexDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
-{
+ImagingHexDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes) {
     UINT8 *ptr;
     int a, b;
 
@@ -40,8 +39,7 @@ ImagingHexDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
         if (a < 0 || b < 0) {
             ptr++;
             bytes--;
-        }
-        else {
+        } else {
             ptr += 2;
             bytes -= 2;
 

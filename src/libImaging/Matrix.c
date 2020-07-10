@@ -18,8 +18,7 @@
 #define CLIPF(v) ((v <= 0.0) ? 0 : (v >= 255.0F) ? 255 : (UINT8)v)
 
 Imaging
-ImagingConvertMatrix(Imaging im, const char *mode, float m[])
-{
+ImagingConvertMatrix(Imaging im, const char *mode, float m[]) {
     Imaging imOut;
     int x, y;
 
@@ -44,8 +43,7 @@ ImagingConvertMatrix(Imaging im, const char *mode, float m[])
                 in += 4;
             }
         }
-    }
-    else if (strlen(mode) == 3 && im->bands == 3) {
+    } else if (strlen(mode) == 3 && im->bands == 3) {
         imOut = ImagingNewDirty(mode, im->xsize, im->ysize);
         if (!imOut) {
             return NULL;
@@ -66,8 +64,7 @@ ImagingConvertMatrix(Imaging im, const char *mode, float m[])
                 out += 4;
             }
         }
-    }
-    else {
+    } else {
         return (Imaging)ImagingError_ModeError();
     }
 

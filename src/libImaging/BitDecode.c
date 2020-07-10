@@ -18,8 +18,7 @@
 #include "Bit.h"
 
 int
-ImagingBitDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
-{
+ImagingBitDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes) {
     BITSTATE *bitstate = state->context;
     UINT8 *ptr;
 
@@ -48,8 +47,7 @@ ImagingBitDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
         if (state->ystep < 0) {
             state->y = state->ysize - 1;
             state->ystep = -1;
-        }
-        else {
+        } else {
             state->ystep = 1;
         }
 
@@ -68,8 +66,7 @@ ImagingBitDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
         if (bitstate->fill & 1) {
             /* fill MSB first */
             bitstate->bitbuffer |= (unsigned long)byte << bitstate->bitcount;
-        }
-        else {
+        } else {
             /* fill LSB first */
             bitstate->bitbuffer = (bitstate->bitbuffer << 8) | byte;
         }
@@ -88,12 +85,10 @@ ImagingBitDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
                     /* bitbuffer overflow; restore it from last input byte */
                     bitstate->bitbuffer =
                         byte >> (8 - (bitstate->bitcount - bitstate->bits));
-                }
-                else {
+                } else {
                     bitstate->bitbuffer >>= bitstate->bits;
                 }
-            }
-            else {
+            } else {
                 /* store MSB first */
                 data = (bitstate->bitbuffer >> (bitstate->bitcount - bitstate->bits)) &
                        bitstate->mask;
@@ -105,21 +100,17 @@ ImagingBitDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
                 /* map through lookup table */
                 if (data <= 0) {
                     pixel = bitstate->lut[0];
-                }
-                else if (data >= bitstate->lutsize) {
+                } else if (data >= bitstate->lutsize) {
                     pixel = bitstate->lut[bitstate->lutsize - 1];
-                }
-                else {
+                } else {
                     pixel = bitstate->lut[data];
                 }
-            }
-            else {
+            } else {
                 /* convert */
                 if (data & bitstate->signmask) {
                     /* image memory contains signed data */
                     pixel = (FLOAT32)(INT32)(data | ~bitstate->mask);
-                }
-                else {
+                } else {
                     pixel = (FLOAT32)data;
                 }
             }

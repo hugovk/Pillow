@@ -58,8 +58,7 @@ static Tk_PhotoSetSize_84_t TK_PHOTO_SET_SIZE_84;
 static Tk_PhotoPutBlock_85_t TK_PHOTO_PUT_BLOCK_85;
 
 static Imaging
-ImagingFind(const char *name)
-{
+ImagingFind(const char *name) {
     Py_ssize_t id;
 
     /* FIXME: use CObject instead? */
@@ -77,8 +76,7 @@ ImagingFind(const char *name)
 
 static int
 PyImagingPhotoPut(ClientData clientdata, Tcl_Interp *interp, int argc,
-                  const char **argv)
-{
+                  const char **argv) {
     Imaging im;
     Tk_PhotoHandle photo;
     Tk_PhotoImageBlock block;
@@ -112,20 +110,17 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp *interp, int argc,
     if (strcmp(im->mode, "1") == 0 || strcmp(im->mode, "L") == 0) {
         block.pixelSize = 1;
         block.offset[0] = block.offset[1] = block.offset[2] = 0;
-    }
-    else if (strncmp(im->mode, "RGB", 3) == 0) {
+    } else if (strncmp(im->mode, "RGB", 3) == 0) {
         block.pixelSize = 4;
         block.offset[0] = 0;
         block.offset[1] = 1;
         block.offset[2] = 2;
         if (strcmp(im->mode, "RGBA") == 0) {
             block.offset[3] = 3; /* alpha (or reserved, under 8.2) */
-        }
-        else {
+        } else {
             block.offset[3] = 0; /* no alpha */
         }
-    }
-    else {
+    } else {
         TCL_APPEND_RESULT(interp, "Bad mode", (char *)NULL);
         return TCL_ERROR;
     }
@@ -143,8 +138,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp *interp, int argc,
             /* (fixed in Tk 8.5a3) */
             TK_PHOTO_SET_SIZE_84(photo, block.width, block.height);
         }
-    }
-    else {
+    } else {
         /* Tk >=8.5 */
         TK_PHOTO_PUT_BLOCK_85(interp, photo, &block, 0, 0, block.width, block.height,
                               TK_PHOTO_COMPOSITE_SET);
@@ -155,8 +149,7 @@ PyImagingPhotoPut(ClientData clientdata, Tcl_Interp *interp, int argc,
 
 static int
 PyImagingPhotoGet(ClientData clientdata, Tcl_Interp *interp, int argc,
-                  const char **argv)
-{
+                  const char **argv) {
     Imaging im;
     Tk_PhotoHandle photo;
     Tk_PhotoImageBlock block;
@@ -198,8 +191,7 @@ PyImagingPhotoGet(ClientData clientdata, Tcl_Interp *interp, int argc,
 }
 
 void
-TkImaging_Init(Tcl_Interp *interp)
-{
+TkImaging_Init(Tcl_Interp *interp) {
     TCL_CREATE_COMMAND(interp, "PyImagingPhoto", PyImagingPhotoPut, (ClientData)0,
                        (Tcl_CmdDeleteProc *)NULL);
     TCL_CREATE_COMMAND(interp, "PyImagingPhotoGet", PyImagingPhotoGet, (ClientData)0,
@@ -229,8 +221,7 @@ TkImaging_Init(Tcl_Interp *interp)
 #define TKINTER_PKG "tkinter"
 
 FARPROC
-_dfunc(HMODULE lib_handle, const char *func_name)
-{
+_dfunc(HMODULE lib_handle, const char *func_name) {
     /*
      * Load function `func_name` from `lib_handle`.
      * Set Python exception if we can't find `func_name` in `lib_handle`.
@@ -248,8 +239,7 @@ _dfunc(HMODULE lib_handle, const char *func_name)
 }
 
 int
-get_tcl(HMODULE hMod)
-{
+get_tcl(HMODULE hMod) {
     /*
      * Try to fill Tcl global vars with function pointers. Return 0 for no
      * functions found, 1 for all functions found, -1 for some but not all
@@ -267,8 +257,7 @@ get_tcl(HMODULE hMod)
 }
 
 int
-get_tk(HMODULE hMod)
-{
+get_tk(HMODULE hMod) {
     /*
      * Try to fill Tk global vars with function pointers. Return 0 for no
      * functions found, 1 for all functions found, -1 for some but not all
@@ -300,8 +289,7 @@ get_tk(HMODULE hMod)
 }
 
 int
-load_tkinter_funcs(void)
-{
+load_tkinter_funcs(void) {
     /*
      * Load Tcl and Tk functions by searching all modules in current process.
      * Return 0 for success, non-zero for failure.
@@ -347,8 +335,7 @@ load_tkinter_funcs(void)
 
     if (found_tcl == 0) {
         PyErr_SetString(PyExc_RuntimeError, "Could not find Tcl routines");
-    }
-    else {
+    } else {
         PyErr_SetString(PyExc_RuntimeError, "Could not find Tk routines");
     }
     return 1;
@@ -364,8 +351,7 @@ load_tkinter_funcs(void)
 
 /* From module __file__ attribute to char *string for dlopen. */
 char *
-fname2char(PyObject *fname)
-{
+fname2char(PyObject *fname) {
     PyObject *bytes;
     bytes = PyUnicode_EncodeFSDefault(fname);
     if (bytes == NULL) {
@@ -377,8 +363,7 @@ fname2char(PyObject *fname)
 #include <dlfcn.h>
 
 void *
-_dfunc(void *lib_handle, const char *func_name)
-{
+_dfunc(void *lib_handle, const char *func_name) {
     /*
      * Load function `func_name` from `lib_handle`.
      * Set Python exception if we can't find `func_name` in `lib_handle`.
@@ -397,8 +382,7 @@ _dfunc(void *lib_handle, const char *func_name)
 }
 
 int
-_func_loader(void *lib)
-{
+_func_loader(void *lib) {
     /*
      * Fill global function pointers from dynamic lib.
      * Return 1 if any pointer is NULL, 0 otherwise.
@@ -432,8 +416,7 @@ _func_loader(void *lib)
 }
 
 int
-load_tkinter_funcs(void)
-{
+load_tkinter_funcs(void) {
     /*
      * Load tkinter global funcs from tkinter compiled module.
      * Return 0 for success, non-zero for failure.

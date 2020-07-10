@@ -18,8 +18,7 @@
 #include "Imaging.h"
 
 int
-ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
-{
+ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes) {
     int n;
     UINT8 *ptr;
     UINT8 extra_data = 0;
@@ -47,8 +46,7 @@ ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t 
 
                 ptr += 2;
                 bytes -= 2;
-            }
-            else {
+            } else {
                 /* Run (3 bytes) */
                 if (bytes < 3) {
                     break;
@@ -88,8 +86,7 @@ ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t 
                 ptr += 3;
                 bytes -= 3;
             }
-        }
-        else {
+        } else {
             /* Literal byte */
             n = 1;
 
@@ -126,8 +123,7 @@ ImagingSunRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t 
 
             if (extra_bytes >= state->bytes) {
                 n = state->bytes;
-            }
-            else {
+            } else {
                 n = extra_bytes;
             }
             memset(state->buffer + state->x, extra_data, n);

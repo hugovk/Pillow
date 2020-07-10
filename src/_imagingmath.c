@@ -24,8 +24,7 @@
 #define MIN_INT32 -2147483648.0
 
 #define UNOP(name, op, type)                   \
-    void name(Imaging out, Imaging im1)        \
-    {                                          \
+    void name(Imaging out, Imaging im1) {      \
         int x, y;                              \
         for (y = 0; y < out->ysize; y++) {     \
             type *p0 = (type *)out->image[y];  \
@@ -38,21 +37,20 @@
         }                                      \
     }
 
-#define BINOP(name, op, type)                        \
-    void name(Imaging out, Imaging im1, Imaging im2) \
-    {                                                \
-        int x, y;                                    \
-        for (y = 0; y < out->ysize; y++) {           \
-            type *p0 = (type *)out->image[y];        \
-            type *p1 = (type *)im1->image[y];        \
-            type *p2 = (type *)im2->image[y];        \
-            for (x = 0; x < out->xsize; x++) {       \
-                *p0 = op(type, *p1, *p2);            \
-                p0++;                                \
-                p1++;                                \
-                p2++;                                \
-            }                                        \
-        }                                            \
+#define BINOP(name, op, type)                          \
+    void name(Imaging out, Imaging im1, Imaging im2) { \
+        int x, y;                                      \
+        for (y = 0; y < out->ysize; y++) {             \
+            type *p0 = (type *)out->image[y];          \
+            type *p1 = (type *)im1->image[y];          \
+            type *p2 = (type *)im2->image[y];          \
+            for (x = 0; x < out->xsize; x++) {         \
+                *p0 = op(type, *p1, *p2);              \
+                p0++;                                  \
+                p1++;                                  \
+                p2++;                                  \
+            }                                          \
+        }                                              \
     }
 
 #define NEG(type, v1) -(v1)
@@ -89,16 +87,14 @@
 #define MOD_F(type, v1, v2) ((v2) != 0.0F) ? fmod((v1), (v2)) : 0.0F
 
 static int
-powi(int x, int y)
-{
+powi(int x, int y) {
     double v = pow(x, y) + 0.5;
     if (errno == EDOM) {
         return 0;
     }
     if (v < MIN_INT32) {
         v = MIN_INT32;
-    }
-    else if (v > MAX_INT32) {
+    } else if (v > MAX_INT32) {
         v = MAX_INT32;
     }
     return (int)v;
@@ -167,8 +163,7 @@ BINOP(gt_F, GT, FLOAT32)
 BINOP(ge_F, GE, FLOAT32)
 
 static PyObject *
-_unop(PyObject *self, PyObject *args)
-{
+_unop(PyObject *self, PyObject *args) {
     Imaging out;
     Imaging im1;
     void (*unop)(Imaging, Imaging);
@@ -190,8 +185,7 @@ _unop(PyObject *self, PyObject *args)
 }
 
 static PyObject *
-_binop(PyObject *self, PyObject *args)
-{
+_binop(PyObject *self, PyObject *args) {
     Imaging out;
     Imaging im1;
     Imaging im2;
@@ -218,8 +212,7 @@ static PyMethodDef _functions[] = {
     {"unop", _unop, 1}, {"binop", _binop, 1}, {NULL, NULL}};
 
 static void
-install(PyObject *d, char *name, void *value)
-{
+install(PyObject *d, char *name, void *value) {
     PyObject *v = PyLong_FromSsize_t((Py_ssize_t)value);
     if (!v || PyDict_SetItemString(d, name, v)) {
         PyErr_Clear();
@@ -228,8 +221,7 @@ install(PyObject *d, char *name, void *value)
 }
 
 static int
-setup_module(PyObject *m)
-{
+setup_module(PyObject *m) {
     PyObject *d = PyModule_GetDict(m);
 
     install(d, "abs_I", abs_I);
@@ -281,8 +273,7 @@ setup_module(PyObject *m)
 }
 
 PyMODINIT_FUNC
-PyInit__imagingmath(void)
-{
+PyInit__imagingmath(void) {
     PyObject *m;
 
     static PyModuleDef module_def = {

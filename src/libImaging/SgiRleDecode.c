@@ -21,14 +21,12 @@
 #define RLE_MAX_RUN 0x7f
 
 static void
-read4B(UINT32 *dest, UINT8 *buf)
-{
+read4B(UINT32 *dest, UINT8 *buf) {
     *dest = (UINT32)((buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]);
 }
 
 static int
-expandrow(UINT8 *dest, UINT8 *src, int n, int z, int xsize)
-{
+expandrow(UINT8 *dest, UINT8 *src, int n, int z, int xsize) {
     UINT8 pixel, count;
     int x = 0;
 
@@ -50,8 +48,7 @@ expandrow(UINT8 *dest, UINT8 *src, int n, int z, int xsize)
                 *dest = *src++;
                 dest += z;
             }
-        }
-        else {
+        } else {
             pixel = *src++;
             while (count--) {
                 *dest = pixel;
@@ -63,8 +60,7 @@ expandrow(UINT8 *dest, UINT8 *src, int n, int z, int xsize)
 }
 
 static int
-expandrow2(UINT8 *dest, const UINT8 *src, int n, int z, int xsize)
-{
+expandrow2(UINT8 *dest, const UINT8 *src, int n, int z, int xsize) {
     UINT8 pixel, count;
 
     int x = 0;
@@ -89,8 +85,7 @@ expandrow2(UINT8 *dest, const UINT8 *src, int n, int z, int xsize)
                 src += 2;
                 dest += z * 2;
             }
-        }
-        else {
+        } else {
             while (count--) {
                 memcpy(dest, src, 2);
                 dest += z * 2;
@@ -102,8 +97,7 @@ expandrow2(UINT8 *dest, const UINT8 *src, int n, int z, int xsize)
 }
 
 int
-ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
-{
+ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes) {
     UINT8 *ptr;
     SGISTATE *c;
     int err = 0;
@@ -126,8 +120,7 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t 
     state->y = 0;
     if (state->ystep < 0) {
         state->y = im->ysize - 1;
-    }
-    else {
+    } else {
         state->ystep = 1;
     }
 
@@ -177,16 +170,14 @@ ImagingSgiRleDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t 
             if (c->bpc == 1) {
                 status = expandrow(&state->buffer[c->channo], &ptr[c->rleoffset],
                                    c->rlelength, im->bands, im->xsize);
-            }
-            else {
+            } else {
                 status = expandrow2(&state->buffer[c->channo * 2], &ptr[c->rleoffset],
                                     c->rlelength, im->bands, im->xsize);
             }
             if (status == -1) {
                 state->errcode = IMAGING_CODEC_OVERRUN;
                 return -1;
-            }
-            else if (status == 1) {
+            } else if (status == 1) {
                 goto sgi_finish_decode;
             }
 

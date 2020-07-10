@@ -5,16 +5,14 @@
 #define ROUND_UP(f) ((int)((f) >= 0.0 ? (f) + 0.5F : (f)-0.5F))
 
 UINT32
-division_UINT32(int divider, int result_bits)
-{
+division_UINT32(int divider, int result_bits) {
     UINT32 max_dividend = (1 << result_bits) * divider;
     float max_int = (1 << 30) * 4.0;
     return (UINT32)(max_int / max_dividend);
 }
 
 void
-ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale)
-{
+ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale) {
     /* The most general implementation for any xscale and yscale
      */
     int x, y, xx, yy;
@@ -50,8 +48,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale
                 imOut->image8[y][x] = (ss * multiplier) >> 24;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy_from = box[1] + y * yscale;
             if (imIn->bands == 2) {
@@ -88,8 +85,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale
                                     (ss3 * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx_from = box[0] + x * xscale;
                     UINT32 v;
@@ -128,8 +124,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale
                                     (ss2 * multiplier) >> 24, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx_from = box[0] + x * xscale;
                     UINT32 v;
@@ -179,8 +174,7 @@ ImagingReduceNxN(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale
 }
 
 void
-ImagingReduce1xN(Imaging imOut, Imaging imIn, int box[4], int yscale)
-{
+ImagingReduce1xN(Imaging imOut, Imaging imIn, int box[4], int yscale) {
     /* Optimized implementation for xscale = 1.
      */
     int x, y, yy;
@@ -206,8 +200,7 @@ ImagingReduce1xN(Imaging imOut, Imaging imIn, int box[4], int yscale)
                 imOut->image8[y][x] = (ss * multiplier) >> 24;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy_from = box[1] + y * yscale;
             if (imIn->bands == 2) {
@@ -230,8 +223,7 @@ ImagingReduce1xN(Imaging imOut, Imaging imIn, int box[4], int yscale)
                                     (ss3 * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -253,8 +245,7 @@ ImagingReduce1xN(Imaging imOut, Imaging imIn, int box[4], int yscale)
                                     (ss2 * multiplier) >> 24, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -284,8 +275,7 @@ ImagingReduce1xN(Imaging imOut, Imaging imIn, int box[4], int yscale)
 }
 
 void
-ImagingReduceNx1(Imaging imOut, Imaging imIn, int box[4], int xscale)
-{
+ImagingReduceNx1(Imaging imOut, Imaging imIn, int box[4], int xscale) {
     /* Optimized implementation for yscale = 1.
      */
     int x, y, xx;
@@ -309,8 +299,7 @@ ImagingReduceNx1(Imaging imOut, Imaging imIn, int box[4], int xscale)
                 imOut->image8[y][x] = (ss * multiplier) >> 24;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy = box[1] + y * yscale;
             UINT8 *line = (UINT8 *)imIn->image[yy];
@@ -331,8 +320,7 @@ ImagingReduceNx1(Imaging imOut, Imaging imIn, int box[4], int xscale)
                                     (ss3 * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx_from = box[0] + x * xscale;
                     UINT32 v;
@@ -351,8 +339,7 @@ ImagingReduceNx1(Imaging imOut, Imaging imIn, int box[4], int xscale)
                                     (ss2 * multiplier) >> 24, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx_from = box[0] + x * xscale;
                     UINT32 v;
@@ -379,8 +366,7 @@ ImagingReduceNx1(Imaging imOut, Imaging imIn, int box[4], int xscale)
 }
 
 void
-ImagingReduce1x2(Imaging imOut, Imaging imIn, int box[4])
-{
+ImagingReduce1x2(Imaging imOut, Imaging imIn, int box[4]) {
     /* Optimized implementation for xscale = 1 and yscale = 2.
      */
     int xscale = 1, yscale = 2;
@@ -399,8 +385,7 @@ ImagingReduce1x2(Imaging imOut, Imaging imIn, int box[4])
                 imOut->image8[y][x] = (ss0 + amend) >> 1;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy = box[1] + y * yscale;
             UINT8 *line0 = (UINT8 *)imIn->image[yy + 0];
@@ -414,8 +399,7 @@ ImagingReduce1x2(Imaging imOut, Imaging imIn, int box[4])
                     v = MAKE_UINT32((ss0 + amend) >> 1, 0, 0, (ss3 + amend) >> 1);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -426,8 +410,7 @@ ImagingReduce1x2(Imaging imOut, Imaging imIn, int box[4])
                                     (ss2 + amend) >> 1, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -445,8 +428,7 @@ ImagingReduce1x2(Imaging imOut, Imaging imIn, int box[4])
 }
 
 void
-ImagingReduce2x1(Imaging imOut, Imaging imIn, int box[4])
-{
+ImagingReduce2x1(Imaging imOut, Imaging imIn, int box[4]) {
     /* Optimized implementation for xscale = 2 and yscale = 1.
      */
     int xscale = 2, yscale = 1;
@@ -464,8 +446,7 @@ ImagingReduce2x1(Imaging imOut, Imaging imIn, int box[4])
                 imOut->image8[y][x] = (ss0 + amend) >> 1;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy = box[1] + y * yscale;
             UINT8 *line0 = (UINT8 *)imIn->image[yy + 0];
@@ -478,8 +459,7 @@ ImagingReduce2x1(Imaging imOut, Imaging imIn, int box[4])
                     v = MAKE_UINT32((ss0 + amend) >> 1, 0, 0, (ss3 + amend) >> 1);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -490,8 +470,7 @@ ImagingReduce2x1(Imaging imOut, Imaging imIn, int box[4])
                                     (ss2 + amend) >> 1, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -509,8 +488,7 @@ ImagingReduce2x1(Imaging imOut, Imaging imIn, int box[4])
 }
 
 void
-ImagingReduce2x2(Imaging imOut, Imaging imIn, int box[4])
-{
+ImagingReduce2x2(Imaging imOut, Imaging imIn, int box[4]) {
     /* Optimized implementation for xscale = 2 and yscale = 2.
      */
     int xscale = 2, yscale = 2;
@@ -529,8 +507,7 @@ ImagingReduce2x2(Imaging imOut, Imaging imIn, int box[4])
                 imOut->image8[y][x] = (ss0 + amend) >> 2;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy = box[1] + y * yscale;
             UINT8 *line0 = (UINT8 *)imIn->image[yy + 0];
@@ -546,8 +523,7 @@ ImagingReduce2x2(Imaging imOut, Imaging imIn, int box[4])
                     v = MAKE_UINT32((ss0 + amend) >> 2, 0, 0, (ss3 + amend) >> 2);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -561,8 +537,7 @@ ImagingReduce2x2(Imaging imOut, Imaging imIn, int box[4])
                                     (ss2 + amend) >> 2, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -584,8 +559,7 @@ ImagingReduce2x2(Imaging imOut, Imaging imIn, int box[4])
 }
 
 void
-ImagingReduce1x3(Imaging imOut, Imaging imIn, int box[4])
-{
+ImagingReduce1x3(Imaging imOut, Imaging imIn, int box[4]) {
     /* Optimized implementation for xscale = 1 and yscale = 3.
      */
     int xscale = 1, yscale = 3;
@@ -606,8 +580,7 @@ ImagingReduce1x3(Imaging imOut, Imaging imIn, int box[4])
                 imOut->image8[y][x] = ((ss0 + amend) * multiplier) >> 24;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy = box[1] + y * yscale;
             UINT8 *line0 = (UINT8 *)imIn->image[yy + 0];
@@ -623,8 +596,7 @@ ImagingReduce1x3(Imaging imOut, Imaging imIn, int box[4])
                                     ((ss3 + amend) * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -636,8 +608,7 @@ ImagingReduce1x3(Imaging imOut, Imaging imIn, int box[4])
                                     ((ss2 + amend) * multiplier) >> 24, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -657,8 +628,7 @@ ImagingReduce1x3(Imaging imOut, Imaging imIn, int box[4])
 }
 
 void
-ImagingReduce3x1(Imaging imOut, Imaging imIn, int box[4])
-{
+ImagingReduce3x1(Imaging imOut, Imaging imIn, int box[4]) {
     /* Optimized implementation for xscale = 3 and yscale = 1.
      */
     int xscale = 3, yscale = 1;
@@ -677,8 +647,7 @@ ImagingReduce3x1(Imaging imOut, Imaging imIn, int box[4])
                 imOut->image8[y][x] = ((ss0 + amend) * multiplier) >> 24;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy = box[1] + y * yscale;
             UINT8 *line0 = (UINT8 *)imIn->image[yy + 0];
@@ -692,8 +661,7 @@ ImagingReduce3x1(Imaging imOut, Imaging imIn, int box[4])
                                     ((ss3 + amend) * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -705,8 +673,7 @@ ImagingReduce3x1(Imaging imOut, Imaging imIn, int box[4])
                                     ((ss2 + amend) * multiplier) >> 24, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -726,8 +693,7 @@ ImagingReduce3x1(Imaging imOut, Imaging imIn, int box[4])
 }
 
 void
-ImagingReduce3x3(Imaging imOut, Imaging imIn, int box[4])
-{
+ImagingReduce3x3(Imaging imOut, Imaging imIn, int box[4]) {
     /* Optimized implementation for xscale = 3 and yscale = 3.
      */
     int xscale = 3, yscale = 3;
@@ -750,8 +716,7 @@ ImagingReduce3x3(Imaging imOut, Imaging imIn, int box[4])
                 imOut->image8[y][x] = ((ss0 + amend) * multiplier) >> 24;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy = box[1] + y * yscale;
             UINT8 *line0 = (UINT8 *)imIn->image[yy + 0];
@@ -771,8 +736,7 @@ ImagingReduce3x3(Imaging imOut, Imaging imIn, int box[4])
                                     ((ss3 + amend) * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -790,8 +754,7 @@ ImagingReduce3x3(Imaging imOut, Imaging imIn, int box[4])
                                     ((ss2 + amend) * multiplier) >> 24, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -819,8 +782,7 @@ ImagingReduce3x3(Imaging imOut, Imaging imIn, int box[4])
 }
 
 void
-ImagingReduce4x4(Imaging imOut, Imaging imIn, int box[4])
-{
+ImagingReduce4x4(Imaging imOut, Imaging imIn, int box[4]) {
     /* Optimized implementation for xscale = 4 and yscale = 4.
      */
     int xscale = 4, yscale = 4;
@@ -844,8 +806,7 @@ ImagingReduce4x4(Imaging imOut, Imaging imIn, int box[4])
                 imOut->image8[y][x] = (ss0 + amend) >> 4;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy = box[1] + y * yscale;
             UINT8 *line0 = (UINT8 *)imIn->image[yy + 0];
@@ -871,8 +832,7 @@ ImagingReduce4x4(Imaging imOut, Imaging imIn, int box[4])
                     v = MAKE_UINT32((ss0 + amend) >> 4, 0, 0, (ss3 + amend) >> 4);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -898,8 +858,7 @@ ImagingReduce4x4(Imaging imOut, Imaging imIn, int box[4])
                                     (ss2 + amend) >> 4, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -937,8 +896,7 @@ ImagingReduce4x4(Imaging imOut, Imaging imIn, int box[4])
 }
 
 void
-ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4])
-{
+ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4]) {
     /* Fast special case for xscale = 5 and yscale = 5.
      */
     int xscale = 5, yscale = 5;
@@ -967,8 +925,7 @@ ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4])
                 imOut->image8[y][x] = ((ss0 + amend) * multiplier) >> 24;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < box[3] / yscale; y++) {
             int yy = box[1] + y * yscale;
             UINT8 *line0 = (UINT8 *)imIn->image[yy + 0];
@@ -1002,8 +959,7 @@ ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4])
                                     ((ss3 + amend) * multiplier) >> 24);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (imIn->bands == 3) {
+            } else if (imIn->bands == 3) {
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -1039,8 +995,7 @@ ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4])
                                     ((ss2 + amend) * multiplier) >> 24, 0);
                     memcpy(imOut->image[y] + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else {  // bands == 4
+            } else {  // bands == 4
                 for (x = 0; x < box[2] / xscale; x++) {
                     int xx = box[0] + x * xscale;
                     UINT32 v;
@@ -1092,8 +1047,7 @@ ImagingReduce5x5(Imaging imOut, Imaging imIn, int box[4])
 }
 
 void
-ImagingReduceCorners(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale)
-{
+ImagingReduceCorners(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale) {
     /* Fill the last row and the last column for any xscale and yscale.
      */
     int x, y, xx, yy;
@@ -1149,8 +1103,7 @@ ImagingReduceCorners(Imaging imOut, Imaging imIn, int box[4], int xscale, int ys
             }
             imOut->image8[y][x] = (ss * multiplier) >> 24;
         }
-    }
-    else {
+    } else {
         if (box[2] % xscale) {
             int scale = (box[2] % xscale) * yscale;
             UINT32 multiplier = division_UINT32(scale, 8);
@@ -1223,8 +1176,8 @@ ImagingReduceCorners(Imaging imOut, Imaging imIn, int box[4], int xscale, int ys
 }
 
 void
-ImagingReduceNxN_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale, int yscale)
-{
+ImagingReduceNxN_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
+                       int yscale) {
     /* The most general implementation for any xscale and yscale
      */
     int x, y, xx, yy;
@@ -1297,8 +1250,7 @@ ImagingReduceNxN_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale, int 
 
 void
 ImagingReduceCorners_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
-                           int yscale)
-{
+                           int yscale) {
     /* Fill the last row and the last column for any xscale and yscale.
      */
     int x, y, xx, yy;
@@ -1399,8 +1351,7 @@ ImagingReduceCorners_32bpc(Imaging imOut, Imaging imIn, int box[4], int xscale,
 }
 
 Imaging
-ImagingReduce(Imaging imIn, int xscale, int yscale, int box[4])
-{
+ImagingReduce(Imaging imIn, int xscale, int yscale, int box[4]) {
     ImagingSectionCookie cookie;
     Imaging imOut = NULL;
 
@@ -1425,40 +1376,30 @@ ImagingReduce(Imaging imIn, int xscale, int yscale, int box[4])
             if (xscale == 1) {
                 if (yscale == 2) {
                     ImagingReduce1x2(imOut, imIn, box);
-                }
-                else if (yscale == 3) {
+                } else if (yscale == 3) {
                     ImagingReduce1x3(imOut, imIn, box);
-                }
-                else {
+                } else {
                     ImagingReduce1xN(imOut, imIn, box, yscale);
                 }
-            }
-            else if (yscale == 1) {
+            } else if (yscale == 1) {
                 if (xscale == 2) {
                     ImagingReduce2x1(imOut, imIn, box);
-                }
-                else if (xscale == 3) {
+                } else if (xscale == 3) {
                     ImagingReduce3x1(imOut, imIn, box);
-                }
-                else {
+                } else {
                     ImagingReduceNx1(imOut, imIn, box, xscale);
                 }
-            }
-            else if (xscale == yscale && xscale <= 5) {
+            } else if (xscale == yscale && xscale <= 5) {
                 if (xscale == 2) {
                     ImagingReduce2x2(imOut, imIn, box);
-                }
-                else if (xscale == 3) {
+                } else if (xscale == 3) {
                     ImagingReduce3x3(imOut, imIn, box);
-                }
-                else if (xscale == 4) {
+                } else if (xscale == 4) {
                     ImagingReduce4x4(imOut, imIn, box);
-                }
-                else {
+                } else {
                     ImagingReduce5x5(imOut, imIn, box);
                 }
-            }
-            else {
+            } else {
                 ImagingReduceNxN(imOut, imIn, box, xscale, yscale);
             }
 

@@ -26,8 +26,7 @@
 #include "ImDib.h"
 
 char *
-ImagingGetModeDIB(int size_out[2])
-{
+ImagingGetModeDIB(int size_out[2]) {
     /* Get device characteristics */
 
     HDC dc;
@@ -54,8 +53,7 @@ ImagingGetModeDIB(int size_out[2])
 }
 
 ImagingDIB
-ImagingNewDIB(const char *mode, int xsize, int ysize)
-{
+ImagingNewDIB(const char *mode, int xsize, int ysize) {
     /* Create a Windows bitmap */
 
     ImagingDIB dib;
@@ -113,8 +111,7 @@ ImagingNewDIB(const char *mode, int xsize, int ysize)
 
     if (dib->pixelsize == 1) {
         dib->pack = dib->unpack = (ImagingShuffler)memcpy;
-    }
-    else {
+    } else {
         dib->pack = ImagingPackBGR;
         dib->unpack = ImagingPackBGR;
     }
@@ -158,8 +155,7 @@ ImagingNewDIB(const char *mode, int xsize, int ysize)
             }
 
             dib->palette = CreatePalette(pal);
-        }
-        else if (strcmp(mode, "RGB") == 0) {
+        } else if (strcmp(mode, "RGB") == 0) {
 #ifdef CUBE216
 
             /* Colour DIB.  Create a 6x6x6 colour cube (216 entries) and
@@ -210,8 +206,7 @@ ImagingNewDIB(const char *mode, int xsize, int ysize)
 }
 
 void
-ImagingPasteDIB(ImagingDIB dib, Imaging im, int xy[4])
-{
+ImagingPasteDIB(ImagingDIB dib, Imaging im, int xy[4]) {
     /* Paste image data into a bitmap */
 
     /* FIXME: check size! */
@@ -225,8 +220,7 @@ ImagingPasteDIB(ImagingDIB dib, Imaging im, int xy[4])
 }
 
 void
-ImagingExposeDIB(ImagingDIB dib, void *dc)
-{
+ImagingExposeDIB(ImagingDIB dib, void *dc) {
     /* Copy bitmap to display */
 
     if (dib->palette != 0) {
@@ -236,8 +230,7 @@ ImagingExposeDIB(ImagingDIB dib, void *dc)
 }
 
 void
-ImagingDrawDIB(ImagingDIB dib, void *dc, int dst[4], int src[4])
-{
+ImagingDrawDIB(ImagingDIB dib, void *dc, int dst[4], int src[4]) {
     /* Copy bitmap to printer/display */
 
     if (GetDeviceCaps((HDC)dc, RASTERCAPS) & RC_STRETCHDIB) {
@@ -245,8 +238,7 @@ ImagingDrawDIB(ImagingDIB dib, void *dc, int dst[4], int src[4])
         StretchDIBits((HDC)dc, dst[0], dst[1], dst[2] - dst[0], dst[3] - dst[1], src[0],
                       src[1], src[2] - src[0], src[3] - src[1], dib->bits, dib->info,
                       DIB_RGB_COLORS, SRCCOPY);
-    }
-    else {
+    } else {
         /* stretchblt (displays) */
         if (dib->palette != 0) {
             SelectPalette((HDC)dc, dib->palette, FALSE);
@@ -257,8 +249,7 @@ ImagingDrawDIB(ImagingDIB dib, void *dc, int dst[4], int src[4])
 }
 
 int
-ImagingQueryPaletteDIB(ImagingDIB dib, void *dc)
-{
+ImagingQueryPaletteDIB(ImagingDIB dib, void *dc) {
     /* Install bitmap palette */
 
     int n;
@@ -270,8 +261,7 @@ ImagingQueryPaletteDIB(ImagingDIB dib, void *dc)
 
         /* Restore palette */
         SelectPalette((HDC)dc, now, FALSE);
-    }
-    else {
+    } else {
         n = 0;
     }
 
@@ -279,8 +269,7 @@ ImagingQueryPaletteDIB(ImagingDIB dib, void *dc)
 }
 
 void
-ImagingDeleteDIB(ImagingDIB dib)
-{
+ImagingDeleteDIB(ImagingDIB dib) {
     /* Clean up */
 
     if (dib->palette) {

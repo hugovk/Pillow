@@ -18,8 +18,7 @@
 #include "Imaging.h"
 
 Imaging
-ImagingGetBand(Imaging imIn, int band)
-{
+ImagingGetBand(Imaging imIn, int band) {
     Imaging imOut;
     int x, y;
 
@@ -67,8 +66,7 @@ ImagingGetBand(Imaging imIn, int band)
 }
 
 int
-ImagingSplit(Imaging imIn, Imaging bands[4])
-{
+ImagingSplit(Imaging imIn, Imaging bands[4]) {
     int i, j, x, y;
 
     /* Check arguments */
@@ -113,8 +111,7 @@ ImagingSplit(Imaging imIn, Imaging bands[4])
                 in += 4;
             }
         }
-    }
-    else if (imIn->bands == 3) {
+    } else if (imIn->bands == 3) {
         for (y = 0; y < imIn->ysize; y++) {
             UINT8 *in = (UINT8 *)imIn->image[y];
             UINT8 *out0 = bands[0]->image8[y];
@@ -137,8 +134,7 @@ ImagingSplit(Imaging imIn, Imaging bands[4])
                 in += 4;
             }
         }
-    }
-    else {
+    } else {
         for (y = 0; y < imIn->ysize; y++) {
             UINT8 *in = (UINT8 *)imIn->image[y];
             UINT8 *out0 = bands[0]->image8[y];
@@ -171,8 +167,7 @@ ImagingSplit(Imaging imIn, Imaging bands[4])
 }
 
 Imaging
-ImagingPutBand(Imaging imOut, Imaging imIn, int band)
-{
+ImagingPutBand(Imaging imOut, Imaging imIn, int band) {
     int x, y;
 
     /* Check arguments */
@@ -213,8 +208,7 @@ ImagingPutBand(Imaging imOut, Imaging imIn, int band)
 }
 
 Imaging
-ImagingFillBand(Imaging imOut, int band, int color)
-{
+ImagingFillBand(Imaging imOut, int band, int color) {
     int x, y;
 
     /* Check arguments */
@@ -246,8 +240,7 @@ ImagingFillBand(Imaging imOut, int band, int color)
 }
 
 Imaging
-ImagingMerge(const char *mode, Imaging bands[4])
-{
+ImagingMerge(const char *mode, Imaging bands[4]) {
     int i, x, y;
     int bandsCount = 0;
     Imaging imOut;
@@ -295,8 +288,7 @@ ImagingMerge(const char *mode, Imaging bands[4])
                 out[x] = MAKE_UINT32(in0[x], 0, 0, in1[x]);
             }
         }
-    }
-    else if (imOut->bands == 3) {
+    } else if (imOut->bands == 3) {
         for (y = 0; y < imOut->ysize; y++) {
             UINT8 *in0 = bands[0]->image8[y];
             UINT8 *in1 = bands[1]->image8[y];
@@ -306,8 +298,7 @@ ImagingMerge(const char *mode, Imaging bands[4])
                 out[x] = MAKE_UINT32(in0[x], in1[x], in2[x], 0);
             }
         }
-    }
-    else if (imOut->bands == 4) {
+    } else if (imOut->bands == 4) {
         for (y = 0; y < imOut->ysize; y++) {
             UINT8 *in0 = bands[0]->image8[y];
             UINT8 *in1 = bands[1]->image8[y];

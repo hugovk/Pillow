@@ -18,8 +18,7 @@
 #include "Imaging.h"
 
 Imaging
-ImagingBlend(Imaging imIn1, Imaging imIn2, float alpha)
-{
+ImagingBlend(Imaging imIn1, Imaging imIn2, float alpha) {
     Imaging imOut;
     int x, y;
 
@@ -38,8 +37,7 @@ ImagingBlend(Imaging imIn1, Imaging imIn2, float alpha)
     /* Shortcuts */
     if (alpha == 0.0) {
         return ImagingCopy(imIn1);
-    }
-    else if (alpha == 1.0) {
+    } else if (alpha == 1.0) {
         return ImagingCopy(imIn2);
     }
 
@@ -58,8 +56,7 @@ ImagingBlend(Imaging imIn1, Imaging imIn2, float alpha)
                 out[x] = (UINT8)((int)in1[x] + alpha * ((int)in2[x] - (int)in1[x]));
             }
         }
-    }
-    else {
+    } else {
         /* Extrapolation; must make sure to clip resulting values */
         for (y = 0; y < imIn1->ysize; y++) {
             UINT8 *in1 = (UINT8 *)imIn1->image[y];
@@ -69,11 +66,9 @@ ImagingBlend(Imaging imIn1, Imaging imIn2, float alpha)
                 float temp = (float)((int)in1[x] + alpha * ((int)in2[x] - (int)in1[x]));
                 if (temp <= 0.0) {
                     out[x] = 0;
-                }
-                else if (temp >= 255.0) {
+                } else if (temp >= 255.0) {
                     out[x] = 255;
-                }
-                else {
+                } else {
                     out[x] = (UINT8)temp;
                 }
             }

@@ -35,8 +35,7 @@ enum { INIT, ENCODE, ENCODE_EOF, FLUSH, EXIT };
    necessary. */
 
 static inline int
-emit(GIFENCODERSTATE *context, int byte)
-{
+emit(GIFENCODERSTATE *context, int byte) {
     /* write a byte to the output buffer */
 
     if (!context->block || context->block->size == 255) {
@@ -53,8 +52,7 @@ emit(GIFENCODERSTATE *context, int byte)
             }
             if (block) {
                 block->next = context->block;
-            }
-            else {
+            } else {
                 context->flush = context->block;
             }
         }
@@ -63,8 +61,7 @@ emit(GIFENCODERSTATE *context, int byte)
         if (context->free) {
             block = context->free;
             context->free = NULL;
-        }
-        else {
+        } else {
             /* malloc check ok, small constant allocation */
             block = malloc(sizeof(GIFENCODERBLOCK));
             if (!block) {
@@ -141,8 +138,7 @@ emit(GIFENCODERSTATE *context, int byte)
     }
 
 int
-ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
-{
+ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes) {
     UINT8 *ptr;
     int this;
 
@@ -159,8 +155,7 @@ ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
         if (context->interlace) {
             context->interlace = 1;
             context->step = 8;
-        }
-        else {
+        } else {
             context->step = 1;
         }
 
@@ -234,8 +229,7 @@ ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
 
                 if (this == context->last) {
                     context->count++;
-                }
-                else {
+                } else {
                     EMIT_RUN(label1);
                     context->last = this;
                     context->count = 1;
@@ -269,8 +263,7 @@ ImagingGifEncode(Imaging im, ImagingCodecState state, UINT8 *buf, int bytes)
                     }
                     if (block) {
                         block->next = context->block;
-                    }
-                    else {
+                    } else {
                         context->flush = context->block;
                     }
                     context->block = NULL;

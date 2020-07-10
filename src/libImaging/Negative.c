@@ -19,8 +19,7 @@
 #include "Imaging.h"
 
 Imaging
-ImagingNegative(Imaging im)
-{
+ImagingNegative(Imaging im) {
     Imaging imOut;
     int x, y;
 

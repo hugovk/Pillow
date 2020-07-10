@@ -11,8 +11,7 @@
 typedef UINT8 pixel[4];
 
 static inline UINT8
-clip8(int in)
-{
+clip8(int in) {
     if (in >= 255) {
         return 255;
     }
@@ -24,8 +23,7 @@ clip8(int in)
 
 Imaging
 ImagingUnsharpMask(Imaging imOut, Imaging imIn, float radius, int percent,
-                   int threshold)
-{
+                   int threshold) {
     ImagingSectionCookie cookie;
     Imaging result;
 
@@ -60,14 +58,12 @@ ImagingUnsharpMask(Imaging imOut, Imaging imIn, float radius, int percent,
                 if (abs(diff) > threshold) {
                     /* add the diff*percent to the original pixel */
                     lineOut8[x] = clip8(lineIn8[x] + diff * percent / 100);
-                }
-                else {
+                } else {
                     /* new pixel is the same as imIn */
                     lineOut8[x] = lineIn8[x];
                 }
             }
-        }
-        else {
+        } else {
             lineIn = (pixel *)imIn->image32[y];
             lineOut = (pixel *)imOut->image32[y];
             for (x = 0; x < imIn->xsize; x++) {

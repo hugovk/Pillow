@@ -32,8 +32,7 @@ typedef struct {
 } TkappObject;
 
 static PyObject *
-_tkinit(PyObject *self, PyObject *args)
-{
+_tkinit(PyObject *self, PyObject *args) {
     Tcl_Interp *interp;
 
     PyObject *arg;
@@ -44,8 +43,7 @@ _tkinit(PyObject *self, PyObject *args)
 
     if (is_interp) {
         interp = (Tcl_Interp *)PyLong_AsVoidPtr(arg);
-    }
-    else {
+    } else {
         TkappObject *app;
         /* Do it the hard way.  This will break if the TkappObject
         layout changes */
@@ -67,8 +65,7 @@ static PyMethodDef functions[] = {
 };
 
 PyMODINIT_FUNC
-PyInit__imagingtk(void)
-{
+PyInit__imagingtk(void) {
     static PyModuleDef module_def = {
         PyModuleDef_HEAD_INIT,
         "_imagingtk", /* m_name */

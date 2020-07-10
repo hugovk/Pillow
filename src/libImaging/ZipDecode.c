@@ -30,8 +30,7 @@ static const int ROW_INCREMENT[] = {8, 8, 8, 4, 4, 2, 2};
 /* Get the length in bytes of a scanline in the pass specified,
  * for interlaced images */
 static int
-get_row_len(ImagingCodecState state, int pass)
-{
+get_row_len(ImagingCodecState state, int pass) {
     int row_len = (state->xsize + OFFSET[pass]) / COL_INCREMENT[pass];
     return ((row_len * state->bits) + 7) / 8;
 }
@@ -41,8 +40,7 @@ get_row_len(ImagingCodecState state, int pass)
 /* -------------------------------------------------------------------- */
 
 int
-ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
-{
+ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes) {
     ZIPSTATE *context = (ZIPSTATE *)state->context;
     int err;
     int n;
@@ -101,8 +99,7 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
 
     if (context->interlaced) {
         row_len = get_row_len(state, context->pass);
-    }
-    else {
+    } else {
         row_len = state->bytes;
     }
 
@@ -121,11 +118,9 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
             /* Something went wrong inside the compression library */
             if (err == Z_DATA_ERROR) {
                 state->errcode = IMAGING_CODEC_BROKEN;
-            }
-            else if (err == Z_MEM_ERROR) {
+            } else if (err == Z_MEM_ERROR) {
                 state->errcode = IMAGING_CODEC_MEMORY;
-            }
-            else {
+            } else {
                 state->errcode = IMAGING_CODEC_CONFIG;
             }
             free(context->previous);
@@ -222,8 +217,7 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
                                    state->buffer + context->prefix + i, 1);
                     col += COL_INCREMENT[context->pass];
                 }
-            }
-            else {
+            } else {
                 /* Handle case with more than a pixel in each byte */
                 int row_bits = ((state->xsize + OFFSET[context->pass]) /
                                 COL_INCREMENT[context->pass]) *
@@ -251,8 +245,7 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
                  * should be black to make filters work correctly */
                 memset(state->buffer, 0, state->bytes + 1);
             }
-        }
-        else {
+        } else {
             state->shuffle((UINT8 *)im->image[state->y + state->yoff] +
                                state->xoff * im->pixelsize,
                            state->buffer + context->prefix, state->xsize);
@@ -283,8 +276,7 @@ ImagingZipDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t byt
 }
 
 int
-ImagingZipDecodeCleanup(ImagingCodecState state)
-{
+ImagingZipDecodeCleanup(ImagingCodecState state) {
     /* called to free the decompression engine when the decode terminates
        due to a corrupt or truncated image
     */

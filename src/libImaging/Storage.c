@@ -44,8 +44,7 @@ int ImagingNewCount = 0;
  */
 
 Imaging
-ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
-{
+ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size) {
     Imaging im;
 
     /* linesize overflow check, roughly the current largest space req'd */
@@ -68,139 +67,118 @@ ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
         /* 1-bit images */
         im->bands = im->pixelsize = 1;
         im->linesize = xsize;
-    }
-    else if (strcmp(mode, "P") == 0) {
+    } else if (strcmp(mode, "P") == 0) {
         /* 8-bit palette mapped images */
         im->bands = im->pixelsize = 1;
         im->linesize = xsize;
         im->palette = ImagingPaletteNew("RGB");
-    }
-    else if (strcmp(mode, "PA") == 0) {
+    } else if (strcmp(mode, "PA") == 0) {
         /* 8-bit palette with alpha */
         im->bands = 2;
         im->pixelsize = 4; /* store in image32 memory */
         im->linesize = xsize * 4;
         im->palette = ImagingPaletteNew("RGB");
-    }
-    else if (strcmp(mode, "L") == 0) {
+    } else if (strcmp(mode, "L") == 0) {
         /* 8-bit greyscale (luminance) images */
         im->bands = im->pixelsize = 1;
         im->linesize = xsize;
-    }
-    else if (strcmp(mode, "LA") == 0) {
+    } else if (strcmp(mode, "LA") == 0) {
         /* 8-bit greyscale (luminance) with alpha */
         im->bands = 2;
         im->pixelsize = 4; /* store in image32 memory */
         im->linesize = xsize * 4;
-    }
-    else if (strcmp(mode, "La") == 0) {
+    } else if (strcmp(mode, "La") == 0) {
         /* 8-bit greyscale (luminance) with premultiplied alpha */
         im->bands = 2;
         im->pixelsize = 4; /* store in image32 memory */
         im->linesize = xsize * 4;
-    }
-    else if (strcmp(mode, "F") == 0) {
+    } else if (strcmp(mode, "F") == 0) {
         /* 32-bit floating point images */
         im->bands = 1;
         im->pixelsize = 4;
         im->linesize = xsize * 4;
         im->type = IMAGING_TYPE_FLOAT32;
-    }
-    else if (strcmp(mode, "I") == 0) {
+    } else if (strcmp(mode, "I") == 0) {
         /* 32-bit integer images */
         im->bands = 1;
         im->pixelsize = 4;
         im->linesize = xsize * 4;
         im->type = IMAGING_TYPE_INT32;
-    }
-    else if (strcmp(mode, "I;16") == 0 || strcmp(mode, "I;16L") == 0 ||
-             strcmp(mode, "I;16B") == 0 || strcmp(mode, "I;16N") == 0) {
+    } else if (strcmp(mode, "I;16") == 0 || strcmp(mode, "I;16L") == 0 ||
+               strcmp(mode, "I;16B") == 0 || strcmp(mode, "I;16N") == 0) {
         /* EXPERIMENTAL */
         /* 16-bit raw integer images */
         im->bands = 1;
         im->pixelsize = 2;
         im->linesize = xsize * 2;
         im->type = IMAGING_TYPE_SPECIAL;
-    }
-    else if (strcmp(mode, "RGB") == 0) {
+    } else if (strcmp(mode, "RGB") == 0) {
         /* 24-bit true colour images */
         im->bands = 3;
         im->pixelsize = 4;
         im->linesize = xsize * 4;
-    }
-    else if (strcmp(mode, "BGR;15") == 0) {
+    } else if (strcmp(mode, "BGR;15") == 0) {
         /* EXPERIMENTAL */
         /* 15-bit reversed true colour */
         im->bands = 1;
         im->pixelsize = 2;
         im->linesize = (xsize * 2 + 3) & -4;
         im->type = IMAGING_TYPE_SPECIAL;
-    }
-    else if (strcmp(mode, "BGR;16") == 0) {
+    } else if (strcmp(mode, "BGR;16") == 0) {
         /* EXPERIMENTAL */
         /* 16-bit reversed true colour */
         im->bands = 1;
         im->pixelsize = 2;
         im->linesize = (xsize * 2 + 3) & -4;
         im->type = IMAGING_TYPE_SPECIAL;
-    }
-    else if (strcmp(mode, "BGR;24") == 0) {
+    } else if (strcmp(mode, "BGR;24") == 0) {
         /* EXPERIMENTAL */
         /* 24-bit reversed true colour */
         im->bands = 1;
         im->pixelsize = 3;
         im->linesize = (xsize * 3 + 3) & -4;
         im->type = IMAGING_TYPE_SPECIAL;
-    }
-    else if (strcmp(mode, "BGR;32") == 0) {
+    } else if (strcmp(mode, "BGR;32") == 0) {
         /* EXPERIMENTAL */
         /* 32-bit reversed true colour */
         im->bands = 1;
         im->pixelsize = 4;
         im->linesize = (xsize * 4 + 3) & -4;
         im->type = IMAGING_TYPE_SPECIAL;
-    }
-    else if (strcmp(mode, "RGBX") == 0) {
+    } else if (strcmp(mode, "RGBX") == 0) {
         /* 32-bit true colour images with padding */
         im->bands = im->pixelsize = 4;
         im->linesize = xsize * 4;
-    }
-    else if (strcmp(mode, "RGBA") == 0) {
+    } else if (strcmp(mode, "RGBA") == 0) {
         /* 32-bit true colour images with alpha */
         im->bands = im->pixelsize = 4;
         im->linesize = xsize * 4;
-    }
-    else if (strcmp(mode, "RGBa") == 0) {
+    } else if (strcmp(mode, "RGBa") == 0) {
         /* 32-bit true colour images with premultiplied alpha */
         im->bands = im->pixelsize = 4;
         im->linesize = xsize * 4;
-    }
-    else if (strcmp(mode, "CMYK") == 0) {
+    } else if (strcmp(mode, "CMYK") == 0) {
         /* 32-bit colour separation */
         im->bands = im->pixelsize = 4;
         im->linesize = xsize * 4;
-    }
-    else if (strcmp(mode, "YCbCr") == 0) {
+    } else if (strcmp(mode, "YCbCr") == 0) {
         /* 24-bit video format */
         im->bands = 3;
         im->pixelsize = 4;
         im->linesize = xsize * 4;
-    }
-    else if (strcmp(mode, "LAB") == 0) {
+    } else if (strcmp(mode, "LAB") == 0) {
         /* 24-bit color, luminance, + 2 color channels */
         /* L is uint8, a,b are int8 */
         im->bands = 3;
         im->pixelsize = 4;
         im->linesize = xsize * 4;
-    }
-    else if (strcmp(mode, "HSV") == 0) {
+    } else if (strcmp(mode, "HSV") == 0) {
         /* 24-bit color, luminance, + 2 color channels */
         /* L is uint8, a,b are int8 */
         im->bands = 3;
         im->pixelsize = 4;
         im->linesize = xsize * 4;
-    }
-    else {
+    } else {
         free(im);
         return (Imaging)ImagingError_ValueError("unrecognized image mode");
     }
@@ -235,15 +213,13 @@ ImagingNewPrologueSubtype(const char *mode, int xsize, int ysize, int size)
 }
 
 Imaging
-ImagingNewPrologue(const char *mode, int xsize, int ysize)
-{
+ImagingNewPrologue(const char *mode, int xsize, int ysize) {
     return ImagingNewPrologueSubtype(mode, xsize, ysize,
                                      sizeof(struct ImagingMemoryInstance));
 }
 
 void
-ImagingDelete(Imaging im)
-{
+ImagingDelete(Imaging im) {
     if (!im) {
         return;
     }
@@ -283,8 +259,7 @@ struct ImagingMemoryArena ImagingDefaultArena = {
 };
 
 int
-ImagingMemorySetBlocksMax(ImagingMemoryArena arena, int blocks_max)
-{
+ImagingMemorySetBlocksMax(ImagingMemoryArena arena, int blocks_max) {
     void *p;
     /* Free already cached blocks */
     ImagingMemoryClearCache(arena, blocks_max);
@@ -292,16 +267,14 @@ ImagingMemorySetBlocksMax(ImagingMemoryArena arena, int blocks_max)
     if (blocks_max == 0 && arena->blocks_pool != NULL) {
         free(arena->blocks_pool);
         arena->blocks_pool = NULL;
-    }
-    else if (arena->blocks_pool != NULL) {
+    } else if (arena->blocks_pool != NULL) {
         p = realloc(arena->blocks_pool, sizeof(*arena->blocks_pool) * blocks_max);
         if (!p) {
             // Leave previous blocks_max value
             return 0;
         }
         arena->blocks_pool = p;
-    }
-    else {
+    } else {
         arena->blocks_pool = calloc(sizeof(*arena->blocks_pool), blocks_max);
         if (!arena->blocks_pool) {
             return 0;
@@ -313,8 +286,7 @@ ImagingMemorySetBlocksMax(ImagingMemoryArena arena, int blocks_max)
 }
 
 void
-ImagingMemoryClearCache(ImagingMemoryArena arena, int new_size)
-{
+ImagingMemoryClearCache(ImagingMemoryArena arena, int new_size) {
     while (arena->blocks_cached > new_size) {
         arena->blocks_cached -= 1;
         free(arena->blocks_pool[arena->blocks_cached].ptr);
@@ -323,8 +295,7 @@ ImagingMemoryClearCache(ImagingMemoryArena arena, int new_size)
 }
 
 ImagingMemoryBlock
-memory_get_block(ImagingMemoryArena arena, int requested_size, int dirty)
-{
+memory_get_block(ImagingMemoryArena arena, int requested_size, int dirty) {
     ImagingMemoryBlock block = {NULL, 0};
 
     if (arena->blocks_cached > 0) {
@@ -348,12 +319,10 @@ memory_get_block(ImagingMemoryArena arena, int requested_size, int dirty)
         if (block.ptr != arena->blocks_pool[arena->blocks_cached].ptr) {
             arena->stats_reallocated_blocks += 1;
         }
-    }
-    else {
+    } else {
         if (dirty) {
             block.ptr = malloc(requested_size);
-        }
-        else {
+        } else {
             block.ptr = calloc(1, requested_size);
         }
         arena->stats_allocated_blocks += 1;
@@ -363,8 +332,7 @@ memory_get_block(ImagingMemoryArena arena, int requested_size, int dirty)
 }
 
 void
-memory_return_block(ImagingMemoryArena arena, ImagingMemoryBlock block)
-{
+memory_return_block(ImagingMemoryArena arena, ImagingMemoryBlock block) {
     if (arena->blocks_cached < arena->blocks_max) {
         // Reduce block size
         if (block.size > arena->block_size) {
@@ -373,16 +341,14 @@ memory_return_block(ImagingMemoryArena arena, ImagingMemoryBlock block)
         }
         arena->blocks_pool[arena->blocks_cached] = block;
         arena->blocks_cached += 1;
-    }
-    else {
+    } else {
         free(block.ptr);
         arena->stats_freed_blocks += 1;
     }
 }
 
 static void
-ImagingDestroyArray(Imaging im)
-{
+ImagingDestroyArray(Imaging im) {
     int y = 0;
 
     if (im->blocks) {
@@ -395,8 +361,7 @@ ImagingDestroyArray(Imaging im)
 }
 
 Imaging
-ImagingAllocateArray(Imaging im, int dirty, int block_size)
-{
+ImagingAllocateArray(Imaging im, int dirty, int block_size) {
     int y, line_in_block, current_block;
     ImagingMemoryArena arena = &ImagingDefaultArena;
     ImagingMemoryBlock block = {NULL, 0};
@@ -466,16 +431,14 @@ ImagingAllocateArray(Imaging im, int dirty, int block_size)
 /* Allocate image as a single block. */
 
 static void
-ImagingDestroyBlock(Imaging im)
-{
+ImagingDestroyBlock(Imaging im) {
     if (im->block) {
         free(im->block);
     }
 }
 
 Imaging
-ImagingAllocateBlock(Imaging im)
-{
+ImagingAllocateBlock(Imaging im) {
     Py_ssize_t y, i;
 
     /* overflow check for malloc */
@@ -488,8 +451,7 @@ ImagingAllocateBlock(Imaging im)
            prevents MemoryError on zero-sized images on such
            platforms */
         im->block = (char *)malloc(1);
-    }
-    else {
+    } else {
         /* malloc check ok, overflow check above */
         im->block = (char *)calloc(im->ysize, im->linesize);
     }
@@ -513,8 +475,7 @@ ImagingAllocateBlock(Imaging im)
  */
 
 Imaging
-ImagingNewInternal(const char *mode, int xsize, int ysize, int dirty)
-{
+ImagingNewInternal(const char *mode, int xsize, int ysize, int dirty) {
     Imaging im;
 
     if (xsize < 0 || ysize < 0) {
@@ -542,20 +503,17 @@ ImagingNewInternal(const char *mode, int xsize, int ysize, int dirty)
 }
 
 Imaging
-ImagingNew(const char *mode, int xsize, int ysize)
-{
+ImagingNew(const char *mode, int xsize, int ysize) {
     return ImagingNewInternal(mode, xsize, ysize, 0);
 }
 
 Imaging
-ImagingNewDirty(const char *mode, int xsize, int ysize)
-{
+ImagingNewDirty(const char *mode, int xsize, int ysize) {
     return ImagingNewInternal(mode, xsize, ysize, 1);
 }
 
 Imaging
-ImagingNewBlock(const char *mode, int xsize, int ysize)
-{
+ImagingNewBlock(const char *mode, int xsize, int ysize) {
     Imaging im;
 
     if (xsize < 0 || ysize < 0) {
@@ -576,8 +534,7 @@ ImagingNewBlock(const char *mode, int xsize, int ysize)
 }
 
 Imaging
-ImagingNew2Dirty(const char *mode, Imaging imOut, Imaging imIn)
-{
+ImagingNew2Dirty(const char *mode, Imaging imOut, Imaging imIn) {
     /* allocate or validate output image */
 
     if (imOut) {
@@ -586,8 +543,7 @@ ImagingNew2Dirty(const char *mode, Imaging imOut, Imaging imIn)
             imOut->ysize != imIn->ysize) {
             return ImagingError_Mismatch();
         }
-    }
-    else {
+    } else {
         /* create new image */
         imOut = ImagingNewDirty(mode, imIn->xsize, imIn->ysize);
         if (!imOut) {
@@ -599,8 +555,7 @@ ImagingNew2Dirty(const char *mode, Imaging imOut, Imaging imIn)
 }
 
 void
-ImagingCopyPalette(Imaging destination, Imaging source)
-{
+ImagingCopyPalette(Imaging destination, Imaging source) {
     if (source->palette) {
         if (destination->palette) {
             ImagingPaletteDelete(destination->palette);

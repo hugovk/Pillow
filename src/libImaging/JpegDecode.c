@@ -48,8 +48,7 @@ char *libjpeg_turbo_version = NULL;
 #endif
 
 int
-ImagingJpegUseJCSExtensions()
-{
+ImagingJpegUseJCSExtensions() {
     int use_jcs_extensions = 0;
 #ifdef JCS_EXTENSIONS
 #if defined(LIBJPEG_TURBO_VERSION_NUMBER)
@@ -70,20 +69,17 @@ ImagingJpegUseJCSExtensions()
 /* -------------------------------------------------------------------- */
 
 METHODDEF(void)
-stub(j_decompress_ptr cinfo)
-{ /* empty */
+stub(j_decompress_ptr cinfo) { /* empty */
 }
 
 METHODDEF(boolean)
-fill_input_buffer(j_decompress_ptr cinfo)
-{
+fill_input_buffer(j_decompress_ptr cinfo) {
     /* Suspension */
     return FALSE;
 }
 
 METHODDEF(void)
-skip_input_data(j_decompress_ptr cinfo, long num_bytes)
-{
+skip_input_data(j_decompress_ptr cinfo, long num_bytes) {
     JPEGSOURCE *source = (JPEGSOURCE *)cinfo->src;
 
     if (num_bytes > (long)source->pub.bytes_in_buffer) {
@@ -92,8 +88,7 @@ skip_input_data(j_decompress_ptr cinfo, long num_bytes)
         source->skip = num_bytes - source->pub.bytes_in_buffer;
         source->pub.next_input_byte += source->pub.bytes_in_buffer;
         source->pub.bytes_in_buffer = 0;
-    }
-    else {
+    } else {
         /* Skip portion of the buffer */
         source->pub.bytes_in_buffer -= num_bytes;
         source->pub.next_input_byte += num_bytes;
@@ -102,8 +97,7 @@ skip_input_data(j_decompress_ptr cinfo, long num_bytes)
 }
 
 GLOBAL(void)
-jpeg_buffer_src(j_decompress_ptr cinfo, JPEGSOURCE *source)
-{
+jpeg_buffer_src(j_decompress_ptr cinfo, JPEGSOURCE *source) {
     cinfo->src = (void *)source;
 
     /* Prepare for suspending reader */
@@ -122,16 +116,14 @@ jpeg_buffer_src(j_decompress_ptr cinfo, JPEGSOURCE *source)
 /* -------------------------------------------------------------------- */
 
 METHODDEF(void)
-error(j_common_ptr cinfo)
-{
+error(j_common_ptr cinfo) {
     JPEGERROR *error;
     error = (JPEGERROR *)cinfo->err;
     longjmp(error->setjmp_buffer, 1);
 }
 
 METHODDEF(void)
-output(j_common_ptr cinfo)
-{ /* nothing */
+output(j_common_ptr cinfo) { /* nothing */
 }
 
 /* -------------------------------------------------------------------- */
@@ -139,8 +131,7 @@ output(j_common_ptr cinfo)
 /* -------------------------------------------------------------------- */
 
 int
-ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes)
-{
+ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t bytes) {
     JPEGSTATE *context = (JPEGSTATE *)state->context;
     int ok;
 
@@ -195,17 +186,13 @@ ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t by
                trust the decoder */
             if (strcmp(context->jpegmode, "L") == 0) {
                 context->cinfo.jpeg_color_space = JCS_GRAYSCALE;
-            }
-            else if (strcmp(context->jpegmode, "RGB") == 0) {
+            } else if (strcmp(context->jpegmode, "RGB") == 0) {
                 context->cinfo.jpeg_color_space = JCS_RGB;
-            }
-            else if (strcmp(context->jpegmode, "CMYK") == 0) {
+            } else if (strcmp(context->jpegmode, "CMYK") == 0) {
                 context->cinfo.jpeg_color_space = JCS_CMYK;
-            }
-            else if (strcmp(context->jpegmode, "YCbCr") == 0) {
+            } else if (strcmp(context->jpegmode, "YCbCr") == 0) {
                 context->cinfo.jpeg_color_space = JCS_YCbCr;
-            }
-            else if (strcmp(context->jpegmode, "YCbCrK") == 0) {
+            } else if (strcmp(context->jpegmode, "YCbCrK") == 0) {
                 context->cinfo.jpeg_color_space = JCS_YCCK;
             }
 
@@ -213,8 +200,7 @@ ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t by
                set, conversions are disabled */
             if (strcmp(context->rawmode, "L") == 0) {
                 context->cinfo.out_color_space = JCS_GRAYSCALE;
-            }
-            else if (strcmp(context->rawmode, "RGB") == 0) {
+            } else if (strcmp(context->rawmode, "RGB") == 0) {
                 context->cinfo.out_color_space = JCS_RGB;
             }
 #ifdef JCS_EXTENSIONS
@@ -225,14 +211,11 @@ ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t by
             else if (strcmp(context->rawmode, "CMYK") == 0 ||
                      strcmp(context->rawmode, "CMYK;I") == 0) {
                 context->cinfo.out_color_space = JCS_CMYK;
-            }
-            else if (strcmp(context->rawmode, "YCbCr") == 0) {
+            } else if (strcmp(context->rawmode, "YCbCr") == 0) {
                 context->cinfo.out_color_space = JCS_YCbCr;
-            }
-            else if (strcmp(context->rawmode, "YCbCrK") == 0) {
+            } else if (strcmp(context->rawmode, "YCbCrK") == 0) {
                 context->cinfo.out_color_space = JCS_YCCK;
-            }
-            else {
+            } else {
                 /* Disable decoder conversions */
                 context->cinfo.jpeg_color_space = JCS_UNKNOWN;
                 context->cinfo.out_color_space = JCS_UNKNOWN;
@@ -306,8 +289,7 @@ ImagingJpegDecode(Imaging im, ImagingCodecState state, UINT8 *buf, Py_ssize_t by
 /* -------------------------------------------------------------------- */
 
 int
-ImagingJpegDecodeCleanup(ImagingCodecState state)
-{
+ImagingJpegDecodeCleanup(ImagingCodecState state) {
     /* called to free the decompression engine when the decode terminates
        due to a corrupt or truncated image
     */

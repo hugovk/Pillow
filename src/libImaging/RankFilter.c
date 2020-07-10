@@ -24,44 +24,42 @@
         (b) = t;               \
     }
 
-#define MakeRankFunction(type)                     \
-    static type Rank##type(type a[], int n, int k) \
-    {                                              \
-        register int i, j, l, m;                   \
-        register type x;                           \
-        l = 0;                                     \
-        m = n - 1;                                 \
-        while (l < m) {                            \
-            x = a[k];                              \
-            i = l;                                 \
-            j = m;                                 \
-            do {                                   \
-                while (a[i] < x) {                 \
-                    i++;                           \
-                }                                  \
-                while (x < a[j]) {                 \
-                    j--;                           \
-                }                                  \
-                if (i <= j) {                      \
-                    SWAP(type, a[i], a[j]);        \
-                    i++;                           \
-                    j--;                           \
-                }                                  \
-            } while (i <= j);                      \
-            if (j < k) {                           \
-                l = i;                             \
-            }                                      \
-            if (k < i) {                           \
-                m = j;                             \
-            }                                      \
-        }                                          \
-        return a[k];                               \
+#define MakeRankFunction(type)                       \
+    static type Rank##type(type a[], int n, int k) { \
+        register int i, j, l, m;                     \
+        register type x;                             \
+        l = 0;                                       \
+        m = n - 1;                                   \
+        while (l < m) {                              \
+            x = a[k];                                \
+            i = l;                                   \
+            j = m;                                   \
+            do {                                     \
+                while (a[i] < x) {                   \
+                    i++;                             \
+                }                                    \
+                while (x < a[j]) {                   \
+                    j--;                             \
+                }                                    \
+                if (i <= j) {                        \
+                    SWAP(type, a[i], a[j]);          \
+                    i++;                             \
+                    j--;                             \
+                }                                    \
+            } while (i <= j);                        \
+            if (j < k) {                             \
+                l = i;                               \
+            }                                        \
+            if (k < i) {                             \
+                m = j;                               \
+            }                                        \
+        }                                            \
+        return a[k];                                 \
     }
 
 MakeRankFunction(UINT8) MakeRankFunction(INT32) MakeRankFunction(FLOAT32)
 
-    Imaging ImagingRankFilter(Imaging im, int size, int rank)
-{
+    Imaging ImagingRankFilter(Imaging im, int size, int rank) {
     Imaging imOut = NULL;
     int x, y;
     int i, margin, size2;
@@ -112,14 +110,11 @@ MakeRankFunction(UINT8) MakeRankFunction(INT32) MakeRankFunction(FLOAT32)
 
     if (im->image8) {
         RANK_BODY(UINT8);
-    }
-    else if (im->type == IMAGING_TYPE_INT32) {
+    } else if (im->type == IMAGING_TYPE_INT32) {
         RANK_BODY(INT32);
-    }
-    else if (im->type == IMAGING_TYPE_FLOAT32) {
+    } else if (im->type == IMAGING_TYPE_FLOAT32) {
         RANK_BODY(FLOAT32);
-    }
-    else {
+    } else {
         /* safety net (we shouldn't end up here) */
         ImagingDelete(imOut);
         return (Imaging)ImagingError_ModeError();

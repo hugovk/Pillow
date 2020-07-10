@@ -48,9 +48,7 @@
 #define FT_ERRORDEF(e, v, s) {e, s},
 #define FT_ERROR_START_LIST {
 #define FT_ERROR_END_LIST \
-    {                     \
-        0, 0              \
-    }                     \
+    { 0, 0 }              \
     }                     \
     ;
 
@@ -124,8 +122,7 @@ static p_raqm_func p_raqm;
 #define PIXEL(x) ((((x) + 63) & -64) >> 6)
 
 static PyObject *
-geterror(int code)
-{
+geterror(int code) {
     int i;
 
     for (i = 0; ft_errors[i].message; i++) {
@@ -140,8 +137,7 @@ geterror(int code)
 }
 
 static int
-setraqm(void)
-{
+setraqm(void) {
     /* set the static function pointers for dynamic raqm linking */
     p_raqm.raqm = NULL;
 
@@ -184,8 +180,7 @@ setraqm(void)
     if (dlsym(p_raqm.raqm, "raqm_index_to_position")) {
         p_raqm.get_glyphs = (t_raqm_get_glyphs)dlsym(p_raqm.raqm, "raqm_get_glyphs");
         p_raqm.version = 2;
-    }
-    else {
+    } else {
         p_raqm.version = 1;
         p_raqm.get_glyphs_01 =
             (t_raqm_get_glyphs_01)dlsym(p_raqm.raqm, "raqm_get_glyphs");
@@ -222,8 +217,7 @@ setraqm(void)
         p_raqm.get_glyphs =
             (t_raqm_get_glyphs)GetProcAddress(p_raqm.raqm, "raqm_get_glyphs");
         p_raqm.version = 2;
-    }
-    else {
+    } else {
         p_raqm.version = 1;
         p_raqm.get_glyphs_01 =
             (t_raqm_get_glyphs_01)GetProcAddress(p_raqm.raqm, "raqm_get_glyphs");
@@ -242,8 +236,7 @@ setraqm(void)
 }
 
 static PyObject *
-getfont(PyObject *self_, PyObject *args, PyObject *kw)
-{
+getfont(PyObject *self_, PyObject *args, PyObject *kw) {
     /* create a font object from a file name and a size (in pixels) */
 
     FontObject *self;
@@ -284,8 +277,7 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw)
     if (filename && font_bytes_size <= 0) {
         self->font_bytes = NULL;
         error = FT_New_Face(library, filename, index, &self->face);
-    }
-    else {
+    } else {
         /* need to have allocated storage for font_bytes for the life of the
          * object.*/
         /* Don't free this before FT_Done_Face */
@@ -326,8 +318,7 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw)
 }
 
 static int
-font_getchar(PyObject *string, int index, FT_ULong *char_out)
-{
+font_getchar(PyObject *string, int index, FT_ULong *char_out) {
     if (PyUnicode_Check(string)) {
         if (index >= PyUnicode_GET_LENGTH(string)) {
             return 0;
@@ -340,8 +331,8 @@ font_getchar(PyObject *string, int index, FT_ULong *char_out)
 
 static size_t
 text_layout_raqm(PyObject *string, FontObject *self, const char *dir,
-                 PyObject *features, const char *lang, GlyphInfo **glyph_info, int mask)
-{
+                 PyObject *features, const char *lang, GlyphInfo **glyph_info,
+                 int mask) {
     size_t i = 0, count = 0, start = 0;
     raqm_t *rq;
     raqm_glyph_t *glyphs = NULL;
@@ -406,19 +397,16 @@ text_layout_raqm(PyObject *string, FontObject *self, const char *dir,
     if (dir) {
         if (strcmp(dir, "rtl") == 0) {
             direction = RAQM_DIRECTION_RTL;
-        }
-        else if (strcmp(dir, "ltr") == 0) {
+        } else if (strcmp(dir, "ltr") == 0) {
             direction = RAQM_DIRECTION_LTR;
-        }
-        else if (strcmp(dir, "ttb") == 0) {
+        } else if (strcmp(dir, "ttb") == 0) {
             direction = RAQM_DIRECTION_TTB;
             if (p_raqm.version_atleast == NULL || !(*p_raqm.version_atleast)(0, 7, 0)) {
                 PyErr_SetString(PyExc_ValueError,
                                 "libraqm 0.7 or greater required for 'ttb' direction");
                 goto failed;
             }
-        }
-        else {
+        } else {
             PyErr_SetString(PyExc_ValueError,
                             "direction must be either 'rtl', 'ltr' or 'ttb'");
             goto failed;
@@ -481,8 +469,7 @@ text_layout_raqm(PyObject *string, FontObject *self, const char *dir,
             count = 0;
             goto failed;
         }
-    }
-    else { /* version == 2 */
+    } else { /* version == 2 */
         glyphs = (*p_raqm.get_glyphs)(rq, &count);
         if (glyphs == NULL) {
             PyErr_SetString(PyExc_ValueError, "raqm_get_glyphs() failed.");
@@ -507,8 +494,7 @@ text_layout_raqm(PyObject *string, FontObject *self, const char *dir,
             (*glyph_info)[i].y_advance = glyphs_01[i].y_advance;
             (*glyph_info)[i].cluster = glyphs_01[i].cluster;
         }
-    }
-    else {
+    } else {
         for (i = 0; i < count; i++) {
             (*glyph_info)[i].index = glyphs[i].index;
             (*glyph_info)[i].x_offset = glyphs[i].x_offset;
@@ -527,8 +513,7 @@ failed:
 static size_t
 text_layout_fallback(PyObject *string, FontObject *self, const char *dir,
                      PyObject *features, const char *lang, GlyphInfo **glyph_info,
-                     int mask)
-{
+                     int mask) {
     int error, load_flags;
     FT_ULong ch;
     Py_ssize_t count;
@@ -594,14 +579,12 @@ text_layout_fallback(PyObject *string, FontObject *self, const char *dir,
 
 static size_t
 text_layout(PyObject *string, FontObject *self, const char *dir, PyObject *features,
-            const char *lang, GlyphInfo **glyph_info, int mask)
-{
+            const char *lang, GlyphInfo **glyph_info, int mask) {
     size_t count;
 
     if (p_raqm.raqm && self->layout_engine == LAYOUT_RAQM) {
         count = text_layout_raqm(string, self, dir, features, lang, glyph_info, mask);
-    }
-    else {
+    } else {
         count =
             text_layout_fallback(string, self, dir, features, lang, glyph_info, mask);
     }
@@ -609,8 +592,7 @@ text_layout(PyObject *string, FontObject *self, const char *dir, PyObject *featu
 }
 
 static PyObject *
-font_getsize(FontObject *self, PyObject *args)
-{
+font_getsize(FontObject *self, PyObject *args) {
     int x_position, x_max, x_min, y_max, y_min;
     FT_Face face;
     int xoffset, yoffset;
@@ -665,8 +647,7 @@ font_getsize(FontObject *self, PyObject *args)
                     xoffset = face->glyph->metrics.horiBearingX;
                     x_position -= xoffset;
                 }
-            }
-            else {
+            } else {
                 if (face->glyph->metrics.vertBearingY < 0) {
                     yoffset = face->glyph->metrics.vertBearingY;
                     y_max -= yoffset;
@@ -702,8 +683,7 @@ font_getsize(FontObject *self, PyObject *args)
             if (face->glyph->metrics.horiBearingY > yoffset) {
                 yoffset = face->glyph->metrics.horiBearingY;
             }
-        }
-        else {
+        } else {
             y_max -= glyph_info[i].y_advance;
 
             if (i == count - 1) {
@@ -737,21 +717,18 @@ font_getsize(FontObject *self, PyObject *args)
             // left bearing
             if (xoffset < 0) {
                 x_max -= xoffset;
-            }
-            else {
+            } else {
                 xoffset = 0;
             }
 
             /* difference between the font ascender and the distance of
              * the baseline from the top */
             yoffset = PIXEL(self->face->size->metrics.ascender - yoffset);
-        }
-        else {
+        } else {
             // top bearing
             if (yoffset < 0) {
                 y_max -= yoffset;
-            }
-            else {
+            } else {
                 yoffset = 0;
             }
         }
@@ -762,8 +739,7 @@ font_getsize(FontObject *self, PyObject *args)
 }
 
 static PyObject *
-font_render(FontObject *self, PyObject *args)
-{
+font_render(FontObject *self, PyObject *args) {
     int x;
     unsigned int y;
     Imaging im;
@@ -872,8 +848,7 @@ font_render(FontObject *self, PyObject *args)
 
             bitmap = bitmap_glyph->bitmap;
             left = bitmap_glyph->left;
-        }
-        else {
+        } else {
             bitmap = glyph_slot->bitmap;
             left = glyph_slot->bitmap_left;
         }
@@ -884,8 +859,7 @@ font_render(FontObject *self, PyObject *args)
             }
             xx = PIXEL(x) + left;
             xx += PIXEL(glyph_info[i].x_offset) + stroke_width;
-        }
-        else {
+        } else {
             if (glyph_slot->metrics.vertBearingX < 0) {
                 x = -glyph_slot->metrics.vertBearingX;
             }
@@ -907,8 +881,7 @@ font_render(FontObject *self, PyObject *args)
                 yy = bitmap_y + im->ysize -
                      (PIXEL(glyph_slot->metrics.horiBearingY) + ascender);
                 yy -= PIXEL(glyph_info[i].y_offset) + stroke_width * 2;
-            }
-            else {
+            } else {
                 yy = bitmap_y + PIXEL(y + glyph_slot->metrics.vertBearingY) + ascender;
                 yy += PIXEL(glyph_info[i].y_offset);
             }
@@ -927,8 +900,7 @@ font_render(FontObject *self, PyObject *args)
                             k++;
                         }
                     }
-                }
-                else {
+                } else {
                     // use antialiased rendering
                     int k;
                     for (k = x0; k < x1; k++) {
@@ -955,8 +927,7 @@ font_render(FontObject *self, PyObject *args)
 #if FREETYPE_MAJOR > 2 || (FREETYPE_MAJOR == 2 && FREETYPE_MINOR > 9) || \
     (FREETYPE_MAJOR == 2 && FREETYPE_MINOR == 9 && FREETYPE_PATCH == 1)
 static PyObject *
-font_getvarnames(FontObject *self)
-{
+font_getvarnames(FontObject *self) {
     int error;
     FT_UInt i, j, num_namedstyles, name_count;
     FT_MM_Var *master;
@@ -997,8 +968,7 @@ font_getvarnames(FontObject *self)
 }
 
 static PyObject *
-font_getvaraxes(FontObject *self)
-{
+font_getvaraxes(FontObject *self) {
     int error;
     FT_UInt i, j, num_axis, name_count;
     FT_MM_Var *master;
@@ -1046,8 +1016,7 @@ font_getvaraxes(FontObject *self)
 }
 
 static PyObject *
-font_setvarname(FontObject *self, PyObject *args)
-{
+font_setvarname(FontObject *self, PyObject *args) {
     int error;
 
     int instance_index;
@@ -1065,8 +1034,7 @@ font_setvarname(FontObject *self, PyObject *args)
 }
 
 static PyObject *
-font_setvaraxes(FontObject *self, PyObject *args)
-{
+font_setvaraxes(FontObject *self, PyObject *args) {
     int error;
 
     PyObject *axes, *item;
@@ -1091,14 +1059,11 @@ font_setvaraxes(FontObject *self, PyObject *args)
         item = PyList_GET_ITEM(axes, i);
         if (PyFloat_Check(item)) {
             coord = PyFloat_AS_DOUBLE(item);
-        }
-        else if (PyLong_Check(item)) {
+        } else if (PyLong_Check(item)) {
             coord = (float)PyLong_AS_LONG(item);
-        }
-        else if (PyNumber_Check(item)) {
+        } else if (PyNumber_Check(item)) {
             coord = PyFloat_AsDouble(item);
-        }
-        else {
+        } else {
             free(coords);
             PyErr_SetString(PyExc_TypeError, "list must contain numbers");
             return NULL;
@@ -1118,8 +1083,7 @@ font_setvaraxes(FontObject *self, PyObject *args)
 #endif
 
 static void
-font_dealloc(FontObject *self)
-{
+font_dealloc(FontObject *self) {
     if (self->face) {
         FT_Done_Face(self->face);
     }
@@ -1142,8 +1106,7 @@ static PyMethodDef font_methods[] = {
     {NULL, NULL}};
 
 static PyObject *
-font_getattr_family(FontObject *self, void *closure)
-{
+font_getattr_family(FontObject *self, void *closure) {
     if (self->face->family_name) {
         return PyUnicode_FromString(self->face->family_name);
     }
@@ -1151,8 +1114,7 @@ font_getattr_family(FontObject *self, void *closure)
 }
 
 static PyObject *
-font_getattr_style(FontObject *self, void *closure)
-{
+font_getattr_style(FontObject *self, void *closure) {
     if (self->face->style_name) {
         return PyUnicode_FromString(self->face->style_name);
     }
@@ -1160,38 +1122,32 @@ font_getattr_style(FontObject *self, void *closure)
 }
 
 static PyObject *
-font_getattr_ascent(FontObject *self, void *closure)
-{
+font_getattr_ascent(FontObject *self, void *closure) {
     return PyLong_FromLong(PIXEL(self->face->size->metrics.ascender));
 }
 
 static PyObject *
-font_getattr_descent(FontObject *self, void *closure)
-{
+font_getattr_descent(FontObject *self, void *closure) {
     return PyLong_FromLong(-PIXEL(self->face->size->metrics.descender));
 }
 
 static PyObject *
-font_getattr_height(FontObject *self, void *closure)
-{
+font_getattr_height(FontObject *self, void *closure) {
     return PyLong_FromLong(PIXEL(self->face->size->metrics.height));
 }
 
 static PyObject *
-font_getattr_x_ppem(FontObject *self, void *closure)
-{
+font_getattr_x_ppem(FontObject *self, void *closure) {
     return PyLong_FromLong(self->face->size->metrics.x_ppem);
 }
 
 static PyObject *
-font_getattr_y_ppem(FontObject *self, void *closure)
-{
+font_getattr_y_ppem(FontObject *self, void *closure) {
     return PyLong_FromLong(self->face->size->metrics.y_ppem);
 }
 
 static PyObject *
-font_getattr_glyphs(FontObject *self, void *closure)
-{
+font_getattr_glyphs(FontObject *self, void *closure) {
     return PyLong_FromLong(self->face->num_glyphs);
 }
 
@@ -1241,8 +1197,7 @@ static PyMethodDef _functions[] = {
     {"getfont", (PyCFunction)getfont, METH_VARARGS | METH_KEYWORDS}, {NULL, NULL}};
 
 static int
-setup_module(PyObject *m)
-{
+setup_module(PyObject *m) {
     PyObject *d;
     PyObject *v;
     int major, minor, patch;
@@ -1273,8 +1228,7 @@ setup_module(PyObject *m)
 }
 
 PyMODINIT_FUNC
-PyInit__imagingft(void)
-{
+PyInit__imagingft(void) {
     PyObject *m;
 
     static PyModuleDef module_def = {

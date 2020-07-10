@@ -27,8 +27,7 @@
 #include "Imaging.h"
 
 static inline UINT8
-clip8(float in)
-{
+clip8(float in) {
     if (in <= 0.0) {
         return 0;
     }
@@ -39,8 +38,7 @@ clip8(float in)
 }
 
 Imaging
-ImagingExpand(Imaging imIn, int xmargin, int ymargin, int mode)
-{
+ImagingExpand(Imaging imIn, int xmargin, int ymargin, int mode) {
     Imaging imOut;
     int x, y;
     ImagingSectionCookie cookie;
@@ -85,8 +83,7 @@ ImagingExpand(Imaging imIn, int xmargin, int ymargin, int mode)
     ImagingSectionEnter(&cookie);
     if (imIn->image8) {
         EXPAND(UINT8, image8);
-    }
-    else {
+    } else {
         EXPAND(INT32, image32);
     }
     ImagingSectionLeave(&cookie);
@@ -97,8 +94,7 @@ ImagingExpand(Imaging imIn, int xmargin, int ymargin, int mode)
 }
 
 void
-ImagingFilter3x3(Imaging imOut, Imaging im, const float *kernel, float offset)
-{
+ImagingFilter3x3(Imaging imOut, Imaging im, const float *kernel, float offset) {
 #define KERNEL1x3(in0, x, kernel, d)                                             \
     (_i2f((UINT8)in0[x - d]) * (kernel)[0] + _i2f((UINT8)in0[x]) * (kernel)[1] + \
      _i2f((UINT8)in0[x + d]) * (kernel)[2])
@@ -125,8 +121,7 @@ ImagingFilter3x3(Imaging imOut, Imaging im, const float *kernel, float offset)
             }
             out[x] = in0[x];
         }
-    }
-    else {
+    } else {
         // Add one time for rounding
         offset += 0.5;
         for (y = 1; y < im->ysize - 1; y++) {
@@ -150,8 +145,7 @@ ImagingFilter3x3(Imaging imOut, Imaging im, const float *kernel, float offset)
                     v = MAKE_UINT32(clip8(ss0), 0, 0, clip8(ss3));
                     memcpy(out + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (im->bands == 3) {
+            } else if (im->bands == 3) {
                 for (x = 1; x < im->xsize - 1; x++) {
                     float ss0 = offset;
                     float ss1 = offset;
@@ -169,8 +163,7 @@ ImagingFilter3x3(Imaging imOut, Imaging im, const float *kernel, float offset)
                     v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2), 0);
                     memcpy(out + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (im->bands == 4) {
+            } else if (im->bands == 4) {
                 for (x = 1; x < im->xsize - 1; x++) {
                     float ss0 = offset;
                     float ss1 = offset;
@@ -200,8 +193,7 @@ ImagingFilter3x3(Imaging imOut, Imaging im, const float *kernel, float offset)
 }
 
 void
-ImagingFilter5x5(Imaging imOut, Imaging im, const float *kernel, float offset)
-{
+ImagingFilter5x5(Imaging imOut, Imaging im, const float *kernel, float offset) {
 #define KERNEL1x5(in0, x, kernel, d)                                             \
     (_i2f((UINT8)in0[x - d - d]) * (kernel)[0] +                                 \
      _i2f((UINT8)in0[x - d]) * (kernel)[1] + _i2f((UINT8)in0[x]) * (kernel)[2] + \
@@ -237,8 +229,7 @@ ImagingFilter5x5(Imaging imOut, Imaging im, const float *kernel, float offset)
             out[x + 0] = in0[x + 0];
             out[x + 1] = in0[x + 1];
         }
-    }
-    else {
+    } else {
         // Add one time for rounding
         offset += 0.5;
         for (y = 2; y < im->ysize - 2; y++) {
@@ -268,8 +259,7 @@ ImagingFilter5x5(Imaging imOut, Imaging im, const float *kernel, float offset)
                     v = MAKE_UINT32(clip8(ss0), 0, 0, clip8(ss3));
                     memcpy(out + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (im->bands == 3) {
+            } else if (im->bands == 3) {
                 for (x = 2; x < im->xsize - 2; x++) {
                     float ss0 = offset;
                     float ss1 = offset;
@@ -293,8 +283,7 @@ ImagingFilter5x5(Imaging imOut, Imaging im, const float *kernel, float offset)
                     v = MAKE_UINT32(clip8(ss0), clip8(ss1), clip8(ss2), 0);
                     memcpy(out + x * sizeof(v), &v, sizeof(v));
                 }
-            }
-            else if (im->bands == 4) {
+            } else if (im->bands == 4) {
                 for (x = 2; x < im->xsize - 2; x++) {
                     float ss0 = offset;
                     float ss1 = offset;
@@ -334,8 +323,7 @@ ImagingFilter5x5(Imaging imOut, Imaging im, const float *kernel, float offset)
 }
 
 Imaging
-ImagingFilter(Imaging im, int xsize, int ysize, const FLOAT32 *kernel, FLOAT32 offset)
-{
+ImagingFilter(Imaging im, int xsize, int ysize, const FLOAT32 *kernel, FLOAT32 offset) {
     Imaging imOut;
     ImagingSectionCookie cookie;
 
@@ -360,8 +348,7 @@ ImagingFilter(Imaging im, int xsize, int ysize, const FLOAT32 *kernel, FLOAT32 o
     if (xsize == 3) {
         /* 3x3 kernel. */
         ImagingFilter3x3(imOut, im, kernel, offset);
-    }
-    else {
+    } else {
         /* 5x5 kernel. */
         ImagingFilter5x5(imOut, im, kernel, offset);
     }

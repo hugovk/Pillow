@@ -19,8 +19,7 @@
 #include "Imaging.h"
 
 int
-ImagingGetBBox(Imaging im, int bbox[4])
-{
+ImagingGetBBox(Imaging im, int bbox[4]) {
     /* Get the bounding box for any non-zero data in the image.*/
 
     int x, y;
@@ -55,15 +54,13 @@ ImagingGetBBox(Imaging im, int bbox[4])
 
     if (im->image8) {
         GETBBOX(image8, 0xff);
-    }
-    else {
+    } else {
         INT32 mask = 0xffffffff;
         if (im->bands == 3) {
             ((UINT8 *)&mask)[3] = 0;
-        }
-        else if (strcmp(im->mode, "RGBa") == 0 || strcmp(im->mode, "RGBA") == 0 ||
-                 strcmp(im->mode, "La") == 0 || strcmp(im->mode, "LA") == 0 ||
-                 strcmp(im->mode, "PA") == 0) {
+        } else if (strcmp(im->mode, "RGBa") == 0 || strcmp(im->mode, "RGBA") == 0 ||
+                   strcmp(im->mode, "La") == 0 || strcmp(im->mode, "LA") == 0 ||
+                   strcmp(im->mode, "PA") == 0) {
 #ifdef WORDS_BIGENDIAN
             mask = 0x000000ff;
 #else
@@ -82,8 +79,7 @@ ImagingGetBBox(Imaging im, int bbox[4])
 }
 
 int
-ImagingGetProjection(Imaging im, UINT8 *xproj, UINT8 *yproj)
-{
+ImagingGetProjection(Imaging im, UINT8 *xproj, UINT8 *yproj) {
     /* Get projection arrays for non-zero data in the image.*/
 
     int x, y;
@@ -109,8 +105,7 @@ ImagingGetProjection(Imaging im, UINT8 *xproj, UINT8 *yproj)
 
     if (im->image8) {
         GETPROJ(image8, 0xff);
-    }
-    else {
+    } else {
         INT32 mask = 0xffffffff;
         if (im->bands == 3) {
             ((UINT8 *)&mask)[3] = 0;
@@ -122,8 +117,7 @@ ImagingGetProjection(Imaging im, UINT8 *xproj, UINT8 *yproj)
 }
 
 int
-ImagingGetExtrema(Imaging im, void *extrema)
-{
+ImagingGetExtrema(Imaging im, void *extrema) {
     int x, y;
     INT32 imin, imax;
     FLOAT32 fmin, fmax;
@@ -145,8 +139,7 @@ ImagingGetExtrema(Imaging im, void *extrema)
                 for (x = 0; x < im->xsize; x++) {
                     if (imin > in[x]) {
                         imin = in[x];
-                    }
-                    else if (imax < in[x]) {
+                    } else if (imax < in[x]) {
                         imax = in[x];
                     }
                 }
@@ -161,8 +154,7 @@ ImagingGetExtrema(Imaging im, void *extrema)
                 for (x = 0; x < im->xsize; x++) {
                     if (imin > in[x]) {
                         imin = in[x];
-                    }
-                    else if (imax < in[x]) {
+                    } else if (imax < in[x]) {
                         imax = in[x];
                     }
                 }
@@ -177,8 +169,7 @@ ImagingGetExtrema(Imaging im, void *extrema)
                 for (x = 0; x < im->xsize; x++) {
                     if (fmin > in[x]) {
                         fmin = in[x];
-                    }
-                    else if (fmax < in[x]) {
+                    } else if (fmax < in[x]) {
                         fmax = in[x];
                     }
                 }
@@ -206,8 +197,7 @@ ImagingGetExtrema(Imaging im, void *extrema)
 #endif
                         if (imin > v) {
                             imin = v;
-                        }
-                        else if (imax < v) {
+                        } else if (imax < v) {
                             imax = v;
                         }
                     }
@@ -231,15 +221,13 @@ static ImagingColorItem *
 getcolors32(Imaging im, int maxcolors, int *size);
 
 ImagingColorItem *
-ImagingGetColors(Imaging im, int maxcolors, int *size)
-{
+ImagingGetColors(Imaging im, int maxcolors, int *size) {
     /* FIXME: add support for 8-bit images */
     return getcolors32(im, maxcolors, size);
 }
 
 static ImagingColorItem *
-getcolors32(Imaging im, int maxcolors, int *size)
-{
+getcolors32(Imaging im, int maxcolors, int *size) {
     unsigned int h;
     unsigned int i, incr;
     int colors;
@@ -315,8 +303,7 @@ getcolors32(Imaging im, int maxcolors, int *size)
                 v->pixel = pixel;
                 v->count = 1;
                 continue;
-            }
-            else if (v->pixel == pixel) {
+            } else if (v->pixel == pixel) {
                 v->count++;
                 continue;
             }
@@ -337,8 +324,7 @@ getcolors32(Imaging im, int maxcolors, int *size)
                     v->pixel = pixel;
                     v->count = 1;
                     break;
-                }
-                else if (v->pixel == pixel) {
+                } else if (v->pixel == pixel) {
                     v->count++;
                     break;
                 }

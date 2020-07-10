@@ -133,8 +133,7 @@ static INT16 GR[] = {
     }
 
 void
-ImagingUnpackYCC(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingUnpackYCC(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* PhotoYCC triplets */
     for (i = 0; i < pixels; i++) {
@@ -146,8 +145,7 @@ ImagingUnpackYCC(UINT8 *out, const UINT8 *in, int pixels)
 }
 
 void
-ImagingUnpackYCCA(UINT8 *out, const UINT8 *in, int pixels)
-{
+ImagingUnpackYCCA(UINT8 *out, const UINT8 *in, int pixels) {
     int i;
     /* PhotoYCC triplets plus premultiplied alpha */
     for (i = 0; i < pixels; i++) {

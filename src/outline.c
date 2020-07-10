@@ -33,8 +33,7 @@ static PyTypeObject OutlineType;
 #define PyOutline_Check(op) (Py_TYPE(op) == &OutlineType)
 
 static OutlineObject *
-_outline_new(void)
-{
+_outline_new(void) {
     OutlineObject *self;
 
     if (PyType_Ready(&OutlineType) < 0) {
@@ -52,15 +51,13 @@ _outline_new(void)
 }
 
 static void
-_outline_dealloc(OutlineObject *self)
-{
+_outline_dealloc(OutlineObject *self) {
     ImagingOutlineDelete(self->outline);
     PyObject_Del(self);
 }
 
 ImagingOutline
-PyOutline_AsOutline(PyObject *outline)
-{
+PyOutline_AsOutline(PyObject *outline) {
     if (PyOutline_Check(outline)) {
         return ((OutlineObject *)outline)->outline;
     }
@@ -72,8 +69,7 @@ PyOutline_AsOutline(PyObject *outline)
 /* Factories                                                            */
 
 PyObject *
-PyOutline_Create(PyObject *self, PyObject *args)
-{
+PyOutline_Create(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, ":outline")) {
         return NULL;
     }
@@ -85,8 +81,7 @@ PyOutline_Create(PyObject *self, PyObject *args)
 /* Methods                                                              */
 
 static PyObject *
-_outline_move(OutlineObject *self, PyObject *args)
-{
+_outline_move(OutlineObject *self, PyObject *args) {
     float x0, y0;
     if (!PyArg_ParseTuple(args, "ff", &x0, &y0)) {
         return NULL;
@@ -99,8 +94,7 @@ _outline_move(OutlineObject *self, PyObject *args)
 }
 
 static PyObject *
-_outline_line(OutlineObject *self, PyObject *args)
-{
+_outline_line(OutlineObject *self, PyObject *args) {
     float x1, y1;
     if (!PyArg_ParseTuple(args, "ff", &x1, &y1)) {
         return NULL;
@@ -113,8 +107,7 @@ _outline_line(OutlineObject *self, PyObject *args)
 }
 
 static PyObject *
-_outline_curve(OutlineObject *self, PyObject *args)
-{
+_outline_curve(OutlineObject *self, PyObject *args) {
     float x1, y1, x2, y2, x3, y3;
     if (!PyArg_ParseTuple(args, "ffffff", &x1, &y1, &x2, &y2, &x3, &y3)) {
         return NULL;
@@ -127,8 +120,7 @@ _outline_curve(OutlineObject *self, PyObject *args)
 }
 
 static PyObject *
-_outline_close(OutlineObject *self, PyObject *args)
-{
+_outline_close(OutlineObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, ":close")) {
         return NULL;
     }
@@ -140,8 +132,7 @@ _outline_close(OutlineObject *self, PyObject *args)
 }
 
 static PyObject *
-_outline_transform(OutlineObject *self, PyObject *args)
-{
+_outline_transform(OutlineObject *self, PyObject *args) {
     double a[6];
     if (!PyArg_ParseTuple(args, "(dddddd)", a + 0, a + 1, a + 2, a + 3, a + 4, a + 5)) {
         return NULL;

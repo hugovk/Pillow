@@ -64,30 +64,26 @@ typedef struct {
 typedef void (*hline_handler)(Imaging, int, int, int, int);
 
 static inline void
-point8(Imaging im, int x, int y, int ink)
-{
+point8(Imaging im, int x, int y, int ink) {
     if (x >= 0 && x < im->xsize && y >= 0 && y < im->ysize) {
         if (strncmp(im->mode, "I;16", 4) == 0) {
             im->image8[y][x * 2] = (UINT8)ink;
             im->image8[y][x * 2 + 1] = (UINT8)ink;
-        }
-        else {
+        } else {
             im->image8[y][x] = (UINT8)ink;
         }
     }
 }
 
 static inline void
-point32(Imaging im, int x, int y, int ink)
-{
+point32(Imaging im, int x, int y, int ink) {
     if (x >= 0 && x < im->xsize && y >= 0 && y < im->ysize) {
         im->image32[y][x] = ink;
     }
 }
 
 static inline void
-point32rgba(Imaging im, int x, int y, int ink)
-{
+point32rgba(Imaging im, int x, int y, int ink) {
     unsigned int tmp1;
 
     if (x >= 0 && x < im->xsize && y >= 0 && y < im->ysize) {
@@ -100,8 +96,7 @@ point32rgba(Imaging im, int x, int y, int ink)
 }
 
 static inline void
-hline8(Imaging im, int x0, int y0, int x1, int ink)
-{
+hline8(Imaging im, int x0, int y0, int x1, int ink) {
     int tmp, pixelwidth;
 
     if (y0 >= 0 && y0 < im->ysize) {
@@ -110,14 +105,12 @@ hline8(Imaging im, int x0, int y0, int x1, int ink)
         }
         if (x0 < 0) {
             x0 = 0;
-        }
-        else if (x0 >= im->xsize) {
+        } else if (x0 >= im->xsize) {
             return;
         }
         if (x1 < 0) {
             return;
-        }
-        else if (x1 >= im->xsize) {
+        } else if (x1 >= im->xsize) {
             x1 = im->xsize - 1;
         }
         if (x0 <= x1) {
@@ -129,8 +122,7 @@ hline8(Imaging im, int x0, int y0, int x1, int ink)
 }
 
 static inline void
-hline32(Imaging im, int x0, int y0, int x1, int ink)
-{
+hline32(Imaging im, int x0, int y0, int x1, int ink) {
     int tmp;
     INT32 *p;
 
@@ -140,14 +132,12 @@ hline32(Imaging im, int x0, int y0, int x1, int ink)
         }
         if (x0 < 0) {
             x0 = 0;
-        }
-        else if (x0 >= im->xsize) {
+        } else if (x0 >= im->xsize) {
             return;
         }
         if (x1 < 0) {
             return;
-        }
-        else if (x1 >= im->xsize) {
+        } else if (x1 >= im->xsize) {
             x1 = im->xsize - 1;
         }
         p = im->image32[y0];
@@ -158,8 +148,7 @@ hline32(Imaging im, int x0, int y0, int x1, int ink)
 }
 
 static inline void
-hline32rgba(Imaging im, int x0, int y0, int x1, int ink)
-{
+hline32rgba(Imaging im, int x0, int y0, int x1, int ink) {
     int tmp;
     unsigned int tmp1;
 
@@ -169,14 +158,12 @@ hline32rgba(Imaging im, int x0, int y0, int x1, int ink)
         }
         if (x0 < 0) {
             x0 = 0;
-        }
-        else if (x0 >= im->xsize) {
+        } else if (x0 >= im->xsize) {
             return;
         }
         if (x1 < 0) {
             return;
-        }
-        else if (x1 >= im->xsize) {
+        } else if (x1 >= im->xsize) {
             x1 = im->xsize - 1;
         }
         if (x0 <= x1) {
@@ -194,8 +181,7 @@ hline32rgba(Imaging im, int x0, int y0, int x1, int ink)
 }
 
 static inline void
-line8(Imaging im, int x0, int y0, int x1, int y1, int ink)
-{
+line8(Imaging im, int x0, int y0, int x1, int y1, int ink) {
     int i, n, e;
     int dx, dy;
     int xs, ys;
@@ -204,15 +190,13 @@ line8(Imaging im, int x0, int y0, int x1, int y1, int ink)
     dx = x1 - x0;
     if (dx < 0) {
         dx = -dx, xs = -1;
-    }
-    else {
+    } else {
         xs = 1;
     }
     dy = y1 - y0;
     if (dy < 0) {
         dy = -dy, ys = -1;
-    }
-    else {
+    } else {
         ys = 1;
     }
 
@@ -224,15 +208,13 @@ line8(Imaging im, int x0, int y0, int x1, int y1, int ink)
             point8(im, x0, y0, ink);
             y0 += ys;
         }
-    }
-    else if (dy == 0) {
+    } else if (dy == 0) {
         /* horizontal */
         for (i = 0; i < dx; i++) {
             point8(im, x0, y0, ink);
             x0 += xs;
         }
-    }
-    else if (dx > dy) {
+    } else if (dx > dy) {
         /* bresenham, horizontal slope */
         n = dx;
         dy += dy;
@@ -248,8 +230,7 @@ line8(Imaging im, int x0, int y0, int x1, int y1, int ink)
             e += dy;
             x0 += xs;
         }
-    }
-    else {
+    } else {
         /* bresenham, vertical slope */
         n = dy;
         dx += dx;
@@ -269,8 +250,7 @@ line8(Imaging im, int x0, int y0, int x1, int y1, int ink)
 }
 
 static inline void
-line32(Imaging im, int x0, int y0, int x1, int y1, int ink)
-{
+line32(Imaging im, int x0, int y0, int x1, int y1, int ink) {
     int i, n, e;
     int dx, dy;
     int xs, ys;
@@ -279,15 +259,13 @@ line32(Imaging im, int x0, int y0, int x1, int y1, int ink)
     dx = x1 - x0;
     if (dx < 0) {
         dx = -dx, xs = -1;
-    }
-    else {
+    } else {
         xs = 1;
     }
     dy = y1 - y0;
     if (dy < 0) {
         dy = -dy, ys = -1;
-    }
-    else {
+    } else {
         ys = 1;
     }
 
@@ -299,15 +277,13 @@ line32(Imaging im, int x0, int y0, int x1, int y1, int ink)
             point32(im, x0, y0, ink);
             y0 += ys;
         }
-    }
-    else if (dy == 0) {
+    } else if (dy == 0) {
         /* horizontal */
         for (i = 0; i < dx; i++) {
             point32(im, x0, y0, ink);
             x0 += xs;
         }
-    }
-    else if (dx > dy) {
+    } else if (dx > dy) {
         /* bresenham, horizontal slope */
         n = dx;
         dy += dy;
@@ -323,8 +299,7 @@ line32(Imaging im, int x0, int y0, int x1, int y1, int ink)
             e += dy;
             x0 += xs;
         }
-    }
-    else {
+    } else {
         /* bresenham, vertical slope */
         n = dy;
         dx += dx;
@@ -344,8 +319,7 @@ line32(Imaging im, int x0, int y0, int x1, int y1, int ink)
 }
 
 static inline void
-line32rgba(Imaging im, int x0, int y0, int x1, int y1, int ink)
-{
+line32rgba(Imaging im, int x0, int y0, int x1, int y1, int ink) {
     int i, n, e;
     int dx, dy;
     int xs, ys;
@@ -354,15 +328,13 @@ line32rgba(Imaging im, int x0, int y0, int x1, int y1, int ink)
     dx = x1 - x0;
     if (dx < 0) {
         dx = -dx, xs = -1;
-    }
-    else {
+    } else {
         xs = 1;
     }
     dy = y1 - y0;
     if (dy < 0) {
         dy = -dy, ys = -1;
-    }
-    else {
+    } else {
         ys = 1;
     }
 
@@ -374,15 +346,13 @@ line32rgba(Imaging im, int x0, int y0, int x1, int y1, int ink)
             point32rgba(im, x0, y0, ink);
             y0 += ys;
         }
-    }
-    else if (dy == 0) {
+    } else if (dy == 0) {
         /* horizontal */
         for (i = 0; i < dx; i++) {
             point32rgba(im, x0, y0, ink);
             x0 += xs;
         }
-    }
-    else if (dx > dy) {
+    } else if (dx > dy) {
         /* bresenham, horizontal slope */
         n = dx;
         dy += dy;
@@ -398,8 +368,7 @@ line32rgba(Imaging im, int x0, int y0, int x1, int y1, int ink)
             e += dy;
             x0 += xs;
         }
-    }
-    else {
+    } else {
         /* bresenham, vertical slope */
         n = dy;
         dx += dx;
@@ -419,24 +388,20 @@ line32rgba(Imaging im, int x0, int y0, int x1, int y1, int ink)
 }
 
 static int
-x_cmp(const void *x0, const void *x1)
-{
+x_cmp(const void *x0, const void *x1) {
     float diff = *((float *)x0) - *((float *)x1);
     if (diff < 0) {
         return -1;
-    }
-    else if (diff > 0) {
+    } else if (diff > 0) {
         return 1;
-    }
-    else {
+    } else {
         return 0;
     }
 }
 
 static void
 draw_horizontal_lines(Imaging im, int n, Edge *e, int ink, int *x_pos, int y,
-                      hline_handler hline)
-{
+                      hline_handler hline) {
     int i;
     for (i = 0; i < n; i++) {
         if (e[i].ymin == y && e[i].ymin == e[i].ymax) {
@@ -468,8 +433,7 @@ draw_horizontal_lines(Imaging im, int n, Edge *e, int ink, int *x_pos, int y,
  * Filled polygon draw function using scan line algorithm.
  */
 static inline int
-polygon_generic(Imaging im, int n, Edge *e, int ink, int eofill, hline_handler hline)
-{
+polygon_generic(Imaging im, int n, Edge *e, int ink, int eofill, hline_handler hline) {
     Edge **edge_table;
     float *xx;
     int edge_count = 0;
@@ -563,52 +527,44 @@ polygon_generic(Imaging im, int n, Edge *e, int ink, int eofill, hline_handler h
 }
 
 static inline int
-polygon8(Imaging im, int n, Edge *e, int ink, int eofill)
-{
+polygon8(Imaging im, int n, Edge *e, int ink, int eofill) {
     return polygon_generic(im, n, e, ink, eofill, hline8);
 }
 
 static inline int
-polygon32(Imaging im, int n, Edge *e, int ink, int eofill)
-{
+polygon32(Imaging im, int n, Edge *e, int ink, int eofill) {
     return polygon_generic(im, n, e, ink, eofill, hline32);
 }
 
 static inline int
-polygon32rgba(Imaging im, int n, Edge *e, int ink, int eofill)
-{
+polygon32rgba(Imaging im, int n, Edge *e, int ink, int eofill) {
     return polygon_generic(im, n, e, ink, eofill, hline32rgba);
 }
 
 static inline void
-add_edge(Edge *e, int x0, int y0, int x1, int y1)
-{
+add_edge(Edge *e, int x0, int y0, int x1, int y1) {
     /* printf("edge %d %d %d %d\n", x0, y0, x1, y1); */
 
     if (x0 <= x1) {
         e->xmin = x0, e->xmax = x1;
-    }
-    else {
+    } else {
         e->xmin = x1, e->xmax = x0;
     }
 
     if (y0 <= y1) {
         e->ymin = y0, e->ymax = y1;
-    }
-    else {
+    } else {
         e->ymin = y1, e->ymax = y0;
     }
 
     if (y0 == y1) {
         e->d = 0;
         e->dx = 0.0;
-    }
-    else {
+    } else {
         e->dx = ((float)(x1 - x0)) / (y1 - y0);
         if (y0 == e->ymin) {
             e->d = 1;
-        }
-        else {
+        } else {
             e->d = -1;
         }
     }
@@ -636,15 +592,13 @@ DRAW draw32rgba = {point32rgba, hline32rgba, line32rgba, polygon32rgba};
     if (im->image8) {                        \
         draw = &draw8;                       \
         ink = INK8(ink_);                    \
-    }                                        \
-    else {                                   \
+    } else {                                 \
         draw = (op) ? &draw32rgba : &draw32; \
         memcpy(&ink, ink_, sizeof(ink));     \
     }
 
 int
-ImagingDrawPoint(Imaging im, int x0, int y0, const void *ink_, int op)
-{
+ImagingDrawPoint(Imaging im, int x0, int y0, const void *ink_, int op) {
     DRAW *draw;
     INT32 ink;
 
@@ -656,8 +610,7 @@ ImagingDrawPoint(Imaging im, int x0, int y0, const void *ink_, int op)
 }
 
 int
-ImagingDrawLine(Imaging im, int x0, int y0, int x1, int y1, const void *ink_, int op)
-{
+ImagingDrawLine(Imaging im, int x0, int y0, int x1, int y1, const void *ink_, int op) {
     DRAW *draw;
     INT32 ink;
 
@@ -670,8 +623,7 @@ ImagingDrawLine(Imaging im, int x0, int y0, int x1, int y1, const void *ink_, in
 
 int
 ImagingDrawWideLine(Imaging im, int x0, int y0, int x1, int y1, const void *ink_,
-                    int width, int op)
-{
+                    int width, int op) {
     DRAW *draw;
     INT32 ink;
     int dx, dy;
@@ -715,8 +667,7 @@ ImagingDrawWideLine(Imaging im, int x0, int y0, int x1, int y1, const void *ink_
 
 int
 ImagingDrawRectangle(Imaging im, int x0, int y0, int x1, int y1, const void *ink_,
-                     int fill, int width, int op)
-{
+                     int fill, int width, int op) {
     int i;
     int y;
     int tmp;
@@ -732,23 +683,20 @@ ImagingDrawRectangle(Imaging im, int x0, int y0, int x1, int y1, const void *ink
     if (fill) {
         if (y0 < 0) {
             y0 = 0;
-        }
-        else if (y0 >= im->ysize) {
+        } else if (y0 >= im->ysize) {
             return 0;
         }
 
         if (y1 < 0) {
             return 0;
-        }
-        else if (y1 > im->ysize) {
+        } else if (y1 > im->ysize) {
             y1 = im->ysize;
         }
 
         for (y = y0; y <= y1; y++) {
             draw->hline(im, x0, y, x1, ink);
         }
-    }
-    else {
+    } else {
         /* outline */
         if (width == 0) {
             width = 1;
@@ -765,8 +713,7 @@ ImagingDrawRectangle(Imaging im, int x0, int y0, int x1, int y1, const void *ink
 }
 
 int
-ImagingDrawPolygon(Imaging im, int count, int *xy, const void *ink_, int fill, int op)
-{
+ImagingDrawPolygon(Imaging im, int count, int *xy, const void *ink_, int fill, int op) {
     int i, n;
     DRAW *draw;
     INT32 ink;
@@ -793,8 +740,7 @@ ImagingDrawPolygon(Imaging im, int count, int *xy, const void *ink_, int fill, i
         }
         draw->polygon(im, n, e, ink, 0);
         free(e);
-    }
-    else {
+    } else {
         /* Outline */
         for (i = 0; i < count - 1; i++) {
             draw->line(im, xy[i + i], xy[i + i + 1], xy[i + i + 2], xy[i + i + 3], ink);
@@ -806,8 +752,7 @@ ImagingDrawPolygon(Imaging im, int count, int *xy, const void *ink_, int fill, i
 }
 
 int
-ImagingDrawBitmap(Imaging im, int x0, int y0, Imaging bitmap, const void *ink, int op)
-{
+ImagingDrawBitmap(Imaging im, int x0, int y0, Imaging bitmap, const void *ink, int op) {
     return ImagingFill2(im, ink, bitmap, x0, y0, x0 + bitmap->xsize,
                         y0 + bitmap->ysize);
 }
@@ -820,8 +765,7 @@ ImagingDrawBitmap(Imaging im, int x0, int y0, Imaging bitmap, const void *ink, i
 #define PIESLICE 2
 
 static void
-ellipsePoint(int cx, int cy, int w, int h, float i, int *x, int *y)
-{
+ellipsePoint(int cx, int cy, int w, int h, float i, int *x, int *y) {
     float i_cos, i_sin;
     float x_f, y_f;
     double modf_int;
@@ -831,22 +775,19 @@ ellipsePoint(int cx, int cy, int w, int h, float i, int *x, int *y)
     y_f = (i_sin * h / 2) + cy;
     if (modf(x_f, &modf_int) == 0.5) {
         *x = i_cos > 0 ? FLOOR(x_f) : CEIL(x_f);
-    }
-    else {
+    } else {
         *x = FLOOR(x_f + 0.5);
     }
     if (modf(y_f, &modf_int) == 0.5) {
         *y = i_sin > 0 ? FLOOR(y_f) : CEIL(y_f);
-    }
-    else {
+    } else {
         *y = FLOOR(y_f + 0.5);
     }
 }
 
 static int
 ellipse(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
-        const void *ink_, int fill, int width, int mode, int op)
-{
+        const void *ink_, int fill, int width, int mode, int op) {
     float i;
     int inner;
     int n;
@@ -890,8 +831,7 @@ ellipse(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
             ellipsePoint(cx, cy, w, h, i, &x, &y);
             if (i != start) {
                 draw->line(im, lx, ly, x, y, ink);
-            }
-            else {
+            } else {
                 sx = x, sy = y;
             }
             lx = x, ly = y;
@@ -903,15 +843,13 @@ ellipse(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
                     draw->line(im, x, y, cx, cy, ink);
                     draw->line(im, cx, cy, sx, sy, ink);
                 }
-            }
-            else if (mode == CHORD) {
+            } else if (mode == CHORD) {
                 if (x != sx || y != sy) {
                     draw->line(im, x, y, sx, sy, ink);
                 }
             }
         }
-    }
-    else {
+    } else {
         inner = (mode == ARC || !fill) ? 1 : 0;
 
         // Build edge list
@@ -936,8 +874,7 @@ ellipse(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
             ellipsePoint(cx, cy, w, h, i, &x, &y);
             if (i == start) {
                 sx = x, sy = y;
-            }
-            else {
+            } else {
                 add_edge(&e[n++], lx, ly, x, y);
             }
             lx = x, ly = y;
@@ -959,8 +896,7 @@ ellipse(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
                 // ARC with no gap in the middle is a PIESLICE
                 mode = PIESLICE;
                 inner = 0;
-            }
-            else {
+            } else {
                 for (i = start; i < end + 1; i++) {
                     if (i > end) {
                         i = end;
@@ -968,8 +904,7 @@ ellipse(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
                     ellipsePoint(cx, cy, w, h, i, &x, &y);
                     if (i == start) {
                         sx_inner = x, sy_inner = y;
-                    }
-                    else {
+                    } else {
                         add_edge(&e[n++], lx_inner, ly_inner, x, y);
                     }
                     lx_inner = x, ly_inner = y;
@@ -988,14 +923,12 @@ ellipse(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
                         ImagingDrawWideLine(im, cx, cy, lx, ly, &ink, width, op);
                     }
                 }
-            }
-            else if (mode == CHORD) {
+            } else if (mode == CHORD) {
                 add_edge(&e[n++], sx, sy, lx, ly);
                 if (inner) {
                     add_edge(&e[n++], sx_inner, sy_inner, lx_inner, ly_inner);
                 }
-            }
-            else if (mode == ARC) {
+            } else if (mode == ARC) {
                 add_edge(&e[n++], sx, sy, sx_inner, sy_inner);
                 add_edge(&e[n++], lx, ly, lx_inner, ly_inner);
             }
@@ -1011,29 +944,25 @@ ellipse(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
 
 int
 ImagingDrawArc(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
-               const void *ink, int width, int op)
-{
+               const void *ink, int width, int op) {
     return ellipse(im, x0, y0, x1, y1, start, end, ink, 0, width, ARC, op);
 }
 
 int
 ImagingDrawChord(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
-                 const void *ink, int fill, int width, int op)
-{
+                 const void *ink, int fill, int width, int op) {
     return ellipse(im, x0, y0, x1, y1, start, end, ink, fill, width, CHORD, op);
 }
 
 int
 ImagingDrawEllipse(Imaging im, int x0, int y0, int x1, int y1, const void *ink,
-                   int fill, int width, int op)
-{
+                   int fill, int width, int op) {
     return ellipse(im, x0, y0, x1, y1, 0, 360, ink, fill, width, CHORD, op);
 }
 
 int
 ImagingDrawPieslice(Imaging im, int x0, int y0, int x1, int y1, float start, float end,
-                    const void *ink, int fill, int width, int op)
-{
+                    const void *ink, int fill, int width, int op) {
     return ellipse(im, x0, y0, x1, y1, start, end, ink, fill, width, PIESLICE, op);
 }
 
@@ -1056,8 +985,7 @@ struct ImagingOutlineInstance {
 };
 
 ImagingOutline
-ImagingOutlineNew(void)
-{
+ImagingOutlineNew(void) {
     ImagingOutline outline;
 
     outline = calloc(1, sizeof(struct ImagingOutlineInstance));
@@ -1074,8 +1002,7 @@ ImagingOutlineNew(void)
 }
 
 void
-ImagingOutlineDelete(ImagingOutline outline)
-{
+ImagingOutlineDelete(ImagingOutline outline) {
     if (!outline) {
         return;
     }
@@ -1088,8 +1015,7 @@ ImagingOutlineDelete(ImagingOutline outline)
 }
 
 static Edge *
-allocate(ImagingOutline outline, int extra)
-{
+allocate(ImagingOutline outline, int extra) {
     Edge *e;
 
     if (outline->count + extra > outline->size) {
@@ -1098,8 +1024,7 @@ allocate(ImagingOutline outline, int extra)
         if (!outline->edges) {
             /* malloc check ok, uses calloc for overflow */
             e = calloc(outline->size, sizeof(Edge));
-        }
-        else {
+        } else {
             if (outline->size > INT_MAX / sizeof(Edge)) {
                 return NULL;
             }
@@ -1120,8 +1045,7 @@ allocate(ImagingOutline outline, int extra)
 }
 
 int
-ImagingOutlineMove(ImagingOutline outline, float x0, float y0)
-{
+ImagingOutlineMove(ImagingOutline outline, float x0, float y0) {
     outline->x = outline->x0 = x0;
     outline->y = outline->y0 = y0;
 
@@ -1129,8 +1053,7 @@ ImagingOutlineMove(ImagingOutline outline, float x0, float y0)
 }
 
 int
-ImagingOutlineLine(ImagingOutline outline, float x1, float y1)
-{
+ImagingOutlineLine(ImagingOutline outline, float x1, float y1) {
     Edge *e;
 
     e = allocate(outline, 1);
@@ -1148,8 +1071,7 @@ ImagingOutlineLine(ImagingOutline outline, float x1, float y1)
 
 int
 ImagingOutlineCurve(ImagingOutline outline, float x1, float y1, float x2, float y2,
-                    float x3, float y3)
-{
+                    float x3, float y3) {
     Edge *e;
     int i;
     float xo, yo;
@@ -1190,8 +1112,7 @@ ImagingOutlineCurve(ImagingOutline outline, float x1, float y1, float x2, float 
 }
 
 int
-ImagingOutlineClose(ImagingOutline outline)
-{
+ImagingOutlineClose(ImagingOutline outline) {
     if (outline->x == outline->x0 && outline->y == outline->y0) {
         return 0;
     }
@@ -1199,8 +1120,7 @@ ImagingOutlineClose(ImagingOutline outline)
 }
 
 int
-ImagingOutlineTransform(ImagingOutline outline, double a[6])
-{
+ImagingOutlineTransform(ImagingOutline outline, double a[6]) {
     Edge *eIn;
     Edge *eOut;
     int i, n;
@@ -1236,14 +1156,12 @@ ImagingOutlineTransform(ImagingOutline outline, double a[6])
         /* FIXME: ouch! */
         if (eIn->x0 == eIn->xmin) {
             x1 = eIn->xmax;
-        }
-        else {
+        } else {
             x1 = eIn->xmin;
         }
         if (eIn->y0 == eIn->ymin) {
             y1 = eIn->ymax;
-        }
-        else {
+        } else {
             y1 = eIn->ymin;
         }
 
@@ -1269,8 +1187,7 @@ ImagingOutlineTransform(ImagingOutline outline, double a[6])
 
 int
 ImagingDrawOutline(Imaging im, ImagingOutline outline, const void *ink_, int fill,
-                   int op)
-{
+                   int op) {
     DRAW *draw;
     INT32 ink;
 
