@@ -1,3 +1,8 @@
+.. image:: https://raw.githubusercontent.com/python-pillow/pillow-logo/master/pillow-logo-248x250.png
+    :width: 248px
+    :height: 250px
+    :align: center
+
 Pillow
 ======
 
