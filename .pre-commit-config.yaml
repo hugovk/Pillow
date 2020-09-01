@@ -18,6 +18,11 @@ repos:
     hooks:
       - id: yesqa
 
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: a077e64d1273b4f914d54341da85d55ed11b9e83  # frozen: v1.1.1
+    hooks:
+      - id: clang-format
+
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: f30f4974a08a6b2f6a1eeaf30a4d501cf909163a  # frozen: v1.1.9
     hooks:
