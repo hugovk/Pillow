@@ -94,3 +94,4 @@ As of 2019, Pillow development is
 ## Report a Vulnerability
 
 To report a security vulnerability, please follow the procedure described in the [Tidelift security policy](https://tidelift.com/docs/security).
+
