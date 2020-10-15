@@ -309,4 +309,3 @@ texinfo_documents = [
 
 def setup(app):
     app.add_js_file("js/script.js")
-    app.add_css_file("css/dark.css")
