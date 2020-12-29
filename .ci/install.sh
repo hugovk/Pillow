@@ -41,8 +41,10 @@ if [ "$GHA_PYTHON_VERSION" == "3.9" ]; then python3 -m pip install -U "setuptool
 if [[ $GHA_PYTHON_VERSION == 3.* && $GHA_PYTHON_VERSION != "3.10-dev" ]]; then
   # arm64, ppc64le, s390x CPUs:
   # "ERROR: Could not find a version that satisfies the requirement pyqt5"
-    sudo apt-get -qq install libxcb-xinerama0 pyqt5-dev-tools
-    python3 -m pip install pyqt5
+#    sudo apt-get -qq install libxcb-xinerama0 pyqt5-dev-tools
+#    python3 -m pip install pyqt5
+    sudo apt-get -qq install libegl-dev libgl-dev libopengl-dev libxkbcommon-dev
+    python3 -m pip install pyside6
 fi
 
 # webp
