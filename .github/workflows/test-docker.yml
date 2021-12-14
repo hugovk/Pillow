@@ -68,7 +68,7 @@ jobs:
         docker stop pillow_container
         sudo mkdir -p $pil_path
         sudo cp src/PIL/*.py $pil_path
-        .ci/after_success.sh
+        .github/workflows/after_success.sh
       env:
         MATRIX_DOCKER: ${{ matrix.docker }}
 

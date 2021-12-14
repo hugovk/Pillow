@@ -43,7 +43,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
-        cache-dependency-path: ".ci/*.sh"
+        cache-dependency-path: ".github/workflows/*.sh"
 
     - name: Build system information
       run: python3 .github/workflows/system-info.py
@@ -51,18 +51,18 @@ jobs:
     - name: Install Linux dependencies
       if: startsWith(matrix.os, 'ubuntu')
       run: |
-        .ci/install.sh
+        .github/workflows/install-ubuntu.sh
       env:
         GHA_PYTHON_VERSION: ${{ matrix.python-version }}
 
     - name: Install macOS dependencies
       if: startsWith(matrix.os, 'macOS')
       run: |
-        .github/workflows/macos-install.sh
+        .github/workflows/install-macos.sh
 
     - name: Build
       run: |
-        .ci/build.sh
+        .github/workflows/build.sh
 
     - name: Test
       run: |
@@ -70,9 +70,9 @@ jobs:
           python3 -m pip install pytest-reverse
         fi
         if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-          xvfb-run -s '-screen 0 1024x768x24' .ci/test.sh
+          xvfb-run -s '-screen 0 1024x768x24' .github/workflows/test.sh
         else
-          .ci/test.sh
+          .github/workflows/test.sh
         fi
       env:
         PYTHONOPTIMIZE: ${{ matrix.PYTHONOPTIMIZE }}
@@ -98,7 +98,7 @@ jobs:
 
     - name: After success
       run: |
-        .ci/after_success.sh
+        .github/workflows/after_success.sh
 
     - name: Upload coverage
       run: bash <(curl -s https://codecov.io/bash) -F ${{ matrix.codecov-flag }}
