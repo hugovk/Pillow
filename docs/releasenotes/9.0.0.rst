@@ -119,7 +119,7 @@ Google's `OSS-Fuzz`_ project for finding this issue.
 Fixed ImagePath.Path array handling
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CWE-126 and CWE-665 were found when initializing ``ImagePath.Path``.
+:cwe:`CWE-126` and :cwe:`CWE-665` were found when initializing ``ImagePath.Path``.
 
 .. _OSS-Fuzz: https://github.com/google/oss-fuzz
 
