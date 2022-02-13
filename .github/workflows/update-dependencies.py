@@ -22,7 +22,9 @@ def update_version(name: str, slug: str, v_in_tag: str) -> str | None:
     new_version = new_tag.removeprefix("v")
     print(f"{new_version=}")
 
-    with open("winbuild/build_prepare.py") as f:
+    filename = "winbuild/build_prepare.py"
+
+    with open(filename) as f:
         content = f.read()
         content_new = re.sub(
             rf"https://github.com/{slug}/archive/{v_in_tag}\d+\.\d+\.\d+.zip",
@@ -39,26 +41,31 @@ def update_version(name: str, slug: str, v_in_tag: str) -> str | None:
 
     if changes_made:
         # Write the file out again
-        with open("winbuild/build_prepare.py", "w") as file:
-            file.write(content_new)
+        with open(filename, "w") as f:
+            f.write(content_new)
         return f"{name} to {new_version}"
 
     return None
 
 
-updates = []
-for name, slug, v_in_tag in DEPENDENCIES:
-    update = update_version(name, slug, v_in_tag)
-    if update:
-        updates.append(update)
+def main() -> None:
+    updates = []
+    for name, slug, v_in_tag in DEPENDENCIES:
+        update = update_version(name, slug, v_in_tag)
+        if update:
+            updates.append(update)
 
-if updates:
-    commit_message = "Update " + ", ".join(updates)
-    print(commit_message)
+    if updates:
+        commit_message = "Update " + ", ".join(updates)
+        print(commit_message)
 
-    github_env_file = os.getenv("GITHUB_ENV")
-    if github_env_file:
-        with open(github_env_file, "a") as f:
-            f.write(f"COMMIT_MESSAGE={commit_message}")
-else:
-    print("No updates")
+        github_env_file = os.getenv("GITHUB_ENV")
+        if github_env_file:
+            with open(github_env_file, "a") as f:
+                f.write(f"COMMIT_MESSAGE={commit_message}")
+    else:
+        print("No updates")
+
+
+if __name__ == "__main__":
+    main()
