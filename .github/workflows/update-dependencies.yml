@@ -1,0 +1,54 @@
+name: "Update dependencies"
+
+on:
+  schedule:
+    - cron: "30 19 * * *" # daily at 19:30 UTC
+  push:
+    paths:
+      - ".github/workflows/update-dependencies.py"
+      - ".github/workflows/update-dependencies.yml"
+  pull_request:
+    paths:
+      - ".github/workflows/update-dependencies.py"
+      - ".github/workflows/update-dependencies.yml"
+  workflow_dispatch:
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  update_dependencies:
+    # TODO if: github.repository_owner == 'python-pillow'
+    name: Update dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+          cache: pip
+          cache-dependency-path: .github/workflows/update-dependencies.py
+
+      - name: "Check for updates"
+        run: |
+          python -m pip install atoma
+          python .github/workflows/update-dependencies.py
+
+      - name: "Check if there are changes"
+        id: "changes"
+        uses: UnicornGlobal/has-changes-action@v1.0.12
+
+        # behaviour if PR already exists: https://github.com/marketplace/actions/create-pull-request#action-behaviour
+      - name: "Create PR"
+        if: steps.changes.outputs.changed == 1
+        uses: "peter-evans/create-pull-request@v3"
+        with:
+          commit-message: >-
+            Update dependencies
+          title: ${{ env.COMMIT_MESSAGE }}
+          body: ""
+          labels: "Dependency"
+          branch: "update/dependencies"
+          delete-branch: true
