@@ -11,15 +11,16 @@ DEPENDENCIES = [
 ]
 
 
-def update_version(name: str, slug: str, v_in_tag: str) -> str | None:
+def update_version(name: str, slug: str, version_prefix: str) -> str | None:
     url = f"https://github.com/{slug}/tags.atom"
     print(url)
     contents = urllib.request.urlopen(url).read()
     feed = atoma.parse_atom_bytes(contents)
     link = feed.entries[0].links[0].href
+    print(link)
     new_tag = link.rsplit("/", 1)[1]
     print(f"{new_tag=}")
-    new_version = new_tag.removeprefix("v")
+    new_version = new_tag.removeprefix(version_prefix)
     print(f"{new_version=}")
 
     filename = "winbuild/build_prepare.py"
@@ -27,8 +28,8 @@ def update_version(name: str, slug: str, v_in_tag: str) -> str | None:
     with open(filename) as f:
         content = f.read()
         content_new = re.sub(
-            rf"https://github.com/{slug}/archive/{v_in_tag}\d+\.\d+\.\d+.zip",
-            f"https://github.com/{slug}/archive/{v_in_tag}{new_version}.zip",
+            rf"https://github.com/{slug}/archive/{version_prefix}\d+\.\d+\.\d+.zip",
+            f"https://github.com/{slug}/archive/{version_prefix}{new_version}.zip",
             content,
         )
         content_new = re.sub(

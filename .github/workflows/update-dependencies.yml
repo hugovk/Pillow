@@ -18,6 +18,7 @@ env:
 
 jobs:
   update_dependencies:
+    # TODO if: github.repository_owner == 'python-pillow'
     name: Update dependencies
     runs-on: ubuntu-latest
     steps:
