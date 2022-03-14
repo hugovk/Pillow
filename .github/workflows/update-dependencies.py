@@ -4,7 +4,15 @@ import urllib.request
 
 import atoma
 
+try:
+    from rich import print
+except ImportError:
+    pass
+
+DEFINITIONS_FILE = "winbuild/build_prepare.py"
+
 DEPENDENCIES = [
+    # Name, GitHub slug, version prefix
     ("fribidi", "fribidi/fribidi", "v"),
     ("harfbuzz", "harfbuzz/harfbuzz", ""),
     ("openjpeg", "uclouvain/openjpeg", "v"),
@@ -23,9 +31,7 @@ def update_version(name: str, slug: str, version_prefix: str) -> str | None:
     new_version = new_tag.removeprefix(version_prefix)
     print(f"{new_version=}")
 
-    filename = "winbuild/build_prepare.py"
-
-    with open(filename) as f:
+    with open(DEFINITIONS_FILE) as f:
         content = f.read()
         content_new = re.sub(
             rf"https://github.com/{slug}/archive/{version_prefix}\d+\.\d+\.\d+.zip",
@@ -39,10 +45,11 @@ def update_version(name: str, slug: str, version_prefix: str) -> str | None:
         )
     changes_made = content != content_new
     print(f"{changes_made=}")
+    print()
 
     if changes_made:
         # Write the file out again
-        with open(filename, "w") as f:
+        with open(DEFINITIONS_FILE, "w") as f:
             f.write(content_new)
         return f"{name} to {new_version}"
 
