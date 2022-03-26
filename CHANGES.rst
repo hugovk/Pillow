@@ -5,6 +5,84 @@ Changelog (Pillow)
 9.1.0 (unreleased)
 ------------------
 
+- If an error occurs after creating a file, remove the file #6134
+  [radarhere]
+
+- Fixed calling DisplayViewer or XVViewer without a title #6136
+  [radarhere]
+
+- Retain RGBA transparency when saving multiple GIF frames #6128
+  [radarhere]
+
+- Save additional ICO frames with other bit depths if supplied #6122
+  [radarhere]
+
+- Handle EXIF data truncated to just the header #6124
+  [radarhere]
+
+- Added support for reading BMP images with RLE8 compression #6102
+  [radarhere]
+
+- Support Python distributions where _tkinter is compiled in #6006
+  [lukegb]
+
+- Added support for PPM arbitrary maxval #6119
+  [radarhere]
+
+- Added BigTIFF reading #6097
+  [radarhere]
+
+- When converting, clip I;16 to be unsigned, not signed #6112
+  [radarhere]
+
+- Fixed loading L mode GIF with transparency #6086
+  [radarhere]
+
+- Improved handling of PPM header #5121
+  [Piolie, radarhere]
+
+- Reset size when seeking away from "Large Thumbnail" MPO frame #6101
+  [radarhere]
+
+- Replace requirements.txt with extras #6072
+  [hugovk, radarhere]
+
+- Added PyEncoder and support BLP saving #6069
+  [radarhere]
+
+- Handle TGA images with packets that cross scan lines #6087
+  [radarhere]
+
+- Added FITS reading #6056
+  [radarhere, hugovk]
+
+- Added rawmode argument to Image.getpalette() #6061
+  [radarhere]
+
+- Fixed BUFR, GRIB and HDF5 stub saving #6071
+  [radarhere]
+
+- Do not automatically remove temporary ImageShow files on Unix #6045
+  [radarhere]
+
+- Correctly read JPEG compressed BLP images #4685
+  [Meithal, radarhere]
+
+- Merged _MODE_CONV typ into ImageMode as typestr #6057
+  [radarhere]
+
+- Consider palette size when converting and in getpalette() #6060
+  [radarhere]
+
+- Added enums #5954
+  [radarhere]
+
+- Ensure image is opaque after converting P to PA with RGB palette #6052
+  [radarhere]
+
+- Attach RGBA palettes from putpalette() when suitable #6054
+  [radarhere]
+
 - Added get_photoshop_blocks() to parse Photoshop TIFF tag #6030
   [radarhere]
 
