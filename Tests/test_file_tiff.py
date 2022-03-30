@@ -225,6 +225,15 @@ class TestFileTiff:
         assert b[0] == ord(b"\x01")
         assert b[1] == ord(b"\xe0")
 
+    def test_16bit_r(self):
+        with Image.open("Tests/images/16bit.r.tif") as im:
+            assert im.getpixel((0, 0)) == 480
+            assert im.mode == "I;16"
+
+            b = im.tobytes()
+        assert b[0] == ord(b"\xe0")
+        assert b[1] == ord(b"\x01")
+
     def test_16bit_s(self):
         with Image.open("Tests/images/16bit.s.tif") as im:
             im.load()
@@ -601,6 +610,17 @@ class TestFileTiff:
         infile = "Tests/images/tiff_tiled_planar_raw.tif"
         with Image.open(infile) as im:
             assert_image_equal_tofile(im, "Tests/images/tiff_adobe_deflate.png")
+
+    def test_planar_configuration_save(self, tmp_path):
+        infile = "Tests/images/tiff_tiled_planar_raw.tif"
+        with Image.open(infile) as im:
+            assert im._planar_configuration == 2
+
+            outfile = str(tmp_path / "temp.tif")
+            im.save(outfile)
+
+            with Image.open(outfile) as reloaded:
+                assert_image_equal_tofile(reloaded, infile)
 
     def test_palette(self, tmp_path):
         def roundtrip(mode):

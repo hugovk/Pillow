@@ -5,6 +5,27 @@ Changelog (Pillow)
 9.1.0 (unreleased)
 ------------------
 
+- Raise ValueError when trying to save empty JPEG #6159
+  [radarhere]
+
+- Always save TIFF with contiguous planar configuration #5973
+  [radarhere]
+
+- Connected discontiguous polygon corners #5980
+  [radarhere]
+
+- Ensure Tkinter hook is activated for getimage() #6032
+  [radarhere]
+
+- Use screencapture arguments to crop on macOS #6152
+  [radarhere]
+
+- Do not mark L mode JPEG as 1 bit in PDF #6151
+  [radarhere]
+
+- Added support for reading I;16R TIFF images #6132
+  [radarhere]
+
 - If an error occurs after creating a file, remove the file #6134
   [radarhere]
 

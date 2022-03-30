@@ -175,6 +175,7 @@ OPEN_INFO = {
     (II, 1, (1,), 1, (12,), ()): ("I;16", "I;12"),
     (II, 1, (1,), 1, (16,), ()): ("I;16", "I;16"),
     (MM, 1, (1,), 1, (16,), ()): ("I;16B", "I;16B"),
+    (II, 1, (1,), 2, (16,), ()): ("I;16", "I;16R"),
     (II, 1, (2,), 1, (16,), ()): ("I", "I;16S"),
     (MM, 1, (2,), 1, (16,), ()): ("I", "I;16BS"),
     (II, 0, (3,), 1, (32,), ()): ("F", "F;32F"),
@@ -1579,7 +1580,7 @@ def _save(im, fp, filename):
     libtiff = WRITE_LIBTIFF or compression != "raw"
 
     # required for color libtiff images
-    ifd[PLANAR_CONFIGURATION] = getattr(im, "_planar_configuration", 1)
+    ifd[PLANAR_CONFIGURATION] = 1
 
     ifd[IMAGEWIDTH] = im.size[0]
     ifd[IMAGELENGTH] = im.size[1]
