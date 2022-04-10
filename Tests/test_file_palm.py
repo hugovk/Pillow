@@ -53,7 +53,6 @@ def test_monochrome(tmp_path):
     roundtrip(tmp_path, mode)
 
 
-@pytest.mark.xfail(reason="Palm P image is wrong")
 def test_p_mode(tmp_path):
     # Arrange
     mode = "P"
