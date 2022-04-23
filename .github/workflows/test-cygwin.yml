@@ -23,6 +23,14 @@ jobs:
       - name: Checkout Pillow
         uses: actions/checkout@v3
 
+      - name: Cache cygwin-packages
+        uses: actions/cache@v3
+        with:
+          path: 'C:\cygwin-packages'
+          key: ${{ runner.os }}-cygwin-packages-${{ matrix.architecture }}-${{ hashFiles('.github/workflows/test-cygwin.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-cygwin-packages-${{ matrix.architecture }}-
+
       - name: Install Cygwin
         uses: cygwin/cygwin-install-action@v2
         with:
@@ -43,8 +51,8 @@ jobs:
         uses: egor-tensin/cleanup-path@v1
         with:
           dirs: 'C:\cygwin\bin;C:\cygwin\lib\lapack'
-          
-      - name: pip cache
+
+      - name: Cache pip
         uses: actions/cache@v3
         with:
           path: 'C:\cygwin\home\runneradmin\.cache\pip'
