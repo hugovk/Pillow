@@ -5,6 +5,9 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   build:
 
@@ -12,7 +15,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [
-          "macos-latest",
           "ubuntu-latest",
         ]
         python-version: [
@@ -33,8 +35,6 @@ jobs:
         # Include new variables for Codecov
         - os: ubuntu-latest
           codecov-flag: GHA_Ubuntu
-        - os: macos-latest
-          codecov-flag: GHA_macOS
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
@@ -59,57 +59,15 @@ jobs:
       env:
         GHA_PYTHON_VERSION: ${{ matrix.python-version }}
 
-    - name: Install macOS dependencies
-      if: startsWith(matrix.os, 'macOS')
-      run: |
-        .github/workflows/macos-install.sh
-      env:
-        GHA_PYTHON_VERSION: ${{ matrix.python-version }}
-
     - name: Build
       run: |
         .ci/build.sh
 
-    - name: Test
-      run: |
-        if [ $REVERSE ]; then
-          python3 -m pip install pytest-reverse
-        fi
-        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-          xvfb-run -s '-screen 0 1024x768x24' .ci/test.sh
-        else
-          .ci/test.sh
-        fi
-      env:
-        PYTHONOPTIMIZE: ${{ matrix.PYTHONOPTIMIZE }}
-        REVERSE: ${{ matrix.REVERSE }}
-
-    - name: Prepare to upload errors
-      if: failure()
-      run: |
-        mkdir -p Tests/errors
-
-    - name: Upload errors
-      uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: errors
-        path: Tests/errors
-
     - name: Docs
-      if: startsWith(matrix.os, 'ubuntu') && matrix.python-version == 3.10
+      if: startsWith(matrix.os, 'ubuntu')
       run: |
         python3 -m pip install furo sphinx-copybutton sphinx-issues sphinx-removed-in sphinxext-opengraph
         make doccheck
-
-    - name: After success
-      run: |
-        .ci/after_success.sh
-
-    - name: Upload coverage
-      run: bash <(curl -s https://codecov.io/bash) -F ${{ matrix.codecov-flag }}
-      env:
-        CODECOV_NAME: ${{ matrix.os }} Python ${{ matrix.python-version }}
 
   success:
     permissions:
