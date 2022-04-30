@@ -67,7 +67,7 @@ jobs:
       if: startsWith(matrix.os, 'ubuntu')
       run: |
         python3 -m pip install furo sphinx-copybutton sphinx-issues sphinx-removed-in sphinxext-opengraph
-        make doccheck
+        make doc
 
   success:
     permissions:
