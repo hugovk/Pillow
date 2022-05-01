@@ -151,6 +151,8 @@ def isImageType(t):
 
 # transpose
 class Transpose(IntEnum):
+    """my docstring"""
+
     FLIP_LEFT_RIGHT = 0
     FLIP_TOP_BOTTOM = 1
     ROTATE_90 = 2
@@ -162,6 +164,8 @@ class Transpose(IntEnum):
 
 # transforms (also defined in Imaging.h)
 class Transform(IntEnum):
+    """my docstring"""
+
     AFFINE = 0
     EXTENT = 1
     PERSPECTIVE = 2
@@ -171,6 +175,8 @@ class Transform(IntEnum):
 
 # resampling filters (also defined in Imaging.h)
 class Resampling(IntEnum):
+    """my docstring"""
+
     NEAREST = 0
     BOX = 4
     BILINEAR = 2
@@ -198,6 +204,8 @@ class Dither(IntEnum):
 
 # palettes/quantizers
 class Palette(IntEnum):
+    """my docstring"""
+
     WEB = 0
     ADAPTIVE = 1
 
