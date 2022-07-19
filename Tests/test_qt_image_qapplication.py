@@ -52,41 +52,49 @@ def roundtrip(expected):
 
 
 @pytest.mark.skipif(not ImageQt.qt_is_installed, reason="Qt bindings are not installed")
-def test_sanity(tmp_path):
+@pytest.mark.parametrize(
+    "mode",
+    ("1", "RGB", "RGBA", "L", "P"),
+)
+def test_sanity(tmp_path, mode):
     # Segfault test
-    app = QApplication([])
+    if QApplication.instance():
+        app = QApplication.instance()
+    else:
+        app = QApplication([])
+
     ex = Example()
     assert app  # Silence warning
     assert ex  # Silence warning
 
-    for mode in ("1", "RGB", "RGBA", "L", "P"):
-        # to QPixmap
-        im = hopper(mode)
-        data = ImageQt.toqpixmap(im)
+    # to QPixmap
+    im = hopper(mode)
+    data = ImageQt.toqpixmap(im)
 
-        assert isinstance(data, QPixmap)
-        assert not data.isNull()
+    assert isinstance(data, QPixmap)
+    assert not data.isNull()
 
-        # Test saving the file
-        tempfile = str(tmp_path / f"temp_{mode}.png")
-        data.save(tempfile)
+    # Test saving the file
+    tempfile = str(tmp_path / f"temp_{mode}.png")
+    data.save(tempfile)
 
-        # Render the image
-        qimage = ImageQt.ImageQt(im)
-        data = QPixmap.fromImage(qimage)
-        qt_format = QImage.Format if ImageQt.qt_version == "6" else QImage
-        qimage = QImage(128, 128, qt_format.Format_ARGB32)
-        painter = QPainter(qimage)
-        image_label = QLabel()
-        image_label.setPixmap(data)
-        image_label.render(painter, QPoint(0, 0), QRegion(0, 0, 128, 128))
-        painter.end()
-        rendered_tempfile = str(tmp_path / f"temp_rendered_{mode}.png")
-        qimage.save(rendered_tempfile)
-        assert_image_equal_tofile(im.convert("RGBA"), rendered_tempfile)
+    # Render the image
+    qimage = ImageQt.ImageQt(im)
+    data = QPixmap.fromImage(qimage)
+    qt_format = QImage.Format if ImageQt.qt_version == "6" else QImage
+    qimage = QImage(128, 128, qt_format.Format_ARGB32)
+    painter = QPainter(qimage)
+    image_label = QLabel()
+    image_label.setPixmap(data)
+    image_label.render(painter, QPoint(0, 0), QRegion(0, 0, 128, 128))
+    painter.end()
+    rendered_tempfile = str(tmp_path / f"temp_rendered_{mode}.png")
+    qimage.save(rendered_tempfile)
+    assert_image_equal_tofile(im.convert("RGBA"), rendered_tempfile)
 
-        # from QPixmap
-        roundtrip(hopper(mode))
+    # from QPixmap
+    print(mode)
+    roundtrip(hopper(mode))
 
     app.quit()
     app = None
