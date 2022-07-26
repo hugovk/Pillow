@@ -6,5 +6,6 @@ build:
     python: "3.10"
 
   commands:
+    - python3 -m pip install -U pip wheel
     - python3 -m pip install ".[docs]"
     - make doc BUILDDIR=../_readthedocs
