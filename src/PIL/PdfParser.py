@@ -629,8 +629,8 @@ class PdfParser:
             m = self.re_trailer_end.search(self.buf, m.start() + 16)
         if not m:
             m = last_match
-        trailer_data = m.group(1)
-        self.last_xref_section_offset = int(m.group(2))
+        trailer_data = m[1]
+        self.last_xref_section_offset = int(m[2])
         self.trailer_dict = self.interpret_trailer(trailer_data)
         self.xref_table = XrefTable()
         self.read_xref_table(xref_section_offset=self.last_xref_section_offset)
@@ -643,9 +643,9 @@ class PdfParser:
             self.buf[trailer_offset : trailer_offset + 16384]
         )
         check_format_condition(m, "previous trailer not found")
-        trailer_data = m.group(1)
+        trailer_data = m[1]
         check_format_condition(
-            int(m.group(2)) == xref_section_offset,
+            int(m[2]) == xref_section_offset,
             "xref section offset in previous trailer doesn't match what was expected",
         )
         trailer_dict = self.interpret_trailer(trailer_data)
@@ -676,7 +676,7 @@ class PdfParser:
                     + repr(trailer_data[offset:]),
                 )
                 break
-            key = cls.interpret_name(m.group(1))
+            key = cls.interpret_name(m[1])
             value, offset = cls.get_value(trailer_data, m.end())
             trailer[key] = value
         check_format_condition(
@@ -695,10 +695,10 @@ class PdfParser:
     def interpret_name(cls, raw, as_text=False):
         name = b""
         for m in cls.re_hashes_in_name.finditer(raw):
-            if m.group(3):
-                name += m.group(1) + bytearray.fromhex(m.group(3).decode("us-ascii"))
+            if m[3]:
+                name += m[1] + bytearray.fromhex(m[3].decode("us-ascii"))
             else:
-                name += m.group(1)
+                name += m[1]
         if as_text:
             return name.decode("utf-8")
         else:
@@ -763,17 +763,16 @@ class PdfParser:
         m = cls.re_indirect_def_start.match(data, offset)
         if m:
             check_format_condition(
-                int(m.group(1)) > 0,
+                int(m[1]) > 0,
                 "indirect object definition: object ID must be greater than 0",
             )
             check_format_condition(
-                int(m.group(2)) >= 0,
+                int(m[2]) >= 0,
                 "indirect object definition: generation must be non-negative",
             )
             check_format_condition(
                 expect_indirect is None
-                or expect_indirect
-                == IndirectReference(int(m.group(1)), int(m.group(2))),
+                or expect_indirect == IndirectReference(int(m[1]), int(m[2])),
                 "indirect object definition different than expected",
             )
             object, offset = cls.get_value(data, m.end(), max_nesting=max_nesting - 1)
@@ -788,14 +787,14 @@ class PdfParser:
         m = cls.re_indirect_reference.match(data, offset)
         if m:
             check_format_condition(
-                int(m.group(1)) > 0,
+                int(m[1]) > 0,
                 "indirect object reference: object ID must be greater than 0",
             )
             check_format_condition(
-                int(m.group(2)) >= 0,
+                int(m[2]) >= 0,
                 "indirect object reference: generation must be non-negative",
             )
-            return IndirectReference(int(m.group(1)), int(m.group(2))), m.end()
+            return IndirectReference(int(m[1]), int(m[2])), m.end()
         m = cls.re_dict_start.match(data, offset)
         if m:
             offset = m.end()
@@ -851,20 +850,18 @@ class PdfParser:
             return False, m.end()
         m = cls.re_name.match(data, offset)
         if m:
-            return PdfName(cls.interpret_name(m.group(1))), m.end()
+            return PdfName(cls.interpret_name(m[1])), m.end()
         m = cls.re_int.match(data, offset)
         if m:
-            return int(m.group(1)), m.end()
+            return int(m[1]), m.end()
         m = cls.re_real.match(data, offset)
         if m:
             # XXX Decimal instead of float???
-            return float(m.group(1)), m.end()
+            return float(m[1]), m.end()
         m = cls.re_string_hex.match(data, offset)
         if m:
             # filter out whitespace
-            hex_string = bytearray(
-                b for b in m.group(1) if b in b"0123456789abcdefABCDEF"
-            )
+            hex_string = bytearray(b for b in m[1] if b in b"0123456789abcdefABCDEF")
             if len(hex_string) % 2 == 1:
                 # append a 0 if the length is not even - yes, at the end
                 hex_string.append(ord(b"0"))
@@ -903,18 +900,18 @@ class PdfParser:
         result = bytearray()
         for m in cls.re_lit_str_token.finditer(data, offset):
             result.extend(data[offset : m.start()])
-            if m.group(1):
-                result.extend(cls.escaped_chars[m.group(1)[1]])
-            elif m.group(2):
-                result.append(int(m.group(2)[1:], 8))
-            elif m.group(3):
+            if m[1]:
+                result.extend(cls.escaped_chars[m[1][1]])
+            elif m[2]:
+                result.append(int(m[2][1:], 8))
+            elif m[3]:
                 pass
-            elif m.group(5):
+            elif m[5]:
                 result.extend(b"\n")
-            elif m.group(6):
+            elif m[6]:
                 result.extend(b"(")
                 nesting_depth += 1
-            elif m.group(7):
+            elif m[7]:
                 if nesting_depth == 0:
                     return bytes(result), m.end()
                 result.extend(b")")
@@ -949,16 +946,16 @@ class PdfParser:
                 break
             subsection_found = True
             offset = m.end()
-            first_object = int(m.group(1))
-            num_objects = int(m.group(2))
+            first_object = int(m[1])
+            num_objects = int(m[2])
             for i in range(first_object, first_object + num_objects):
                 m = self.re_xref_entry.match(self.buf, offset)
                 check_format_condition(m, "xref entry not found")
                 offset = m.end()
-                is_free = m.group(3) == b"f"
-                generation = int(m.group(2))
+                is_free = m[3] == b"f"
+                generation = int(m[2])
                 if not is_free:
-                    new_entry = (int(m.group(1)), generation)
+                    new_entry = (int(m[1]), generation)
                     check_format_condition(
                         i not in self.xref_table or self.xref_table[i] == new_entry,
                         "xref entry duplicated (and not identical)",

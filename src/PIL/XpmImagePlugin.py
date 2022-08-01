@@ -51,10 +51,10 @@ class XpmImageFile(ImageFile.ImageFile):
             if m:
                 break
 
-        self._size = int(m.group(1)), int(m.group(2))
+        self._size = int(m[1]), int(m[2])
 
-        pal = int(m.group(3))
-        bpp = int(m.group(4))
+        pal = int(m[3])
+        bpp = int(m[4])
 
         if pal > 256 or bpp != 1:
             raise ValueError("cannot read this XPM file")

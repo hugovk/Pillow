@@ -146,9 +146,9 @@ class LutBuilder:
             m = re.search(r"(\w*):?\s*\((.+?)\)\s*->\s*(\d)", p.replace("\n", ""))
             if not m:
                 raise Exception('Syntax error in pattern "' + p + '"')
-            options = m.group(1)
-            pattern = m.group(2)
-            result = int(m.group(3))
+            options = m[1]
+            pattern = m[2]
+            result = int(m[3])
 
             # Get rid of spaces
             pattern = pattern.replace(" ", "").replace("\n", "")

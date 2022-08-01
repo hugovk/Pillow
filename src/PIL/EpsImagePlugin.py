@@ -255,7 +255,7 @@ class EpsImageFile(ImageFile.ImageFile):
                 else:
                     m = field.match(s)
                     if m:
-                        k = m.group(1)
+                        k = m[1]
 
                         if k == "EndComments":
                             break

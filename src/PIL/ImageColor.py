@@ -68,14 +68,14 @@ def getrgb(color):
 
     m = re.match(r"rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$", color)
     if m:
-        return int(m.group(1)), int(m.group(2)), int(m.group(3))
+        return int(m[1]), int(m[2]), int(m[3])
 
     m = re.match(r"rgb\(\s*(\d+)%\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)$", color)
     if m:
         return (
-            int((int(m.group(1)) * 255) / 100.0 + 0.5),
-            int((int(m.group(2)) * 255) / 100.0 + 0.5),
-            int((int(m.group(3)) * 255) / 100.0 + 0.5),
+            int((int(m[1]) * 255) / 100.0 + 0.5),
+            int((int(m[2]) * 255) / 100.0 + 0.5),
+            int((int(m[3]) * 255) / 100.0 + 0.5),
         )
 
     m = re.match(
@@ -85,9 +85,9 @@ def getrgb(color):
         from colorsys import hls_to_rgb
 
         rgb = hls_to_rgb(
-            float(m.group(1)) / 360.0,
-            float(m.group(3)) / 100.0,
-            float(m.group(2)) / 100.0,
+            float(m[1]) / 360.0,
+            float(m[3]) / 100.0,
+            float(m[2]) / 100.0,
         )
         return (
             int(rgb[0] * 255 + 0.5),
@@ -102,9 +102,9 @@ def getrgb(color):
         from colorsys import hsv_to_rgb
 
         rgb = hsv_to_rgb(
-            float(m.group(1)) / 360.0,
-            float(m.group(2)) / 100.0,
-            float(m.group(3)) / 100.0,
+            float(m[1]) / 360.0,
+            float(m[2]) / 100.0,
+            float(m[3]) / 100.0,
         )
         return (
             int(rgb[0] * 255 + 0.5),
@@ -114,7 +114,7 @@ def getrgb(color):
 
     m = re.match(r"rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$", color)
     if m:
-        return int(m.group(1)), int(m.group(2)), int(m.group(3)), int(m.group(4))
+        return int(m[1]), int(m[2]), int(m[3]), int(m[4])
     raise ValueError(f"unknown color specifier: {repr(color)}")
 
 

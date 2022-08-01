@@ -55,11 +55,11 @@ class XbmImageFile(ImageFile.ImageFile):
         if not m:
             raise SyntaxError("not a XBM file")
 
-        xsize = int(m.group("width"))
-        ysize = int(m.group("height"))
+        xsize = int(m["width"])
+        ysize = int(m["height"])
 
-        if m.group("hotspot"):
-            self.info["hotspot"] = (int(m.group("xhot")), int(m.group("yhot")))
+        if m["hotspot"]:
+            self.info["hotspot"] = (int(m["xhot"]), int(m["yhot"]))
 
         self.mode = "1"
         self._size = xsize, ysize
