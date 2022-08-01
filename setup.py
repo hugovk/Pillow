@@ -483,9 +483,9 @@ class pil_build_ext(build_ext):
         # respect CFLAGS/CPPFLAGS/LDFLAGS
         for k in ("CFLAGS", "CPPFLAGS", "LDFLAGS"):
             if k in os.environ:
-                for match in re.finditer(r"-I([^\s]+)", os.environ[k]):
+                for match in re.finditer(r"-I(\S+)", os.environ[k]):
                     _add_directory(include_dirs, match[1])
-                for match in re.finditer(r"-L([^\s]+)", os.environ[k]):
+                for match in re.finditer(r"-L(\S+)", os.environ[k]):
                     _add_directory(library_dirs, match[1])
 
         # include, rpath, if set as environment variables:
