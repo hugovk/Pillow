@@ -330,11 +330,10 @@ pyCMScopyAux(cmsHTRANSFORM hTransform, Imaging imDst, const Imaging imSrc) {
         int srcChannel = pyCMSgetAuxChannelChannel(srcLCMSFormat, e);
 
         for (y = 0; y < ySize; y++) {
-            int x;
             char *pDstExtras = imDst->image[y] + dstChannel * channelSize;
             const char *pSrcExtras = imSrc->image[y] + srcChannel * channelSize;
 
-            for (x = 0; x < xSize; x++) {
+            for (int x = 0; x < xSize; x++) {
                 memcpy(
                     pDstExtras + x * dstChunkSize,
                     pSrcExtras + x * srcChunkSize,

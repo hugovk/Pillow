@@ -56,14 +56,12 @@ round(double x) {
 
 static void
 bit2l(UINT8 *out, const UINT8 *in, int xsize) {
-    int x;
-    for (x = 0; x < xsize; x++) *out++ = (*in++ != 0) ? 255 : 0;
+    for (int x = 0; x < xsize; x++) *out++ = (*in++ != 0) ? 255 : 0;
 }
 
 static void
 bit2rgb(UINT8 *out, const UINT8 *in, int xsize) {
-    int x;
-    for (x = 0; x < xsize; x++) {
+    for (int x = 0; x < xsize; x++) {
         UINT8 v = (*in++ != 0) ? 255 : 0;
         *out++ = v;
         *out++ = v;
@@ -74,8 +72,7 @@ bit2rgb(UINT8 *out, const UINT8 *in, int xsize) {
 
 static void
 bit2cmyk(UINT8 *out, const UINT8 *in, int xsize) {
-    int x;
-    for (x = 0; x < xsize; x++) {
+    for (int x = 0; x < xsize; x++) {
         *out++ = 0;
         *out++ = 0;
         *out++ = 0;
@@ -85,8 +82,7 @@ bit2cmyk(UINT8 *out, const UINT8 *in, int xsize) {
 
 static void
 bit2ycbcr(UINT8 *out, const UINT8 *in, int xsize) {
-    int x;
-    for (x = 0; x < xsize; x++) {
+    for (int x = 0; x < xsize; x++) {
         *out++ = (*in++ != 0) ? 255 : 0;
         *out++ = 128;
         *out++ = 128;
@@ -96,8 +92,7 @@ bit2ycbcr(UINT8 *out, const UINT8 *in, int xsize) {
 
 static void
 bit2hsv(UINT8 *out, const UINT8 *in, int xsize) {
-    int x;
-    for (x = 0; x < xsize; x++, out += 4) {
+    for (int x = 0; x < xsize; x++, out += 4) {
         UINT8 v = (*in++ != 0) ? 255 : 0;
         out[0] = 0;
         out[1] = 0;
@@ -112,17 +107,15 @@ bit2hsv(UINT8 *out, const UINT8 *in, int xsize) {
 
 static void
 l2bit(UINT8 *out, const UINT8 *in, int xsize) {
-    int x;
-    for (x = 0; x < xsize; x++) {
+    for (int x = 0; x < xsize; x++) {
         *out++ = (*in++ >= 128) ? 255 : 0;
     }
 }
 
 static void
 lA2la(UINT8 *out, const UINT8 *in, int xsize) {
-    int x;
     unsigned int alpha, pixel, tmp;
-    for (x = 0; x < xsize; x++, in += 4) {
+    for (int x = 0; x < xsize; x++, in += 4) {
         alpha = in[3];
         pixel = MULDIV255(in[0], alpha, tmp);
         *out++ = (UINT8)pixel;
@@ -136,9 +129,8 @@ lA2la(UINT8 *out, const UINT8 *in, int xsize) {
    Needed for correct transforms/resizing on RGBA images */
 static void
 la2lA(UINT8 *out, const UINT8 *in, int xsize) {
-    int x;
     unsigned int alpha, pixel;
-    for (x = 0; x < xsize; x++, in += 4) {
+    for (int x = 0; x < xsize; x++, in += 4) {
         alpha = in[3];
         if (alpha == 255 || alpha == 0) {
             pixel = in[0];
