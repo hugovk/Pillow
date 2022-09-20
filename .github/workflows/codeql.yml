@@ -1,0 +1,39 @@
+name: "CodeQL"
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions: "read-all"
+
+jobs:
+  analyse:
+    name: "Analyse"
+    runs-on: "ubuntu-latest"
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+    - name: "Checkout repository"
+      uses: "actions/checkout@v3"
+
+    - name: "Run CodeQL init"
+      uses: "github/codeql-action/init@v2"
+      with:
+        config-file: "./.github/codeql.yml"
+        languages: "c, python"
+
+    - name: Install Linux dependencies
+      run: |
+        .ci/install.sh
+      env:
+        GHA_PYTHON_VERSION: "3.10"
+
+    - name: Build
+      run: |
+        .ci/build.sh
+
+    - name: "Run CodeQL autobuild"
+      uses: "github/codeql-action/autobuild@v2"
+
+    - name: "Run CodeQL analyse"
+      uses: "github/codeql-action/analyze@v2"
