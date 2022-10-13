@@ -5,7 +5,7 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 
-concurrency: 
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
@@ -65,7 +65,7 @@ jobs:
         xcopy /S /Y winbuild\depends\test_images\* Tests\images\
 
         # make cache key depend on VS version
-        & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" | find """catalog_buildVersion""" | ForEach-Object { $a = $_.split(" ")[1]; echo "::set-output name=vs::$a" }
+        & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" | find """catalog_buildVersion""" | ForEach-Object { $a = $_.split(" ")[1]; echo "vs=$a" >> $GITHUB_OUTPUT }
       shell: pwsh
 
     - name: Cache build
@@ -74,7 +74,7 @@ jobs:
       with:
         path: winbuild\build
         key:
-          ${{ hashFiles('winbuild\build_prepare.py') }}-${{ hashFiles('.github\workflows\test-windows.yml') }}-${{ env.pythonLocation }}-${{ steps.install.outputs.vs }}
+          ${{ hashFiles('winbuild\build_prepare.py') }}-${{ hashFiles('.github\workflows\test-windows.yml') }}-${{ env.pythonLocation }}-${{ env.vs }}
 
     - name: Prepare build
       if: steps.build-cache.outputs.cache-hit != 'true'
@@ -185,14 +185,14 @@ jobs:
       id: wheel
       if: "github.event_name != 'pull_request'"
       run: |
-        for /f "tokens=3 delims=/" %%a in ("${{ github.ref }}") do echo ::set-output name=dist::dist-%%a
+        for /f "tokens=3 delims=/" %%a in ("${{ github.ref }}") do echo "dist=dist-%%a" >> $GITHUB_OUTPUT
         winbuild\\build\\build_pillow.cmd --disable-imagequant bdist_wheel
       shell: cmd
 
     - uses: actions/upload-artifact@v3
       if: "github.event_name != 'pull_request'"
       with:
-        name: ${{ steps.wheel.outputs.dist }}
+        name: ${{ env.dist }}
         path: dist\*.whl
 
   success:
