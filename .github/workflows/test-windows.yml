@@ -5,9 +5,6 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   build:
@@ -50,8 +47,15 @@ jobs:
     - name: Print build system information
       run: python3 .github/workflows/system-info.py
 
+    - name: setuptools
+      run: |
+        python3 -m pip install -U "setuptools<60"
+        python3 -m pip freeze
+
     - name: python3 -m pip install wheel pytest pytest-cov pytest-timeout defusedxml
-      run: python3 -m pip install wheel pytest pytest-cov pytest-timeout defusedxml
+      run: |
+        python3 -m pip install wheel pytest pytest-cov pytest-timeout defusedxml
+        python3 -m pip freeze
 
     - name: Install dependencies
       id: install
