@@ -49,7 +49,7 @@ jobs:
 
     - name: setuptools
       run: |
-        python3 -m pip install -U "setuptools<62"
+        python3 -m pip install -U "setuptools<63"
         python3 -m pip freeze
 
     - name: python3 -m pip install wheel pytest pytest-cov pytest-timeout defusedxml
