@@ -854,7 +854,7 @@ class pil_build_ext(build_ext):
             and not (PLATFORM_PYPY or PLATFORM_MINGW)
         ):
             if (
-                int(setuptools_version.split(".")[0]) >= 60
+                int(setuptools_version.split(".")[0]) < 60
                 or os.getenv("SETUPTOOLS_USE_DISTUTILS") == "stdlib"
             ):
                 print("\n\n\n\n\n\nDOUBLE QUOTES\n\n\n\n\n\n")
