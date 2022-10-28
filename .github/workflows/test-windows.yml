@@ -16,6 +16,7 @@ jobs:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         architecture: ["x86", "x64"]
+        SETUPTOOLS_USE_DISTUTILS: ["", "stdlib"]
         include:
           # PyPy 7.3.4+ only ships 64-bit binaries for Windows
           - python-version: "pypy-3.7"
@@ -157,6 +158,8 @@ jobs:
         if ('${{ github.event_name }}' -ne 'pull_request') { $FLAGS="--disable-imagequant" }
         & winbuild\build\build_pillow.cmd $FLAGS install
         & $env:pythonLocation\python.exe selftest.py --installed
+      env:
+        SETUPTOOLS_USE_DISTUTILS: ${{ matrix.SETUPTOOLS_USE_DISTUTILS }}
       shell: pwsh
 
     # skip PyPy for speed
