@@ -14,6 +14,7 @@ jobs:
         python-version: ["3.7", "3.8", "3.9"]
         architecture: ["x64"]
         SETUPTOOLS_USE_DISTUTILS: ["", "stdlib"]
+        setuptools-max-version: ["60", "66"]
         include:
           # PyPy 7.3.4+ only ships 64-bit binaries for Windows
           - python-version: "pypy-3.7"
@@ -23,7 +24,7 @@ jobs:
 
     timeout-minutes: 30
 
-    name: ${{ matrix.python-version }} ${{ matrix.SETUPTOOLS_USE_DISTUTILS }}
+    name: ${{ matrix.python-version }} ${{ matrix.SETUPTOOLS_USE_DISTUTILS }} <${{ matrix.setuptools-max-version }}
 
     steps:
     - name: Checkout Pillow
@@ -49,7 +50,7 @@ jobs:
 
     - name: setuptools
       run: |
-        python3 -m pip install -U "setuptools<66"
+        python3 -m pip install -U "setuptools<${{ matrix.setuptools-max-version }}"
         python3 -m pip freeze
 
     - name: python3 -m pip install wheel pytest pytest-cov pytest-timeout defusedxml
