@@ -857,8 +857,10 @@ class pil_build_ext(build_ext):
                 or os.getenv("SETUPTOOLS_USE_DISTUTILS") == "stdlib"
             )
         ):
+            print("\n\n\n\n\n\nDOUBLE QUOTES\n\n\n\n\n\n")
             defs.append(("PILLOW_VERSION", f'"\\"{PILLOW_VERSION}\\""'))
         else:
+            print("\n\n\n\n\n\nSINGLE QUOTES\n\n\n\n\n\n")
             defs.append(("PILLOW_VERSION", f'"{PILLOW_VERSION}"'))
 
         self._update_extension("PIL._imaging", libs, defs)
