@@ -5,9 +5,6 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 
-env:
-  SETUPTOOLS_USE_DISTUTILS: stdlib
-
 jobs:
   build:
     runs-on: windows-latest
@@ -26,7 +23,7 @@ jobs:
 
     timeout-minutes: 30
 
-    name: Python ${{ matrix.python-version }} ${{ matrix.architecture }}
+    name: ${{ matrix.python-version }} ${{ matrix.SETUPTOOLS_USE_DISTUTILS }}
 
     steps:
     - name: Checkout Pillow
