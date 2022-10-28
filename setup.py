@@ -856,6 +856,7 @@ class pil_build_ext(build_ext):
             sys.platform == "win32"
             and sys.version_info < (3, 9)
             and not (PLATFORM_PYPY or PLATFORM_MINGW)
+            and int(setuptools_version.split(".")[0]) < 60
         ):
             print("\n\n\n\n\n\nDOUBLE QUOTES\n\n\n\n\n\n")
             defs.append(("PILLOW_VERSION", f'"\\"{PILLOW_VERSION}\\""'))
