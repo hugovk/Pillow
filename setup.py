@@ -852,15 +852,18 @@ class pil_build_ext(build_ext):
             sys.platform == "win32"
             and sys.version_info < (3, 9)
             and not (PLATFORM_PYPY or PLATFORM_MINGW)
-            and (
-                int(setuptools_version.split(".")[0]) < 60
-                or os.getenv("SETUPTOOLS_USE_DISTUTILS") == "stdlib"
-            )
         ):
-            print("\n\n\n\n\n\nDOUBLE QUOTES\n\n\n\n\n\n")
-            defs.append(("PILLOW_VERSION", f'"\\"{PILLOW_VERSION}\\""'))
+            if (
+                int(setuptools_version.split(".")[0]) >= 60
+                or os.getenv("SETUPTOOLS_USE_DISTUTILS") == "stdlib"
+            ):
+                print("\n\n\n\n\n\nDOUBLE QUOTES\n\n\n\n\n\n")
+                defs.append(("PILLOW_VERSION", f'"\\"{PILLOW_VERSION}\\""'))
+            else:
+                print("\n\n\n\n\n\nSINGLE QUOTES\n\n\n\n\n\n 1")
+                defs.append(("PILLOW_VERSION", f'"{PILLOW_VERSION}"'))
         else:
-            print("\n\n\n\n\n\nSINGLE QUOTES\n\n\n\n\n\n")
+            print("\n\n\n\n\n\nSINGLE QUOTES\n\n\n\n\n\n 2")
             defs.append(("PILLOW_VERSION", f'"{PILLOW_VERSION}"'))
 
         self._update_extension("PIL._imaging", libs, defs)
