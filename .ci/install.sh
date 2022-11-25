@@ -35,6 +35,7 @@ python3 -m pip install -U pytest
 python3 -m pip install -U pytest-cov
 python3 -m pip install -U pytest-timeout
 python3 -m pip install pyroma
+python3 -m pip install setuptools==59.5.0
 
 if [[ $(uname) != CYGWIN* ]]; then
     python3 -m pip install numpy
