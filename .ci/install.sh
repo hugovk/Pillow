@@ -58,5 +58,6 @@ if [[ $(uname) != CYGWIN* ]]; then
     pushd depends && ./install_extra_test_images.sh && popd
 else
     python3 -m pip install pyroma==4.0
+    python3 -m pip install -U setuptools
     cd depends && ./install_extra_test_images.sh && cd ..
 fi
