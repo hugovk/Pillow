@@ -56,7 +56,6 @@ from . import (
     _plugins,
 )
 from ._binary import i32le, o32be, o32le
-from ._deprecate import deprecate
 from ._util import DeferredError, is_path
 
 logger = logging.getLogger(__name__)
@@ -419,11 +418,6 @@ def _getencoder(mode, encoder_name, args, extra=()):
 
 # --------------------------------------------------------------------
 # Simple expression analyzer
-
-
-def coerce_e(value):
-    deprecate("coerce_e", 10)
-    return value if isinstance(value, _E) else _E(1, value)
 
 
 # _E(scale, offset) represents the affine transformation scale * x + offset.
