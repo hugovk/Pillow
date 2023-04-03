@@ -420,21 +420,18 @@ def _getencoder(mode, encoder_name, args, extra=()):
 # Simple expression analyzer
 
 
-# _E(scale, offset) represents the affine transformation scale * x + offset.
-# The "data" field is named for compatibility with the old implementation,
-# and should be renamed once coerce_e is removed.
 class _E:
-    def __init__(self, scale, data):
+    def __init__(self, scale, offset):
         self.scale = scale
-        self.data = data
+        self.offset = offset
 
     def __neg__(self):
-        return _E(-self.scale, -self.data)
+        return _E(-self.scale, -self.offset)
 
     def __add__(self, other):
         if isinstance(other, _E):
-            return _E(self.scale + other.scale, self.data + other.data)
-        return _E(self.scale, self.data + other)
+            return _E(self.scale + other.scale, self.offset + other.offset)
+        return _E(self.scale, self.offset + other)
 
     __radd__ = __add__
 
@@ -447,19 +444,19 @@ class _E:
     def __mul__(self, other):
         if isinstance(other, _E):
             return NotImplemented
-        return _E(self.scale * other, self.data * other)
+        return _E(self.scale * other, self.offset * other)
 
     __rmul__ = __mul__
 
     def __truediv__(self, other):
         if isinstance(other, _E):
             return NotImplemented
-        return _E(self.scale / other, self.data / other)
+        return _E(self.scale / other, self.offset / other)
 
 
 def _getscaleoffset(expr):
     a = expr(_E(1, 0))
-    return (a.scale, a.data) if isinstance(a, _E) else (0, a)
+    return (a.scale, a.offset) if isinstance(a, _E) else (0, a)
 
 
 # --------------------------------------------------------------------
