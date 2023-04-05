@@ -2,7 +2,7 @@ import os.path
 
 import pytest
 
-from PIL import Image, ImageDraw, ImageDraw2
+from PIL import Image, ImageDraw, ImageDraw2, ImageFont
 
 from .helper import (
     assert_image_equal,
@@ -171,7 +171,22 @@ def test_text():
 
 
 @skip_unless_feature("freetype2")
-def test_textsize_empty_string():
+def test_textbbox():
+    # Arrange
+    im = Image.new("RGB", (W, H))
+    draw = ImageDraw2.Draw(im)
+    font = ImageDraw2.Font("white", FONT_PATH)
+    w = 77 if font.font.layout_engine == ImageFont.Layout.RAQM else 75
+
+    # Act
+    size = draw.textbbox((5, 5), "ImageDraw2", font)
+
+    # Assert
+    assert size == (5, 7, w, 17)
+
+
+@skip_unless_feature("freetype2")
+def test_textbbox_empty_string():
     # Arrange
     im = Image.new("RGB", (W, H))
     draw = ImageDraw2.Draw(im)
