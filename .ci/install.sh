@@ -47,16 +47,16 @@ if [[ $(uname) != CYGWIN* ]]; then
     fi
 
     # webp
-    pushd depends && ./install_webp.sh && popd
+    pushd depends && time ./install_webp.sh && popd
 
     # libimagequant
-    pushd depends && ./install_imagequant.sh && popd
+    pushd depends && time ./install_imagequant.sh && popd
 
     # raqm
-    pushd depends && ./install_raqm.sh && popd
+    pushd depends && time ./install_raqm.sh && popd
 
     # extra test images
-    pushd depends && ./install_extra_test_images.sh && popd
+    pushd depends && time ./install_extra_test_images.sh && popd
 else
-    cd depends && ./install_extra_test_images.sh && cd ..
+    cd depends && time ./install_extra_test_images.sh && cd ..
 fi
