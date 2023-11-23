@@ -43,6 +43,7 @@ jobs:
         python-version: [
           "pypy3.10",
           "pypy3.9",
+          "3.13-dev",
           "3.13",
           "3.12",
           "3.11",
@@ -57,15 +58,12 @@ jobs:
         - python-version: "3.10"
           PYTHONOPTIMIZE: 2
         # M1 only available for 3.10+
-        - os: "macos-latest"
-          python-version: "3.9"
-        - os: "macos-latest"
-          python-version: "3.8"
+        - { os: "macos-latest", python-version: "3.9" }
+        - { os: "macos-latest", python-version: "3.8" }
         exclude:
-        - os: "macos-14"
-          python-version: "3.9"
-        - os: "macos-14"
-          python-version: "3.8"
+        - { os: "macos-14", python-version: "3.9" }
+        - { os: "macos-14", python-version: "3.8" }
+        - { os: "macos-14", python-version: "3.13-dev" }
 
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
@@ -74,6 +72,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
+      if: "!endsWith(matrix.python-version, '-dev')"
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
@@ -82,6 +81,13 @@ jobs:
         cache-dependency-path: |
           ".ci/*.sh"
           "pyproject.toml"
+
+    - name: Set up Python ${{ matrix.python-version }} (disable-gil)
+      if: endsWith(matrix.python-version, '-dev')
+      uses: hugovk/action@test-me-disable-gil
+      with:
+        python-version: ${{ matrix.python-version }}
+        disable-gil: true
 
     - name: Build system information
       run: python3 .github/workflows/system-info.py
