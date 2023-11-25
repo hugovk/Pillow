@@ -84,10 +84,10 @@ jobs:
 
     - name: Set up Python ${{ matrix.python-version }} (disable-gil)
       if: endsWith(matrix.python-version, '-dev')
-      uses: hugovk/action@test-me-disable-gil
+      uses: deadsnakes/action@v3.1.0
       with:
         python-version: ${{ matrix.python-version }}
-        disable-gil: true
+        nogil: true
 
     - name: Build system information
       run: python3 .github/workflows/system-info.py
