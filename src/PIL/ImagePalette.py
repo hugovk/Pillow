@@ -200,11 +200,11 @@ def raw(rawmode, data):
 
 
 def make_linear_lut(black, white):
-    if black == 0:
-        return [white * i // 255 for i in range(256)]
+    if black != 0:
+        msg = "unavailable when black is non-zero"
+        raise NotImplementedError(msg)  # FIXME
 
-    msg = "unavailable when black is non-zero"
-    raise NotImplementedError(msg)  # FIXME
+    return [white * i // 255 for i in range(256)]
 
 
 def make_gamma_lut(exp):
