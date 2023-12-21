@@ -5,6 +5,14 @@ import warnings
 from . import __version__
 
 
+class RemovedInPillow11Warning(DeprecationWarning):
+    pass
+
+
+class RemovedInPillow12Warning(DeprecationWarning):
+    pass
+
+
 def deprecate(
     deprecated: str,
     when: int | None,
@@ -42,13 +50,16 @@ def deprecate(
 
     if when is None:
         removed = "a future version"
+        category = DeprecationWarning
     elif when <= int(__version__.split(".")[0]):
         msg = f"{deprecated} {is_} deprecated and should be removed."
         raise RuntimeError(msg)
     elif when == 11:
         removed = "Pillow 11 (2024-10-15)"
+        category = RemovedInPillow11Warning
     elif when == 12:
         removed = "Pillow 12 (2025-10-15)"
+        category = RemovedInPillow12Warning
     else:
         msg = f"Unknown removal version: {when}. Update {__name__}?"
         raise ValueError(msg)
@@ -66,6 +77,6 @@ def deprecate(
 
     warnings.warn(
         f"{deprecated} {is_} deprecated and will be removed in {removed}{action}",
-        DeprecationWarning,
+        category,
         stacklevel=3,
     )

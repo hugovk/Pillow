@@ -56,7 +56,7 @@ def test_plural():
         r"Old things are deprecated and will be removed in Pillow 11 \(2024-10-15\)\. "
         r"Use new thing instead\."
     )
-    with pytest.warns(DeprecationWarning, match=expected):
+    with pytest.warns(_deprecate.RemovedInPillow11Warning, match=expected):
         _deprecate.deprecate("Old things", 11, "new thing", plural=True)
 
 
@@ -80,7 +80,7 @@ def test_action(action):
         r"Old thing is deprecated and will be removed in Pillow 11 \(2024-10-15\)\. "
         r"Upgrade to new thing\."
     )
-    with pytest.warns(DeprecationWarning, match=expected):
+    with pytest.warns(_deprecate.RemovedInPillow11Warning, match=expected):
         _deprecate.deprecate("Old thing", 11, action=action)
 
 
@@ -88,5 +88,5 @@ def test_no_replacement_or_action():
     expected = (
         r"Old thing is deprecated and will be removed in Pillow 11 \(2024-10-15\)"
     )
-    with pytest.warns(DeprecationWarning, match=expected):
+    with pytest.warns(_deprecate.RemovedInPillow11Warning, match=expected):
         _deprecate.deprecate("Old thing", 11)
