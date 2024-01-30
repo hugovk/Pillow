@@ -2,14 +2,14 @@ name: Wheels
 
 on:
   push:
-    paths:
-      - ".ci/requirements-cibw.txt"
-      - ".github/workflows/wheel*"
-      - "wheels/*"
-      - "winbuild/build_prepare.py"
-      - "winbuild/fribidi.cmake"
-    tags:
-      - "*"
+#    paths:
+#      - ".ci/requirements-cibw.txt"
+#      - ".github/workflows/wheel*"
+#      - "wheels/*"
+#      - "winbuild/build_prepare.py"
+#      - "winbuild/fribidi.cmake"
+#    tags:
+#      - "*"
   pull_request:
     paths:
       - ".ci/requirements-cibw.txt"
@@ -99,7 +99,7 @@ jobs:
             cibw_arch: x86_64
             macosx_deployment_target: "10.10"
           - name: "macOS arm64"
-            os: macos-latest
+            os: macos-14
             cibw_arch: arm64
             macosx_deployment_target: "11.0"
           - name: "manylinux2014 and musllinux x86_64"
