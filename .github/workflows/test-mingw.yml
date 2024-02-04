@@ -81,8 +81,17 @@ jobs:
           python3 -c "from PIL import Image"
           python3 -m pytest -vx --cov PIL --cov Tests --cov-report term --cov-report xml Tests
 
-      - name: Upload coverage
+      - name: Upload coverage v3
+        if: github.event_name == 'pull_request'
         uses: codecov/codecov-action@v3.1.5
+        with:
+          file: ./coverage.xml
+          flags: GHA_Windows
+          name: "MSYS2 MinGW"
+
+      - name: Upload coverage
+        if: github.event_name != 'pull_request'
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
           flags: GHA_Windows

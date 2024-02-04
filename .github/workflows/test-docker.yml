@@ -100,12 +100,20 @@ jobs:
       env:
         MATRIX_DOCKER: ${{ matrix.docker }}
 
-    - name: Upload coverage
+    - name: Upload coverage v3
+      if: github.event_name == 'pull_request'
       uses: codecov/codecov-action@v3.1.5
       with:
         flags: GHA_Docker
         name: ${{ matrix.docker }}
         gcov: true
+
+    - name: Upload coverage
+      if: github.event_name != 'pull_request'
+      uses: codecov/codecov-action@v4
+      with:
+        flags: GHA_Docker
+        name: ${{ matrix.docker }}
 
   success:
     permissions:

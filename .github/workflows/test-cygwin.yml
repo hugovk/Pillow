@@ -141,8 +141,17 @@ jobs:
         run: |
           bash.exe .ci/after_success.sh
 
-      - name: Upload coverage
+      - name: Upload coverage v3
+        if: github.event_name == 'pull_request'
         uses: codecov/codecov-action@v3.1.5
+        with:
+          file: ./coverage.xml
+          flags: GHA_Cygwin
+          name: Cygwin Python 3.${{ matrix.python-minor-version }}
+
+      - name: Upload coverage
+        if: github.event_name != 'pull_request'
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
           flags: GHA_Cygwin
