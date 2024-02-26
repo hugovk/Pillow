@@ -42,8 +42,8 @@ dynamic = [
   "version",
 ]
 optional-dependencies.docs = [
-  "furo",
   "olefile",
+  "pydata-sphinx-theme",
   "sphinx>=8.2",
   "sphinx-autobuild",
   "sphinx-copybutton",
