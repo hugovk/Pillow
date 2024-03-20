@@ -71,7 +71,7 @@ jobs:
 
     - name: Install Python dependencies
       run: >
-        python3 -m pip install
+        python3 -m pip install -vvv
         coverage>=7.4.2
         defusedxml
         olefile
