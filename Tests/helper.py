@@ -11,6 +11,7 @@ import subprocess
 import sys
 import sysconfig
 import tempfile
+from functools import lru_cache
 from io import BytesIO
 from typing import Any, Callable, Sequence
 
@@ -271,6 +272,7 @@ def hopper(mode: str | None = None, cache: dict[str, Image.Image] = {}) -> Image
     return im.copy()
 
 
+@lru_cache(maxsize=None)
 def djpeg_available() -> bool:
     if shutil.which("djpeg"):
         try:
@@ -281,6 +283,7 @@ def djpeg_available() -> bool:
     return False
 
 
+@lru_cache(maxsize=None)
 def cjpeg_available() -> bool:
     if shutil.which("cjpeg"):
         try:
@@ -291,10 +294,12 @@ def cjpeg_available() -> bool:
     return False
 
 
+@lru_cache(maxsize=None)
 def netpbm_available() -> bool:
     return bool(shutil.which("ppmquant") and shutil.which("ppmtogif"))
 
 
+@lru_cache(maxsize=None)
 def magick_command() -> list[str] | None:
     if sys.platform == "win32":
         magickhome = os.environ.get("MAGICK_HOME")
@@ -315,37 +320,45 @@ def magick_command() -> list[str] | None:
     return None
 
 
+@lru_cache(maxsize=None)
 def on_appveyor() -> bool:
     return "APPVEYOR" in os.environ
 
 
+@lru_cache(maxsize=None)
 def on_github_actions() -> bool:
     return "GITHUB_ACTIONS" in os.environ
 
 
+@lru_cache(maxsize=None)
 def on_ci() -> bool:
     # GitHub Actions and AppVeyor have "CI"
     return "CI" in os.environ
 
 
+@lru_cache(maxsize=None)
 def is_big_endian() -> bool:
     return sys.byteorder == "big"
 
 
+@lru_cache(maxsize=None)
 def is_ppc64le() -> bool:
     import platform
 
     return platform.machine() == "ppc64le"
 
 
+@lru_cache(maxsize=None)
 def is_win32() -> bool:
     return sys.platform.startswith("win32")
 
 
+@lru_cache(maxsize=None)
 def is_pypy() -> bool:
     return hasattr(sys, "pypy_translation_info")
 
 
+@lru_cache(maxsize=None)
 def is_mingw() -> bool:
     return sysconfig.get_platform() == "mingw"
 
