@@ -13,7 +13,7 @@ else
     yum install -y fribidi
 fi
 if [ "${AUDITWHEEL_POLICY::9}" != "musllinux" ]; then
-    python3 -m pip install numpy
+    python3 -m pip install -U numpy --pre
 fi
 
 if [ ! -d "test-images-main" ]; then
