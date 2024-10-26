@@ -22,13 +22,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: pre-commit
+      uses: tox-dev/action-pre-commit-uv@v1
+
     - name: Install uv
       uses: hynek/setup-cached-uv@v2
 
-    - name: Lint
-      run: uvx --python python3.13 --with tox-uv tox -e lint
-      env:
-        PRE_COMMIT_COLOR: always
+    - name: check-manifest
+      run: uvx check-manifest
 
     - name: Mypy
       run: uvx --with tox-uv tox -e mypy
