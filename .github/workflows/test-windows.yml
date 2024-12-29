@@ -42,6 +42,13 @@ jobs:
     name: Python ${{ matrix.python-version }}
 
     steps:
+    # The D: drive is significantly faster than the system C: drive.
+    # https://github.com/actions/runner-images/issues/8755
+    - name: Set TEMP to D:/Temp
+      run: |
+        mkdir "D:\\Temp"
+        echo "TEMP=D:\\Temp" >> $env:GITHUB_ENV
+
     - name: Checkout Pillow
       uses: actions/checkout@v4
       with:
