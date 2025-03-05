@@ -909,7 +909,6 @@ class Image:
         the image after using this method, you must reopen the image
         file.
         """
-        pass
 
     def convert(
         self,
@@ -1331,7 +1330,6 @@ class Image:
         :param size: The requested size in pixels, as a 2-tuple:
            (width, height).
         """
-        pass
 
     def _expand(self, xmargin: int, ymargin: int | None = None) -> Image:
         if ymargin is None:

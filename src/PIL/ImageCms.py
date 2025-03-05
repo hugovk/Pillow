@@ -398,8 +398,6 @@ class PyCMSError(Exception):
     """(pyCMS) Exception class.
     This is used for all errors in the pyCMS API."""
 
-    pass
-
 
 def profileToProfile(
     im: Image.Image,

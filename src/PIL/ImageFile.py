@@ -748,7 +748,6 @@ class PyCodec:
 
         :returns: None
         """
-        pass
 
     def setfd(self, fd: IO[bytes]) -> None:
         """

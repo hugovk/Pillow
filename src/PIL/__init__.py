@@ -82,5 +82,3 @@ class UnidentifiedImageError(OSError):
     to true may allow the image to be opened after all. The setting will ignore missing
     data and checksum failures.
     """
-
-    pass

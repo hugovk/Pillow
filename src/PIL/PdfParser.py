@@ -73,8 +73,6 @@ class PdfFormatError(RuntimeError):
     """An error that probably indicates a syntactic or semantic error in the
     PDF file structure"""
 
-    pass
-
 
 def check_format_condition(condition: bool, error_message: str) -> None:
     if not condition:
