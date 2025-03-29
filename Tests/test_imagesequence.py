@@ -10,7 +10,7 @@ from .helper import assert_image_equal, hopper, skip_unless_feature
 
 
 def test_sanity(tmp_path: Path) -> None:
-    test_file = str(tmp_path / "temp.im")
+    test_file = tmp_path / "temp.im"
 
     im = hopper("RGB")
     im.save(test_file)
@@ -32,7 +32,7 @@ def test_sanity(tmp_path: Path) -> None:
 def test_iterator() -> None:
     with Image.open("Tests/images/multipage.tiff") as im:
         i = ImageSequence.Iterator(im)
-        for index in range(0, im.n_frames):
+        for index in range(im.n_frames):
             assert i[index] == next(i)
         with pytest.raises(IndexError):
             i[index + 1]

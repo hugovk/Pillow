@@ -58,7 +58,7 @@ from ._binary import i32be as i32
 from ._binary import o8
 from ._deprecate import deprecate
 from ._typing import StrOrBytesPath
-from ._util import is_path
+from ._util import DeferredError, is_path
 from .TiffTags import TYPES
 
 if TYPE_CHECKING:
@@ -404,7 +404,7 @@ class IFDRational(Rational):
     def __repr__(self) -> str:
         return str(float(self._val))
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int:  # type: ignore[override]
         return self._val.__hash__()
 
     def __eq__(self, other: object) -> bool:
@@ -1222,6 +1222,8 @@ class TiffImageFile(ImageFile.ImageFile):
             self._im = None
 
     def _seek(self, frame: int) -> None:
+        if isinstance(self._fp, DeferredError):
+            raise self._fp.ex
         self.fp = self._fp
 
         while len(self._frame_pos) <= frame:
@@ -1584,7 +1586,7 @@ class TiffImageFile(ImageFile.ImageFile):
             # byte order.
             elif rawmode == "I;16":
                 rawmode = "I;16N"
-            elif rawmode.endswith(";16B") or rawmode.endswith(";16L"):
+            elif rawmode.endswith((";16B", ";16L")):
                 rawmode = rawmode[:-1] + "N"
 
             # Offset in the tile tuple is 0, we go from 0,0 to
@@ -1608,6 +1610,10 @@ class TiffImageFile(ImageFile.ImageFile):
                     raise ValueError(msg)
                 w = tilewidth
 
+            if w == xsize and h == ysize and self._planar_configuration != 2:
+                # Every tile covers the image. Only use the last offset
+                offsets = offsets[-1:]
+
             for offset in offsets:
                 if x + w > xsize:
                     stride = w * sum(bps_tuple) / 8  # bytes per line
@@ -1630,11 +1636,11 @@ class TiffImageFile(ImageFile.ImageFile):
                         args,
                     )
                 )
-                x = x + w
+                x += w
                 if x >= xsize:
                     x, y = 0, y + h
                     if y >= ysize:
-                        x = y = 0
+                        y = 0
                         layer += 1
         else:
             logger.debug("- unsupported data organization")
@@ -2295,9 +2301,7 @@ class AppendingTiffWriter(io.BytesIO):
 
 
 def _save_all(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:
-    encoderinfo = im.encoderinfo.copy()
-    encoderconfig = im.encoderconfig
-    append_images = list(encoderinfo.get("append_images", []))
+    append_images = list(im.encoderinfo.get("append_images", []))
     if not hasattr(im, "n_frames") and not append_images:
         return _save(im, fp, filename)
 
@@ -2305,12 +2309,11 @@ def _save_all(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:
     try:
         with AppendingTiffWriter(fp) as tf:
             for ims in [im] + append_images:
-                ims.encoderinfo = encoderinfo
-                ims.encoderconfig = encoderconfig
-                if not hasattr(ims, "n_frames"):
-                    nfr = 1
-                else:
-                    nfr = ims.n_frames
+                if not hasattr(ims, "encoderinfo"):
+                    ims.encoderinfo = {}
+                if not hasattr(ims, "encoderconfig"):
+                    ims.encoderconfig = ()
+                nfr = getattr(ims, "n_frames", 1)
 
                 for idx in range(nfr):
                     ims.seek(idx)
