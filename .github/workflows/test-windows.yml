@@ -89,7 +89,6 @@ jobs:
         python3 -m pip install PyQt6
 
     - name: Install PyArrow Test Dependency
-      if: "matrix.pyarrow == 'true'"
       run: |
         python3 -m pip install --only-binary=:all: pyarrow || true
 
