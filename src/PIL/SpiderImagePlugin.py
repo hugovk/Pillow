@@ -37,12 +37,14 @@ from __future__ import annotations
 import os
 import struct
 import sys
-from typing import IO, Any, cast
+from typing import cast
 
 from . import Image, ImageFile
 from ._util import DeferredError
 
 TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import IO, Any
 
 
 def isInt(f: Any) -> int:

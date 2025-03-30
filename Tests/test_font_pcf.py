@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
 from typing import AnyStr
 
 import pytest
@@ -13,6 +12,10 @@ from .helper import (
     assert_image_similar_tofile,
     skip_unless_feature,
 )
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from pathlib import Path
 
 fontname = "Tests/fonts/10x20-ISO8859-1.pcf"
 

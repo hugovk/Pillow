@@ -6,7 +6,6 @@ import re
 import shutil
 import sys
 from io import BytesIO
-from pathlib import Path
 from typing import Any, Literal, cast
 
 import pytest
@@ -21,6 +20,10 @@ from .helper import (
     hopper,
     is_pypy,
 )
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from pathlib import Path
 
 try:
     from PIL import ImageCms

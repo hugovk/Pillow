@@ -19,13 +19,14 @@ from __future__ import annotations
 
 import sys
 from io import BytesIO
-from typing import Any, Callable, Union
 
 from . import Image
 from ._util import is_path
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
+    from typing import Any, Callable, Union
+
     import PyQt6
     import PySide6
 

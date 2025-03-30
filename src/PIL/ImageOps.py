@@ -22,9 +22,13 @@ import functools
 import operator
 import re
 from collections.abc import Sequence
-from typing import Literal, Protocol, cast, overload
+from typing import Protocol, cast, overload
 
 from . import ExifTags, Image, ImagePalette
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Literal
 
 #
 # helpers

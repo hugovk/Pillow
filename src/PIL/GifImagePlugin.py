@@ -31,7 +31,7 @@ import os
 import subprocess
 from enum import IntEnum
 from functools import cached_property
-from typing import IO, Any, Literal, NamedTuple, Union
+from typing import NamedTuple, Union
 
 from . import (
     Image,
@@ -49,6 +49,8 @@ from ._util import DeferredError
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
+    from typing import IO, Any, Literal
+
     from . import _imaging
     from ._typing import Buffer
 

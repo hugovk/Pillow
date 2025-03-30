@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import shutil
 from io import BytesIO
-from pathlib import Path
 from typing import IO, Callable
 
 import pytest
@@ -10,6 +9,10 @@ import pytest
 from PIL import GifImagePlugin, Image, JpegImagePlugin
 
 from .helper import cjpeg_available, djpeg_available, is_win32, netpbm_available
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from pathlib import Path
 
 TEST_JPG = "Tests/images/hopper.jpg"
 TEST_GIF = "Tests/images/hopper.gif"

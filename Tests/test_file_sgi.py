@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 import pytest
 
 from PIL import Image, SgiImagePlugin
@@ -12,6 +10,10 @@ from .helper import (
     assert_image_similar,
     hopper,
 )
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def test_rgb() -> None:

@@ -8,7 +8,11 @@ import os
 import re
 import time
 import zlib
-from typing import IO, Any, NamedTuple, Union
+from typing import Any, NamedTuple
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import IO, Union
 
 
 # see 7.9.2.2 Text String Type on page 86 and D.3 PDFDocEncoding Character Set

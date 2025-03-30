@@ -17,11 +17,14 @@
 from __future__ import annotations
 
 import builtins
-from types import CodeType
-from typing import Any, Callable
 
 from . import Image, _imagingmath
 from ._deprecate import deprecate
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from types import CodeType
+    from typing import Any, Callable
 
 
 class _Operand:

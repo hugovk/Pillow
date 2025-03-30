@@ -22,10 +22,13 @@ import io
 import os
 import struct
 import sys
-from typing import IO
 
 from . import Image, ImageFile, PngImagePlugin, features
 from ._deprecate import deprecate
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import IO
 
 enable_jpeg2k = features.check_codec("jpg_2000")
 if enable_jpeg2k:

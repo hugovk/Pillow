@@ -21,9 +21,12 @@ See the GIMP distribution for more information.)
 from __future__ import annotations
 
 from math import log, pi, sin, sqrt
-from typing import IO, Callable
 
 from ._binary import o8
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import IO, Callable
 
 EPSILON = 1e-10
 """"""  # Enable auto-doc for data member

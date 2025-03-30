@@ -20,10 +20,13 @@ import abc
 import functools
 from collections.abc import Sequence
 from types import ModuleType
-from typing import Any, Callable, cast
+from typing import cast
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
+    from types import ModuleType
+    from typing import Any, Callable
+
     from . import _imaging
     from ._typing import NumpyArray
 

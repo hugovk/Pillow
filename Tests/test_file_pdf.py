@@ -5,8 +5,6 @@ import os
 import os.path
 import tempfile
 import time
-from collections.abc import Generator
-from pathlib import Path
 from typing import Any
 
 import pytest
@@ -14,6 +12,11 @@ import pytest
 from PIL import Image, PdfParser, features
 
 from .helper import hopper, mark_if_feature_version, skip_unless_feature
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from collections.abc import Generator
+    from pathlib import Path
 
 
 def helper_save_as_pdf(tmp_path: Path, mode: str, **kwargs: Any) -> str:

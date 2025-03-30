@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import io
 
-import pytest
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    import pytest
 
 
 def pytest_report_header(config: pytest.Config) -> str:

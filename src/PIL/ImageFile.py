@@ -34,7 +34,7 @@ import itertools
 import logging
 import os
 import struct
-from typing import IO, Any, NamedTuple, cast
+from typing import IO, NamedTuple, cast
 
 from . import ExifTags, Image
 from ._deprecate import deprecate
@@ -42,6 +42,8 @@ from ._util import DeferredError, is_path
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
+    from typing import Any
+
     from ._typing import StrOrBytesPath
 
 logger = logging.getLogger(__name__)

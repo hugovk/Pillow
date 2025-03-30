@@ -23,18 +23,23 @@ import operator
 import sys
 from enum import IntEnum, IntFlag
 from functools import reduce
-from typing import Any, Literal, SupportsFloat, SupportsInt, Union
 
 from . import Image, __version__
 from ._deprecate import deprecate
-from ._typing import SupportsRead
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, Literal, SupportsFloat, SupportsInt, Union
+
+    from ._typing import SupportsRead
 
 try:
     from . import _imagingcms as core
 
-    _CmsProfileCompatible = Union[
-        str, SupportsRead[bytes], core.CmsProfile, "ImageCmsProfile"
-    ]
+    if TYPE_CHECKING:
+        _CmsProfileCompatible = Union[
+            str, SupportsRead[bytes], core.CmsProfile, "ImageCmsProfile"
+        ]
 except ImportError as ex:
     # Allow error import for doc purposes, but error out when accessing
     # anything in core.

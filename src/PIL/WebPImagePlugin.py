@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from io import BytesIO
-from typing import IO, Any
 
 from . import Image, ImageFile
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import IO, Any
 
 try:
     from . import _webp

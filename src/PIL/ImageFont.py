@@ -34,17 +34,19 @@ import warnings
 from enum import IntEnum
 from io import BytesIO
 from types import ModuleType
-from typing import IO, Any, BinaryIO, TypedDict, cast
+from typing import IO, TypedDict, cast
 
 from . import Image, features
-from ._typing import StrOrBytesPath
 from ._util import DeferredError, is_path
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
+    from typing import Any, BinaryIO
+
     from . import ImageFile
     from ._imaging import ImagingFont
     from ._imagingft import Font
+    from ._typing import StrOrBytesPath
 
 
 class Axis(TypedDict):

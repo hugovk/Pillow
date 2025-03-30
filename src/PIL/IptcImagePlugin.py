@@ -16,7 +16,6 @@
 #
 from __future__ import annotations
 
-from collections.abc import Sequence
 from io import BytesIO
 from typing import cast
 
@@ -24,6 +23,10 @@ from . import Image, ImageFile
 from ._binary import i16be as i16
 from ._binary import i32be as i32
 from ._deprecate import deprecate
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 COMPRESSION = {1: "raw", 5: "jpeg"}
 
