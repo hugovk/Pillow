@@ -61,7 +61,6 @@ optional-dependencies.tests = [
   "markdown2",
   "olefile",
   "packaging",
-  "pyroma",
   "pytest",
   "pytest-cov",
   "pytest-timeout",

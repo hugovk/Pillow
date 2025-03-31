@@ -35,7 +35,6 @@ python3 -m pip install olefile
 python3 -m pip install -U pytest
 python3 -m pip install -U pytest-cov
 python3 -m pip install -U pytest-timeout
-python3 -m pip install pyroma
 
 if [[ $(uname) != CYGWIN* ]]; then
     python3 -m pip install numpy
@@ -45,12 +44,6 @@ if [[ $(uname) != CYGWIN* ]]; then
         sudo apt-get -qq install libegl1 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxkbcommon-x11-0
         # TODO Update condition when pyqt6 supports free-threading
         if ! [[ "$PYTHON_GIL" == "0" ]]; then python3 -m pip install pyqt6 ; fi
-    fi
-
-    # Pyroma uses non-isolated build and fails with old setuptools
-    if [[ $GHA_PYTHON_VERSION == 3.9 ]]; then
-        # To match pyproject.toml
-        python3 -m pip install "setuptools>=77"
     fi
 
     # webp
