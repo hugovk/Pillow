@@ -4,13 +4,7 @@ name: Test Valgrind Memory Leaks
 
 # this is very expensive. Only run on the pull request.
 on:
-  # push:
-  #   branches:
-  #     - "**"
-  #   paths:
-  #     - ".github/workflows/test-valgrind.yml"
-  #     - "**.c"
-  #     - "**.h"
+  push:
   pull_request:
     paths:
       - ".github/workflows/test-valgrind.yml"
@@ -22,9 +16,9 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+#concurrency:
+#  group: ${{ github.workflow }}-${{ github.ref }}
+#  cancel-in-progress: true
 
 jobs:
   build:
