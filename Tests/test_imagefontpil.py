@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import os
 import struct
 from io import BytesIO
-import os
 
 import pytest
 
@@ -77,7 +77,7 @@ def test_decompression_bomb() -> None:
 @pytest.mark.xfail(
     "PILLOW_VALGRIND_TEST" in os.environ,
     reason="Valgrind is slower",
-    raises=TimeoutError
+    raises=TimeoutError,
 )
 def test_oom() -> None:
     glyph = struct.pack(

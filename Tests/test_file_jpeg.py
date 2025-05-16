@@ -1037,7 +1037,7 @@ class TestFileJpeg:
     @pytest.mark.xfail(
         "PILLOW_VALGRIND_TEST" in os.environ,
         reason="Valgrind is slower",
-        raises=TimeoutError
+        raises=TimeoutError,
     )
     def test_eof(self, monkeypatch: pytest.MonkeyPatch) -> None:
         # Even though this decoder never says that it is finished
