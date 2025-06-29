@@ -13,6 +13,7 @@ from .helper import assert_image_equal_tofile, skip_unless_feature
 
 
 class TestImageGrab:
+    @pytest.mark.xdist_group(name="imagegrab-group")
     @pytest.mark.skipif(
         os.environ.get("USERNAME") == "ContainerAdministrator",
         reason="can't grab screen when running in Docker",
