@@ -81,6 +81,8 @@ else
     MB_ML_VER=${AUDITWHEEL_POLICY:9}
 fi
 
+echo $CIBW_ARCHS
+echo $PLAT
 # Define custom utilities
 source wheels/multibuild/common_utils.sh
 source wheels/multibuild/library_builders.sh
