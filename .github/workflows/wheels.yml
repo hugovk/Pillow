@@ -271,7 +271,7 @@ jobs:
 
   scientific-python-nightly-wheels-publish:
     if: github.repository_owner == 'python-pillow' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
-    needs: [build-native-wheels, windows, count-dists]
+    needs: [count-dists]
     runs-on: ubuntu-latest
     name: Upload wheels to scientific-python-nightly-wheels
     steps:
@@ -288,7 +288,7 @@ jobs:
 
   pypi-publish:
     if: github.repository_owner == 'python-pillow' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-    needs: [build-native-wheels, windows, sdist, count-dists]
+    needs: [count-dists]
     runs-on: ubuntu-latest
     name: Upload release to PyPI
     environment:
