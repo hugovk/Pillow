@@ -6,13 +6,13 @@
     "labels": [
         "Dependency"
     ],
-    "minimumReleaseAge": "7 days",
     "packageRules": [
         {
             "groupName": "github-actions",
             "matchManagers": [
                 "github-actions"
             ],
+            "minimumReleaseAge": "7 days",
             "separateMajorMinor": false
         }
     ],
