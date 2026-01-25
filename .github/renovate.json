@@ -7,16 +7,131 @@
         "Dependency"
     ],
     "minimumReleaseAge": "7 days",
+    "schedule": [
+        "* * 3 * *"
+    ],
+    "customManagers": [
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": [
+                "\"(?<depName>[a-z0-9-]+)\":\\s*\"(?<currentValue>\\d+\\.\\d+(?:\\.\\d+)?)\""
+            ],
+            "datasourceTemplate": "github-releases"
+        }
+    ],
+    "customDatasources": {
+        "libxcb": {
+            "defaultRegistryUrlTemplate": "https://xcb.freedesktop.org/dist/",
+            "format": "html",
+            "transformTemplates": [
+                "{\"releases\": $map($match($, /libxcb-([\\d.]+)\\.tar\\.xz/).groups, function($v) { {\"version\": $v} })}"
+            ]
+        },
+        "bzip2": {
+            "defaultRegistryUrlTemplate": "https://sourceware.org/pub/bzip2/",
+            "format": "html",
+            "transformTemplates": [
+                "{\"releases\": $map($match($, /bzip2-([\\d.]+)\\.tar\\.gz/).groups, function($v) { {\"version\": $v} })}"
+            ]
+        }
+    },
     "packageRules": [
         {
             "groupName": "github-actions",
-            "matchManagers": [
-                "github-actions"
-            ],
+            "matchManagers": ["github-actions"],
             "separateMajorMinor": false
+        },
+        {
+            "groupName": "pillow-depends",
+            "matchManagers": ["custom.regex"],
+            "matchFileNames": [".github/dependencies.json"]
+        },
+        {
+            "matchDepNames": ["freetype-ios"],
+            "enabled": false
+        },
+        {
+            "matchDepNames": ["brotli"],
+            "packageName": "google/brotli",
+            "extractVersion": "^v(?<version>.+)$"
+        },
+        {
+            "matchDepNames": ["bzip2"],
+            "datasource": "custom.bzip2"
+        },
+        {
+            "matchDepNames": ["freetype"],
+            "packageName": "freetype/freetype",
+            "datasource": "github-tags",
+            "extractVersion": "^VER-(?<version>[\\d-]+)$",
+            "versioning": "regex:^(?<major>\\d+)[.-](?<minor>\\d+)[.-](?<patch>\\d+)$"
+        },
+        {
+            "matchDepNames": ["fribidi"],
+            "packageName": "fribidi/fribidi",
+            "extractVersion": "^v(?<version>.+)$"
+        },
+        {
+            "matchDepNames": ["harfbuzz"],
+            "packageName": "harfbuzz/harfbuzz"
+        },
+        {
+            "matchDepNames": ["jpegturbo"],
+            "packageName": "libjpeg-turbo/libjpeg-turbo"
+        },
+        {
+            "matchDepNames": ["lcms2"],
+            "packageName": "mm2/Little-CMS",
+            "extractVersion": "^lcms(?<version>.+)$"
+        },
+        {
+            "matchDepNames": ["libavif"],
+            "packageName": "AOMediaCodec/libavif",
+            "extractVersion": "^v(?<version>.+)$"
+        },
+        {
+            "matchDepNames": ["libimagequant"],
+            "packageName": "ImageOptim/libimagequant"
+        },
+        {
+            "matchDepNames": ["libpng"],
+            "packageName": "pnggroup/libpng",
+            "datasource": "github-tags",
+            "extractVersion": "^v(?<version>.+)$"
+        },
+        {
+            "matchDepNames": ["libwebp"],
+            "packageName": "webmproject/libwebp",
+            "extractVersion": "^v(?<version>.+)$"
+        },
+        {
+            "matchDepNames": ["libxcb"],
+            "datasource": "custom.libxcb"
+        },
+        {
+            "matchDepNames": ["openjpeg"],
+            "packageName": "uclouvain/openjpeg",
+            "extractVersion": "^v(?<version>.+)$"
+        },
+        {
+            "matchDepNames": ["tiff"],
+            "packageName": "libsdl-org/libtiff",
+            "extractVersion": "^v(?<version>.+)$"
+        },
+        {
+            "matchDepNames": ["xz"],
+            "packageName": "tukaani-project/xz",
+            "extractVersion": "^v(?<version>.+)$"
+        },
+        {
+            "matchDepNames": ["zlib-ng"],
+            "packageName": "zlib-ng/zlib-ng"
+        },
+        {
+            "matchDepNames": ["zstd"],
+            "packageName": "facebook/zstd",
+            "extractVersion": "^v(?<version>.+)$"
         }
-    ],
-    "schedule": [
-        "* * 3 * *"
     ]
 }

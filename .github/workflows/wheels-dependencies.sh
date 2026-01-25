@@ -89,22 +89,26 @@ fi
 
 ARCHIVE_SDIR=pillow-depends-main
 
-# Package versions for fresh source builds.
-FREETYPE_VERSION=2.14.3
-HARFBUZZ_VERSION=13.2.1
-LIBPNG_VERSION=1.6.56
-JPEGTURBO_VERSION=3.1.4.1
-OPENJPEG_VERSION=2.5.4
-XZ_VERSION=5.8.3
-ZSTD_VERSION=1.5.7
-TIFF_VERSION=4.7.1
-LCMS2_VERSION=2.18
-ZLIB_NG_VERSION=2.3.3
-LIBWEBP_VERSION=1.6.0
-BZIP2_VERSION=1.0.8
-LIBXCB_VERSION=1.17.0
-BROTLI_VERSION=1.2.0
-LIBAVIF_VERSION=1.4.1
+VERSIONS_FILE="$PROJECTDIR/.github/dependencies.json"
+if [[ -n "$IOS_SDK" ]]; then
+  FREETYPE_VERSION=$(jq -r '.["freetype-ios"]' "$VERSIONS_FILE")
+else
+  FREETYPE_VERSION=$(jq -r '.freetype' "$VERSIONS_FILE")
+fi
+HARFBUZZ_VERSION=$(jq -r '.harfbuzz' "$VERSIONS_FILE")
+LIBPNG_VERSION=$(jq -r '.libpng' "$VERSIONS_FILE")
+JPEGTURBO_VERSION=$(jq -r '.jpegturbo' "$VERSIONS_FILE")
+OPENJPEG_VERSION=$(jq -r '.openjpeg' "$VERSIONS_FILE")
+XZ_VERSION=$(jq -r '.xz' "$VERSIONS_FILE")
+ZSTD_VERSION=$(jq -r '.zstd' "$VERSIONS_FILE")
+TIFF_VERSION=$(jq -r '.tiff' "$VERSIONS_FILE")
+LCMS2_VERSION=$(jq -r '.lcms2' "$VERSIONS_FILE")
+ZLIB_NG_VERSION=$(jq -r '.["zlib-ng"]' "$VERSIONS_FILE")
+LIBWEBP_VERSION=$(jq -r '.libwebp' "$VERSIONS_FILE")
+BZIP2_VERSION=$(jq -r '.bzip2' "$VERSIONS_FILE")
+LIBXCB_VERSION=$(jq -r '.libxcb' "$VERSIONS_FILE")
+BROTLI_VERSION=$(jq -r '.brotli' "$VERSIONS_FILE")
+LIBAVIF_VERSION=$(jq -r '.libavif' "$VERSIONS_FILE")
 
 function build_pkg_config {
     if [ -e pkg-config-stamp ]; then return; fi
