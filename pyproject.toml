@@ -213,6 +213,22 @@ testpaths = [
   "Tests",
 ]
 
+[tool.coverage]
+run.omit = [
+  "checks/*.py",
+  "Tests/createfontdatachunk.py",
+]
+report.exclude_also = [
+  "@abc.abstractmethod",
+  "^\\s*\\.\\.\\.(\\s*#.*)?$",
+  "^\\s*def [a-zA-Z0-9_]+\\(.*\\)(\\s*->.*)?:\\s*\\.\\.\\.(\\s*#.*)?$",
+  "except ImportError",
+  "if __name__ == .__main__.:",
+  "if 0:",
+  "if DEBUG:",
+  "if TYPE_CHECKING:",
+]
+
 [tool.mypy]
 python_version = "3.10"
 pretty = true
