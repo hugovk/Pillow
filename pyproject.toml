@@ -71,7 +71,7 @@ optional-dependencies.tests = [
   "olefile",
   "packaging",
   "pyroma>=5",
-  "pytest",
+  "pytest>=9",
   "pytest-cov",
   "pytest-timeout",
   "pytest-xdist",
@@ -207,8 +207,9 @@ lint.isort.required-imports = [
 [tool.pyproject-fmt]
 max_supported_python = "3.14"
 
-[tool.pytest.ini_options]
-addopts = "-ra --color=auto"
+[tool.pytest]
+minversion = "9"
+addopts = [ "-ra", "--color=auto" ]
 testpaths = [
   "Tests",
 ]
