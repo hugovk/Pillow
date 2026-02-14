@@ -75,7 +75,7 @@ else
         "${LIBAVIF_CMAKE_FLAGS[@]}" \
         .
 
-    make install
+    sudo make install
 
     if [ -n "$GITHUB_ACTIONS" ] && [ "$(uname)" != "Darwin" ]; then
         # Copy to cache
