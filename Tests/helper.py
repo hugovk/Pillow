@@ -242,7 +242,8 @@ class PillowLeakTestCase:
         return mem / 1024 if sys.platform == "darwin" else mem
 
     def _test_leak(self, core: Callable[[], None]) -> None:
-        core()  # warmup
+        for _ in range(3):
+            core()  # warmup
         gc.collect()  # reclaim before measuring
         start_mem = self._get_mem_usage()
         for cycle in range(self.iterations):
