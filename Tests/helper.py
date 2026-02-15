@@ -4,6 +4,7 @@ Helper functions.
 
 from __future__ import annotations
 
+import gc
 import logging
 import os
 import shutil
@@ -242,6 +243,7 @@ class PillowLeakTestCase:
 
     def _test_leak(self, core: Callable[[], None]) -> None:
         core()  # warmup
+        gc.collect()  # reclaim before measuring
         start_mem = self._get_mem_usage()
         for cycle in range(self.iterations):
             core()
