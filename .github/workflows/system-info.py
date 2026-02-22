@@ -26,3 +26,7 @@ print("platform.version()\t", platform.version())
 print("platform.uname()\t", platform.uname())
 if sys.platform == "darwin":
     print("platform.mac_ver()\t", platform.mac_ver())
+if sys.version_info >= (3, 14):
+    print("sys._jit.is_available()\t", sys._jit.is_available())
+    print("sys._jit.is_enabled()\t", sys._jit.is_enabled())
+    print("sys._jit.is_active()\t", sys._jit.is_active())
