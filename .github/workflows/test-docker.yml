@@ -23,6 +23,7 @@ concurrency:
 
 env:
   FORCE_COLOR: 1
+  PYTHON_JIT: 1
 
 jobs:
   build:

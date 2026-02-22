@@ -39,6 +39,7 @@ concurrency:
 env:
   EXPECTED_DISTS: 87
   FORCE_COLOR: 1
+  PYTHON_JIT: 1
 
 jobs:
   sbom:
