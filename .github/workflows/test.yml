@@ -30,6 +30,7 @@ env:
   COVERAGE_CORE: sysmon
   FORCE_COLOR: 1
   PIP_DISABLE_PIP_VERSION_CHECK: 1
+  PYTHON_JIT: 1
 
 jobs:
   build:

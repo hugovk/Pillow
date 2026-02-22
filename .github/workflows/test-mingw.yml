@@ -28,6 +28,7 @@ concurrency:
 
 env:
   COVERAGE_CORE: sysmon
+  PYTHON_JIT: 1
 
 jobs:
   build:

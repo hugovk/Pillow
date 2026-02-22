@@ -41,6 +41,7 @@ concurrency:
 env:
   EXPECTED_DISTS: 91
   FORCE_COLOR: 1
+  PYTHON_JIT: 1
 
 jobs:
   build-native-wheels:
