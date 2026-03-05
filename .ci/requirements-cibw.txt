@@ -1,1 +1,1 @@
-cibuildwheel==3.4.0
+cibuildwheel[uv]==3.4.0
