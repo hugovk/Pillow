@@ -329,6 +329,8 @@ MARKER = {
     0xFFFD: ("JPG13", "Extension 13", None),
     0xFFFE: ("COM", "Comment", COM),
 }
+if sys.version_info >= (3, 15):
+    MARKER = frozendict(MARKER)
 
 
 def _accept(prefix: bytes) -> bool:
@@ -625,6 +627,8 @@ RAWMODE = {
     "CMYK": "CMYK;I",  # assume adobe conventions
     "YCbCr": "YCbCr",
 }
+if sys.version_info >= (3, 15):
+    RAWMODE = frozendict(RAWMODE)
 
 # fmt: off
 zigzag_index = (

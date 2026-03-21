@@ -136,6 +136,7 @@ overrides = [
 exclude = "wheels/multibuild"
 
 [tool.ruff]
+builtins = [ "frozendict" ]  # Pending support in Ruff
 exclude = [ "wheels/multibuild" ]
 fix = true
 lint.select = [

@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import os
 import re
+import sys
 from typing import IO, Any
 
 from . import Image, ImageFile, ImagePalette
@@ -57,6 +58,8 @@ TAGS = {
     SIZE: 0,
     MODE: 0,
 }
+if sys.version_info >= (3, 15):
+    TAGS = frozendict(TAGS)
 
 OPEN = {
     # ifunc93/p3cfunc formats
@@ -338,6 +341,8 @@ SAVE = {
     "CMYK": ("CMYK", "CMYK;L"),
     "YCbCr": ("YCC", "YCbCr;L"),
 }
+if sys.version_info >= (3, 15):
+    SAVE = frozendict(SAVE)
 
 
 def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:

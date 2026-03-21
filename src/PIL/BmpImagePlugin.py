@@ -25,6 +25,7 @@
 from __future__ import annotations
 
 import os
+import sys
 from typing import IO, Any
 
 from . import Image, ImageFile, ImagePalette
@@ -420,6 +421,8 @@ SAVE = {
     "RGB": ("BGR", 24, 0),
     "RGBA": ("BGRA", 32, 0),
 }
+if sys.version_info >= (3, 15):
+    SAVE = frozendict(SAVE)
 
 
 def _dib_save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:

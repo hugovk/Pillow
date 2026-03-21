@@ -34,6 +34,7 @@ import itertools
 import logging
 import os
 import struct
+import sys
 from typing import IO, Any, NamedTuple, cast
 
 from . import ExifTags, Image
@@ -71,6 +72,8 @@ ERRORS = {
     -8: "bad configuration",
     -9: "out of memory error",
 }
+if sys.version_info >= (3, 15):
+    ERRORS = frozendict(ERRORS)
 """
 Dict of known error codes returned from :meth:`.PyDecoder.decode`,
 :meth:`.PyEncoder.encode` :meth:`.PyEncoder.encode_to_pyfd` and

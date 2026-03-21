@@ -46,6 +46,7 @@ import logging
 import math
 import os
 import struct
+import sys
 import warnings
 from collections.abc import Callable, MutableMapping
 from fractions import Fraction
@@ -147,6 +148,9 @@ COMPRESSION_INFO = {
 }
 
 COMPRESSION_INFO_REV = {v: k for k, v in COMPRESSION_INFO.items()}
+if sys.version_info >= (3, 15):
+    COMPRESSION_INFO = frozendict(COMPRESSION_INFO)
+    COMPRESSION_INFO_REV = frozendict(COMPRESSION_INFO_REV)
 
 OPEN_INFO = {
     # (ByteOrder, PhotoInterpretation, SampleFormat, FillOrder, BitsPerSample,
@@ -274,6 +278,9 @@ OPEN_INFO = {
     (II, 8, (1,), 1, (8, 8, 8), ()): ("LAB", "LAB"),
     (MM, 8, (1,), 1, (8, 8, 8), ()): ("LAB", "LAB"),
 }
+
+if sys.version_info >= (3, 15):
+    OPEN_INFO = frozendict(OPEN_INFO)
 
 MAX_SAMPLESPERPIXEL = max(len(key_tp[4]) for key_tp in OPEN_INFO)
 
@@ -1691,6 +1698,8 @@ SAVE_INFO = {
     "LAB": ("LAB", II, 8, 1, (8, 8, 8), None),
     "I;16B": ("I;16B", MM, 1, 1, (16,), None),
 }
+if sys.version_info >= (3, 15):
+    SAVE_INFO = frozendict(SAVE_INFO)
 
 
 def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:

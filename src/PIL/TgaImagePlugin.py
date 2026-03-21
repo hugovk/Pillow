@@ -17,6 +17,7 @@
 #
 from __future__ import annotations
 
+import sys
 import warnings
 from typing import IO
 
@@ -40,6 +41,8 @@ MODES = {
     (2, 24): "BGR",
     (2, 32): "BGRA",
 }
+if sys.version_info >= (3, 15):
+    MODES = frozendict(MODES)
 
 
 ##
@@ -174,6 +177,8 @@ SAVE = {
     "RGB": ("BGR", 24, 0, 2),
     "RGBA": ("BGRA", 32, 0, 2),
 }
+if sys.version_info >= (3, 15):
+    SAVE = frozendict(SAVE)
 
 
 def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:

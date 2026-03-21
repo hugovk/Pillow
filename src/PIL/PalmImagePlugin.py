@@ -8,6 +8,7 @@
 ##
 from __future__ import annotations
 
+import sys
 from typing import IO
 
 from . import Image, ImageFile
@@ -105,6 +106,9 @@ Palm8BitColormapImage = build_prototype_image()
 _FLAGS = {"custom-colormap": 0x4000, "is-compressed": 0x8000, "has-transparent": 0x2000}
 
 _COMPRESSION_TYPES = {"none": 0xFF, "rle": 0x01, "scanline": 0x00}
+if sys.version_info >= (3, 15):
+    _FLAGS = frozendict(_FLAGS)
+    _COMPRESSION_TYPES = frozendict(_COMPRESSION_TYPES)
 
 
 #

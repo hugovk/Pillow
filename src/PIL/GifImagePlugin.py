@@ -29,6 +29,7 @@ import itertools
 import math
 import os
 import subprocess
+import sys
 from enum import IntEnum
 from functools import cached_property
 from typing import Any, NamedTuple, cast
@@ -511,6 +512,8 @@ class GifImageFile(ImageFile.ImageFile):
 
 
 RAWMODE = {"1": "L", "L": "L", "P": "P"}
+if sys.version_info >= (3, 15):
+    RAWMODE = frozendict(RAWMODE)
 
 
 def _normalize_mode(im: Image.Image) -> Image.Image:

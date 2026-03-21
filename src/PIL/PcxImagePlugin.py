@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import io
 import logging
+import sys
 from typing import IO
 
 from . import Image, ImageFile, ImagePalette
@@ -143,6 +144,8 @@ SAVE = {
     "P": (5, 8, 1, "P"),
     "RGB": (5, 8, 3, "RGB;L"),
 }
+if sys.version_info >= (3, 15):
+    SAVE = frozendict(SAVE)
 
 
 def _save(im: Image.Image, fp: IO[bytes], filename: str | bytes) -> None:
