@@ -16,6 +16,8 @@
 #
 from __future__ import annotations
 
+import sys
+
 import olefile
 
 from . import Image, ImageFile
@@ -35,6 +37,8 @@ MODES = {
     (0x00030000, 0x00030001, 0x00030002): ("RGB", "RGB"),
     (0x00038000, 0x00038001, 0x00038002, 0x00037FFE): ("RGBA", "RGBA"),
 }
+if sys.version_info >= (3, 15):
+    MODES = frozendict(MODES)
 
 
 #

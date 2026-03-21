@@ -216,6 +216,8 @@ _FLAGS = {
     "NODEFAULTRESOURCEDEF": 16777216,  # CRD special
     "GRIDPOINTS": lambda n: (n & 0xFF) << 16,  # Gridpoints
 }
+if sys.version_info >= (3, 15):
+    _FLAGS = frozendict(_FLAGS)
 
 
 # --------------------------------------------------------------------.

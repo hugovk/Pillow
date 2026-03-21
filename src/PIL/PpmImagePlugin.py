@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import math
+import sys
 from typing import IO
 
 from . import Image, ImageFile
@@ -44,6 +45,8 @@ MODES = {
     b"PyRGBA": "RGBA",
     b"PyCMYK": "CMYK",
 }
+if sys.version_info >= (3, 15):
+    MODES = frozendict(MODES)
 
 
 def _accept(prefix: bytes) -> bool:

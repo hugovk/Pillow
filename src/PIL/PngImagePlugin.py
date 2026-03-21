@@ -36,6 +36,7 @@ import itertools
 import logging
 import re
 import struct
+import sys
 import warnings
 import zlib
 from enum import IntEnum
@@ -89,6 +90,8 @@ _MODES = {
     (8, 6): ("RGBA", "RGBA"),
     (16, 6): ("RGBA", "RGBA;16B"),
 }
+if sys.version_info >= (3, 15):
+    _MODES = frozendict(_MODES)
 
 
 _simple_palette = re.compile(b"^\xff*\x00\xff*$")
@@ -1119,6 +1122,8 @@ _OUTMODES = {
     "RGB": ("RGB", b"\x08", b"\x02"),
     "RGBA": ("RGBA", b"\x08", b"\x06"),
 }
+if sys.version_info >= (3, 15):
+    _OUTMODES = frozendict(_OUTMODES)
 
 
 def putchunk(fp: IO[bytes], cid: bytes, *data: bytes) -> None:

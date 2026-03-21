@@ -16,6 +16,7 @@ well-known EXIF tags.
 
 from __future__ import annotations
 
+import sys
 from enum import IntEnum
 
 
@@ -302,6 +303,8 @@ TAGS = {
     0x920B: "FlashEnergy",
     0x9216: "TIFF/EPStandardID",
 }
+if sys.version_info >= (3, 15):
+    TAGS = frozendict(TAGS)
 
 
 class GPS(IntEnum):
@@ -341,6 +344,8 @@ class GPS(IntEnum):
 
 """Maps EXIF GPS tags to tag names."""
 GPSTAGS = {i.value: i.name for i in GPS}
+if sys.version_info >= (3, 15):
+    GPSTAGS = frozendict(GPSTAGS)
 
 
 class Interop(IntEnum):

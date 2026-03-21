@@ -18,6 +18,7 @@
 from __future__ import annotations
 
 import io
+import sys
 from functools import cached_property
 from typing import IO
 
@@ -41,6 +42,8 @@ MODES = {
     (8, 8): ("L", 1),  # duotone
     (9, 8): ("LAB", 3),
 }
+if sys.version_info >= (3, 15):
+    MODES = frozendict(MODES)
 
 
 # --------------------------------------------------------------------.

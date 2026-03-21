@@ -16,6 +16,7 @@
 #
 from __future__ import annotations
 
+import sys
 from io import BytesIO
 from typing import cast
 
@@ -24,6 +25,8 @@ from ._binary import i16be as i16
 from ._binary import i32be as i32
 
 COMPRESSION = {1: "raw", 5: "jpeg"}
+if sys.version_info >= (3, 15):
+    COMPRESSION = frozendict(COMPRESSION)
 
 
 #

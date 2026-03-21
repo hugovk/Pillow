@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import os
 import struct
+import sys
 from typing import IO
 
 from . import Image, ImageFile
@@ -45,6 +46,8 @@ MODES = {
     (1, 3, 4): "RGBA",
     (2, 3, 4): "RGBA;16B",
 }
+if sys.version_info >= (3, 15):
+    MODES = frozendict(MODES)
 
 
 ##
