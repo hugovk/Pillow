@@ -100,7 +100,7 @@ def autocontrast(
     else:
         histogram = image.histogram(mask)
 
-    lut = []
+    lut: list[int] = []
     for layer in range(0, len(histogram), 256):
         h = histogram[layer : layer + 256]
         if ignore is not None:
@@ -149,7 +149,7 @@ def autocontrast(
                 break
         if hi <= lo:
             # don't bother
-            lut.extend(list(range(256)))
+            lut.extend(range(256))
         else:
             scale = 255.0 / (hi - lo)
             offset = -lo * scale
@@ -464,15 +464,15 @@ def equalize(image: Image.Image, mask: Image.Image | None = None) -> Image.Image
     if image.mode == "P":
         image = image.convert("RGB")
     h = image.histogram(mask)
-    lut = []
+    lut: list[int] = []
     for b in range(0, len(h), 256):
         histo = [_f for _f in h[b : b + 256] if _f]
         if len(histo) <= 1:
-            lut.extend(list(range(256)))
+            lut.extend(range(256))
         else:
             step = (functools.reduce(operator.add, histo) - histo[-1]) // 255
             if not step:
-                lut.extend(list(range(256)))
+                lut.extend(range(256))
             else:
                 n = step // 2
                 for i in range(256):
