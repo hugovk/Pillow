@@ -2679,16 +2679,15 @@ class Image:
         self._attach_default_encoderinfo(self)
         self.encoderconfig: tuple[Any, ...] = ()
 
-        if format.upper() not in SAVE:
+        format = format.upper()
+        if format not in SAVE:
             init()
         if save_all or (
-            save_all is None
-            and params.get("append_images")
-            and format.upper() in SAVE_ALL
+            save_all is None and params.get("append_images") and format in SAVE_ALL
         ):
-            save_handler = SAVE_ALL[format.upper()]
+            save_handler = SAVE_ALL[format]
         else:
-            save_handler = SAVE[format.upper()]
+            save_handler = SAVE[format]
 
         created = False
         if open_fp:
