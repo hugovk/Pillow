@@ -987,7 +987,7 @@ def _get_color_table_size(palette_bytes: bytes) -> int:
     elif len(palette_bytes) < 9:
         return 1
     else:
-        return math.ceil(math.log(len(palette_bytes) // 3, 2)) - 1
+        return math.ceil(math.log2(len(palette_bytes) // 3)) - 1
 
 
 def _get_header_palette(palette_bytes: bytes) -> bytes:

@@ -38,7 +38,7 @@ from __future__ import annotations
 
 import warnings
 from io import BytesIO
-from math import ceil, log
+from math import ceil, log2
 from typing import IO, NamedTuple
 
 from . import BmpImagePlugin, Image, ImageFile, PngImagePlugin
@@ -191,7 +191,7 @@ class IcoFile:
                 square=width * height,
                 # See Wikipedia notes about color depth.
                 # We need this just to differ images with equal sizes
-                color_depth=bpp or (nb_color != 0 and ceil(log(nb_color, 2))) or 256,
+                color_depth=bpp or (nb_color != 0 and ceil(log2(nb_color))) or 256,
             )
 
             self.entry.append(icon_header)

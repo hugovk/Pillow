@@ -3700,7 +3700,7 @@ def open(
         fp.close()
     for message in warning_messages:
         warnings.warn(message)
-    msg = "cannot identify image file %r" % (filename if filename else fp)
+    msg = "cannot identify image file %r" % (filename or fp)
     raise UnidentifiedImageError(msg)
 
 

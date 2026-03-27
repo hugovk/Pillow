@@ -192,7 +192,7 @@ class LutBuilder:
         # Note that all the patterns are searched. The last one found takes priority
         for i in range(LUT_SIZE):
             # Build the bit pattern
-            bitpattern = bin(i)[2:]
+            bitpattern = f"{i:b}"
             bitpattern = ("0" * (9 - len(bitpattern)) + bitpattern)[::-1]
 
             for pattern, r in compiled_patterns:

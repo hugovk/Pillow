@@ -1063,10 +1063,10 @@ class pil_build_ext(build_ext):
                 "See https://pillow.readthedocs.io/en/latest/installation."
                 "html#building-from-source"
             )
-            print("")
+            print()
 
         print("To check the build, run the selftest.py script.")
-        print("")
+        print()
 
 
 def debug_build() -> bool:

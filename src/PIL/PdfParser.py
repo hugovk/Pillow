@@ -274,8 +274,7 @@ class PdfDict(_DictBase):
         if isinstance(value, bytes):
             value = decode_text(value)
         if key.endswith("Date"):
-            if value.startswith("D:"):
-                value = value[2:]
+            value = value.removeprefix("D:")
 
             relationship = "Z"
             if len(value) > 17:
