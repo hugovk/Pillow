@@ -35,8 +35,8 @@ from ._binary import i32le as i32
 # --------------------------------------------------------------------
 
 
-split = re.compile(r"^%%([^:]*):[ \t]*(.*)[ \t]*$")
-field = re.compile(r"^%[%!\w]([^:]*)[ \t]*$")
+split = re.compile(r"%%([^:]*):[ \t]*(.*)[ \t]*")
+field = re.compile(r"%[%!\w]([^:]*)[ \t]*")
 
 gs_binary: str | bool | None = None
 gs_windows_binary = None
@@ -225,7 +225,7 @@ class EpsImageFile(ImageFile.ImageFile):
         def read_comment(s: str) -> bool:
             nonlocal bounding_box, reading_trailer_comments
             try:
-                m = split.match(s)
+                m = split.fullmatch(s)
             except re.error as e:
                 msg = "not an EPS file"
                 raise SyntaxError(msg) from e
@@ -295,7 +295,7 @@ class EpsImageFile(ImageFile.ImageFile):
 
                 s = str(bytes_mv[:bytes_read], "latin-1")
                 if not read_comment(s):
-                    m = field.match(s)
+                    m = field.fullmatch(s)
                     if m:
                         k = m.group(1)
                         if k.startswith("PS-Adobe"):

@@ -11,6 +11,7 @@ import re
 from . import Image, _imagingmorph
 
 LUT_SIZE = 1 << 9
+_PATTERN_RE = re.compile(r"(\w):?\s*\((.+?)\)\s*->\s*(\d)")
 
 # fmt: off
 ROTATION_MATRIX = [
@@ -169,13 +170,13 @@ class LutBuilder:
 
         # Parse and create symmetries of the patterns strings
         for p in self.patterns:
-            m = re.search(r"(\w):?\s*\((.+?)\)\s*->\s*(\d)", p.replace("\n", ""))
+            m = _PATTERN_RE.search(p.replace("\n", ""))
             if not m:
                 msg = 'Syntax error in pattern "' + p + '"'
                 raise Exception(msg)
-            options = m.group(1)
-            pattern = m.group(2)
-            result = int(m.group(3))
+            options = m[1]
+            pattern = m[2]
+            result = int(m[3])
 
             # Get rid of spaces
             pattern = pattern.replace(" ", "").replace("\n", "")

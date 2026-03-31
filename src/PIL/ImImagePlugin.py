@@ -102,7 +102,7 @@ for j in range(2, 33):
 # --------------------------------------------------------------------
 # Read IM directory
 
-split = re.compile(rb"^([A-Za-z][^:]*):[ \t]*(.*)[ \t]*$")
+split = re.compile(rb"([A-Za-z][^:]*):[ \t]*(.*)[ \t]*")
 
 
 def number(s: Any) -> float:
@@ -163,7 +163,7 @@ class ImImageFile(ImageFile.ImageFile):
                 s = s[:-1]
 
             try:
-                m = split.match(s)
+                m = split.fullmatch(s)
             except re.error as e:
                 msg = "not an IM file"
                 raise SyntaxError(msg) from e

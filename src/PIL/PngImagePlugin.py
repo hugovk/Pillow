@@ -91,7 +91,7 @@ _MODES = {
 }
 
 
-_simple_palette = re.compile(b"^\xff*\x00\xff*$")
+_simple_palette = re.compile(b"\xff*\x00\xff*")
 
 MAX_TEXT_CHUNK = ImageFile.SAFEBLOCK
 """
@@ -500,7 +500,7 @@ class PngStream(ChunkStream):
         assert self.fp is not None
         s = ImageFile._safe_read(self.fp, length)
         if self.im_mode == "P":
-            if _simple_palette.match(s):
+            if _simple_palette.fullmatch(s):
                 # tRNS contains only one full-transparent entry,
                 # other entries are full opaque
                 i = s.find(b"\0")
