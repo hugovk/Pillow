@@ -3,21 +3,46 @@
     "extends": [
         "config:recommended"
     ],
+    "forkProcessing": "enabled",
     "labels": [
         "Dependency"
     ],
     "minimumReleaseAge": "7 days",
     "schedule": [
-        "* * 3 * *"
+        "* */1 * * *"
     ],
     "customManagers": [
         {
             "customType": "regex",
             "fileMatch": ["^\\.github/dependencies\\.json$"],
             "matchStrings": [
-                "\"(?<depName>[a-z0-9-]+)\":\\s*\"(?<currentValue>\\d+\\.\\d+(?:\\.\\d+)?)\""
+                "\"(?<depName>brotli|fribidi|harfbuzz|jpegturbo|lcms2|libavif|libimagequant|libwebp|openjpeg|tiff|xz|zlib-ng|zstd)\":\\s*\"(?<currentValue>\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)\""
             ],
             "datasourceTemplate": "github-releases"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": [
+                "\"(?<depName>freetype|libpng)\":\\s*\"(?<currentValue>\\d+\\.\\d+(?:\\.\\d+)?)\""
+            ],
+            "datasourceTemplate": "github-tags"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": [
+                "\"(?<depName>bzip2)\":\\s*\"(?<currentValue>\\d+\\.\\d+(?:\\.\\d+)?)\""
+            ],
+            "datasourceTemplate": "custom.bzip2"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": [
+                "\"(?<depName>libxcb)\":\\s*\"(?<currentValue>\\d+\\.\\d+(?:\\.\\d+)?)\""
+            ],
+            "datasourceTemplate": "custom.libxcb"
         }
     ],
     "customDatasources": {
@@ -57,13 +82,8 @@
             "extractVersion": "^v(?<version>.+)$"
         },
         {
-            "matchDepNames": ["bzip2"],
-            "datasource": "custom.bzip2"
-        },
-        {
             "matchDepNames": ["freetype"],
             "packageName": "freetype/freetype",
-            "datasource": "github-tags",
             "extractVersion": "^VER-(?<version>[\\d-]+)$",
             "versioning": "regex:^(?<major>\\d+)[.-](?<minor>\\d+)[.-](?<patch>\\d+)$"
         },
@@ -97,17 +117,12 @@
         {
             "matchDepNames": ["libpng"],
             "packageName": "pnggroup/libpng",
-            "datasource": "github-tags",
             "extractVersion": "^v(?<version>.+)$"
         },
         {
             "matchDepNames": ["libwebp"],
             "packageName": "webmproject/libwebp",
             "extractVersion": "^v(?<version>.+)$"
-        },
-        {
-            "matchDepNames": ["libxcb"],
-            "datasource": "custom.libxcb"
         },
         {
             "matchDepNames": ["openjpeg"],
