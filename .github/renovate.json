@@ -156,25 +156,21 @@
             "fileMatch": ["^\\.github/dependencies\\.json$"],
             "matchStrings": ["\"libxcb\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
             "depNameTemplate": "libxcb",
-            "datasourceTemplate": "custom.libxcb"
+            "packageNameTemplate": "xorg/lib/libxcb",
+            "datasourceTemplate": "gitlab-tags",
+            "registryUrlTemplate": "https://gitlab.freedesktop.org",
+            "extractVersionTemplate": "^libxcb-(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"bzip2\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "bzip2",
+            "packageNameTemplate": "bzip2/bzip2",
+            "datasourceTemplate": "gitlab-tags",
+            "extractVersionTemplate": "^bzip2-(?<version>.+)$"
         }
     ],
-    "customDatasources": {
-        "libxcb": {
-            "defaultRegistryUrlTemplate": "https://xcb.freedesktop.org/dist/",
-            "format": "html",
-            "transformTemplates": [
-                "{\"releases\": [$match($, /libxcb-(\\d+\\.\\d+\\.\\d+)\\.tar\\.xz/).(groups[0]).{\"version\": $}]}"
-            ]
-        },
-        "bzip2": {
-            "defaultRegistryUrlTemplate": "https://sourceware.org/pub/bzip2/",
-            "format": "html",
-            "transformTemplates": [
-                "{\"releases\": [$match($, /bzip2-(\\d+\\.\\d+\\.\\d+)\\.tar\\.gz/).(groups[0]).{\"version\": $}]}"
-            ]
-        }
-    },
     "packageRules": [
         {
             "groupName": "github-actions",
