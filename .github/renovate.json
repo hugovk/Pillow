@@ -147,13 +147,6 @@
         {
             "customType": "regex",
             "fileMatch": ["^\\.github/dependencies\\.json$"],
-            "matchStrings": ["\"bzip2\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
-            "depNameTemplate": "bzip2",
-            "datasourceTemplate": "custom.bzip2"
-        },
-        {
-            "customType": "regex",
-            "fileMatch": ["^\\.github/dependencies\\.json$"],
             "matchStrings": ["\"libxcb\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
             "depNameTemplate": "libxcb",
             "packageNameTemplate": "xorg/lib/libxcb",
