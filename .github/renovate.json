@@ -15,33 +15,147 @@
         {
             "customType": "regex",
             "fileMatch": ["^\\.github/dependencies\\.json$"],
-            "matchStrings": [
-                "\"(?<depName>brotli|fribidi|harfbuzz|jpegturbo|lcms2|libavif|libimagequant|libwebp|openjpeg|tiff|xz|zlib-ng|zstd)\":\\s*\"(?<currentValue>\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)\""
-            ],
+            "matchStrings": ["\"brotli\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "brotli",
+            "packageNameTemplate": "google/brotli",
+            "datasourceTemplate": "github-releases",
+            "extractVersionTemplate": "^v(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"fribidi\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "fribidi",
+            "packageNameTemplate": "fribidi/fribidi",
+            "datasourceTemplate": "github-releases",
+            "extractVersionTemplate": "^v(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"harfbuzz\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "harfbuzz",
+            "packageNameTemplate": "harfbuzz/harfbuzz",
             "datasourceTemplate": "github-releases"
         },
         {
             "customType": "regex",
             "fileMatch": ["^\\.github/dependencies\\.json$"],
-            "matchStrings": [
-                "\"(?<depName>freetype|libpng)\":\\s*\"(?<currentValue>\\d+\\.\\d+(?:\\.\\d+)?)\""
-            ],
-            "datasourceTemplate": "github-tags"
+            "matchStrings": ["\"jpegturbo\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "jpegturbo",
+            "packageNameTemplate": "libjpeg-turbo/libjpeg-turbo",
+            "datasourceTemplate": "github-releases"
         },
         {
             "customType": "regex",
             "fileMatch": ["^\\.github/dependencies\\.json$"],
-            "matchStrings": [
-                "\"(?<depName>bzip2)\":\\s*\"(?<currentValue>\\d+\\.\\d+(?:\\.\\d+)?)\""
-            ],
+            "matchStrings": ["\"lcms2\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "lcms2",
+            "packageNameTemplate": "mm2/Little-CMS",
+            "datasourceTemplate": "github-releases",
+            "extractVersionTemplate": "^lcms(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"libavif\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "libavif",
+            "packageNameTemplate": "AOMediaCodec/libavif",
+            "datasourceTemplate": "github-releases",
+            "extractVersionTemplate": "^v(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"libimagequant\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "libimagequant",
+            "packageNameTemplate": "ImageOptim/libimagequant",
+            "datasourceTemplate": "github-releases"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"libwebp\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "libwebp",
+            "packageNameTemplate": "webmproject/libwebp",
+            "datasourceTemplate": "github-releases",
+            "extractVersionTemplate": "^v(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"openjpeg\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "openjpeg",
+            "packageNameTemplate": "uclouvain/openjpeg",
+            "datasourceTemplate": "github-releases",
+            "extractVersionTemplate": "^v(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"tiff\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "tiff",
+            "packageNameTemplate": "libsdl-org/libtiff",
+            "datasourceTemplate": "github-releases",
+            "extractVersionTemplate": "^v(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"xz\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "xz",
+            "packageNameTemplate": "tukaani-project/xz",
+            "datasourceTemplate": "github-releases",
+            "extractVersionTemplate": "^v(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"zlib-ng\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "zlib-ng",
+            "packageNameTemplate": "zlib-ng/zlib-ng",
+            "datasourceTemplate": "github-releases"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"zstd\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "zstd",
+            "packageNameTemplate": "facebook/zstd",
+            "datasourceTemplate": "github-releases",
+            "extractVersionTemplate": "^v(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"freetype\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "freetype",
+            "packageNameTemplate": "freetype/freetype",
+            "datasourceTemplate": "github-tags",
+            "extractVersionTemplate": "^VER-(?<version>[\\d-]+)$",
+            "versioningTemplate": "regex:^(?<major>\\d+)[.-](?<minor>\\d+)[.-](?<patch>\\d+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"libpng\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "libpng",
+            "packageNameTemplate": "pnggroup/libpng",
+            "datasourceTemplate": "github-tags",
+            "extractVersionTemplate": "^v(?<version>.+)$"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": ["^\\.github/dependencies\\.json$"],
+            "matchStrings": ["\"bzip2\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "bzip2",
             "datasourceTemplate": "custom.bzip2"
         },
         {
             "customType": "regex",
             "fileMatch": ["^\\.github/dependencies\\.json$"],
-            "matchStrings": [
-                "\"(?<depName>libxcb)\":\\s*\"(?<currentValue>\\d+\\.\\d+(?:\\.\\d+)?)\""
-            ],
+            "matchStrings": ["\"libxcb\":\\s*\"(?<currentValue>\\d+[^\"]*?)\""],
+            "depNameTemplate": "libxcb",
             "datasourceTemplate": "custom.libxcb"
         }
     ],
@@ -50,14 +164,14 @@
             "defaultRegistryUrlTemplate": "https://xcb.freedesktop.org/dist/",
             "format": "html",
             "transformTemplates": [
-                "{\"releases\": $map($match($, /libxcb-([\\d.]+)\\.tar\\.xz/).groups, function($v) { {\"version\": $v} })}"
+                "{\"releases\": [$match($, /libxcb-(\\d+\\.\\d+\\.\\d+)\\.tar\\.xz/).(groups[0]).{\"version\": $}]}"
             ]
         },
         "bzip2": {
             "defaultRegistryUrlTemplate": "https://sourceware.org/pub/bzip2/",
             "format": "html",
             "transformTemplates": [
-                "{\"releases\": $map($match($, /bzip2-([\\d.]+)\\.tar\\.gz/).groups, function($v) { {\"version\": $v} })}"
+                "{\"releases\": [$match($, /bzip2-(\\d+\\.\\d+\\.\\d+)\\.tar\\.gz/).(groups[0]).{\"version\": $}]}"
             ]
         }
     },
@@ -75,78 +189,6 @@
         {
             "matchDepNames": ["freetype-ios"],
             "enabled": false
-        },
-        {
-            "matchDepNames": ["brotli"],
-            "packageName": "google/brotli",
-            "extractVersion": "^v(?<version>.+)$"
-        },
-        {
-            "matchDepNames": ["freetype"],
-            "packageName": "freetype/freetype",
-            "extractVersion": "^VER-(?<version>[\\d-]+)$",
-            "versioning": "regex:^(?<major>\\d+)[.-](?<minor>\\d+)[.-](?<patch>\\d+)$"
-        },
-        {
-            "matchDepNames": ["fribidi"],
-            "packageName": "fribidi/fribidi",
-            "extractVersion": "^v(?<version>.+)$"
-        },
-        {
-            "matchDepNames": ["harfbuzz"],
-            "packageName": "harfbuzz/harfbuzz"
-        },
-        {
-            "matchDepNames": ["jpegturbo"],
-            "packageName": "libjpeg-turbo/libjpeg-turbo"
-        },
-        {
-            "matchDepNames": ["lcms2"],
-            "packageName": "mm2/Little-CMS",
-            "extractVersion": "^lcms(?<version>.+)$"
-        },
-        {
-            "matchDepNames": ["libavif"],
-            "packageName": "AOMediaCodec/libavif",
-            "extractVersion": "^v(?<version>.+)$"
-        },
-        {
-            "matchDepNames": ["libimagequant"],
-            "packageName": "ImageOptim/libimagequant"
-        },
-        {
-            "matchDepNames": ["libpng"],
-            "packageName": "pnggroup/libpng",
-            "extractVersion": "^v(?<version>.+)$"
-        },
-        {
-            "matchDepNames": ["libwebp"],
-            "packageName": "webmproject/libwebp",
-            "extractVersion": "^v(?<version>.+)$"
-        },
-        {
-            "matchDepNames": ["openjpeg"],
-            "packageName": "uclouvain/openjpeg",
-            "extractVersion": "^v(?<version>.+)$"
-        },
-        {
-            "matchDepNames": ["tiff"],
-            "packageName": "libsdl-org/libtiff",
-            "extractVersion": "^v(?<version>.+)$"
-        },
-        {
-            "matchDepNames": ["xz"],
-            "packageName": "tukaani-project/xz",
-            "extractVersion": "^v(?<version>.+)$"
-        },
-        {
-            "matchDepNames": ["zlib-ng"],
-            "packageName": "zlib-ng/zlib-ng"
-        },
-        {
-            "matchDepNames": ["zstd"],
-            "packageName": "facebook/zstd",
-            "extractVersion": "^v(?<version>.+)$"
         }
     ]
 }
