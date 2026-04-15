@@ -14,6 +14,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = ["sys"]
+
 import sys
 from functools import lru_cache
 from typing import NamedTuple

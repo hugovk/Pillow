@@ -1,3 +1,5 @@
+__lazy_modules__ = ...
+
 import datetime
 import sys
 from typing import Literal, SupportsFloat, TypeAlias, TypedDict

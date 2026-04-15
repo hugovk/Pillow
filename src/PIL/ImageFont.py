@@ -27,6 +27,16 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = [
+    "base64",
+    f"{__spec__.parent}._typing",
+    "io",
+    "os",
+    "sys",
+    "types",
+    "warnings",
+]
+
 import base64
 import os
 import sys

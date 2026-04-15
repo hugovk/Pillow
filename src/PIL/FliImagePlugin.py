@@ -16,6 +16,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [f"{__spec__.parent}._binary", f"{__spec__.parent}._util", "os"]
+
 import os
 
 from . import Image, ImageFile, ImagePalette

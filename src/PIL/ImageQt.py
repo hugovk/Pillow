@@ -17,6 +17,16 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [
+    "PyQt6",
+    "PyQt6.QtCore",
+    "PySide6",
+    "PySide6.QtCore",
+    f"{__spec__.parent}._util",
+    "io",
+    "sys",
+]
+
 import sys
 from io import BytesIO
 

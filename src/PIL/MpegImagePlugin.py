@@ -14,6 +14,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [f"{__spec__.parent}._binary", f"{__spec__.parent}._typing"]
+
 from . import Image, ImageFile
 from ._binary import i8
 from ._typing import SupportsRead

@@ -17,6 +17,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [f"{__spec__.parent}._binary", "io"]
+
 import io
 
 from . import FontFile, Image

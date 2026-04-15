@@ -21,6 +21,16 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [
+    f"{__spec__.parent}._binary",
+    "io",
+    "os",
+    "subprocess",
+    "sys",
+    "tempfile",
+    "typing",
+]
+
 import io
 import os
 import re

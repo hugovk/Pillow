@@ -26,6 +26,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [f"{__spec__.parent}._binary", "io", "typing"]
+
 import io
 import logging
 from typing import IO

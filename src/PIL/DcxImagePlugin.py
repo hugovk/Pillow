@@ -22,6 +22,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [f"{__spec__.parent}._binary", f"{__spec__.parent}._util"]
+
 from . import Image
 from ._binary import i32le as i32
 from ._util import DeferredError

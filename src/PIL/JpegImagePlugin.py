@@ -33,6 +33,20 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [
+    "array",
+    f"{__spec__.parent}.JpegPresets",
+    f"{__spec__.parent}._binary",
+    "io",
+    "math",
+    "os",
+    "struct",
+    "subprocess",
+    "sys",
+    "tempfile",
+    "warnings",
+]
+
 import array
 import io
 import math

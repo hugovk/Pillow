@@ -15,6 +15,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = ["io", "os", "struct"]
+
 import io
 import os
 import struct

@@ -20,6 +20,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [f"{__spec__.parent}._binary"]
+
 from . import Image, ImageFile
 from ._binary import i16le as i16
 

@@ -16,6 +16,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = ["builtins"]
+
 import builtins
 
 from . import Image, _imagingmath

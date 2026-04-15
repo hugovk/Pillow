@@ -26,6 +26,20 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = [
+    "builtins",
+    "defusedxml",
+    f"{__spec__.parent}._binary",
+    f"{__spec__.parent}._deprecate",
+    f"{__spec__.parent}._util",
+    "io",
+    "math",
+    "os",
+    "re",
+    "struct",
+    "tempfile",
+]
+
 import abc
 import atexit
 import builtins

@@ -22,6 +22,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [f"{__spec__.parent}._binary", "os", "struct", "typing"]
+
 import os
 import struct
 from typing import IO

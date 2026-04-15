@@ -13,6 +13,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = ["IPython", "IPython.display", "os", "shlex", "subprocess", "typing"]
+
 import abc
 import os
 import shutil

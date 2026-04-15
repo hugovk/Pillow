@@ -40,6 +40,17 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [
+    f"{__spec__.parent}._binary",
+    f"{__spec__.parent}._util",
+    "fractions",
+    "itertools",
+    "math",
+    "os",
+    "struct",
+    "warnings",
+]
+
 import io
 import itertools
 import logging

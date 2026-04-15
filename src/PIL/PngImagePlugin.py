@@ -32,6 +32,17 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [
+    f"{__spec__.parent}._binary",
+    f"{__spec__.parent}._deprecate",
+    f"{__spec__.parent}._util",
+    "fractions",
+    "itertools",
+    "struct",
+    "warnings",
+    "zlib",
+]
+
 import itertools
 import logging
 import re

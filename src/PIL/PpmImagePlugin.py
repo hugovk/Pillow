@@ -15,6 +15,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [f"{__spec__.parent}._binary", "math", "typing"]
+
 import math
 from typing import IO
 

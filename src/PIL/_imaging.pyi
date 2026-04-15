@@ -1,3 +1,5 @@
+__lazy_modules__: list[str] = ["typing"]
+
 from typing import Any
 
 class ImagingCore:

@@ -1,3 +1,5 @@
+__lazy_modules__: list[str] = ["collections", "collections.abc", "typing"]
+
 from collections.abc import Callable
 from typing import Any
 

@@ -17,6 +17,14 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [
+    f"{__spec__.parent}._binary",
+    f"{__spec__.parent}._util",
+    "functools",
+    "io",
+    "typing",
+]
+
 import io
 from functools import cached_property
 from typing import IO

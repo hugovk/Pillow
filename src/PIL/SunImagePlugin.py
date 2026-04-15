@@ -17,6 +17,8 @@
 #
 from __future__ import annotations
 
+__lazy_modules__ = [f"{__spec__.parent}._binary"]
+
 from . import Image, ImageFile, ImagePalette
 from ._binary import i32be as i32
 
