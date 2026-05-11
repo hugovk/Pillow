@@ -104,6 +104,20 @@ def pct_change(before: int | None, after: int | None) -> str:
     return f"{delta:+.2f}%"
 
 
+def pct_severity(text: str) -> str | None:
+    """Return "good" / "warn" / "bad" based on the change percent."""
+    if text == "n/a":
+        return None
+    pct = float(text.rstrip("%"))
+    if pct <= 0:
+        return "good"
+    if pct >= 5:
+        return "bad"
+    if pct >= 1:
+        return "warn"
+    return None
+
+
 def render_table(
     baseline_label: str,
     baseline_sizes: dict[str, tuple[str, int]],
@@ -116,19 +130,6 @@ def render_table(
     table.field_names = ["File", "Size before", "Size now", "Change"]
     table.align = "r"
     table.align["File"] = "l"
-
-    def pct_severity(text: str) -> str | None:
-        """Return "good" / "warn" / "bad" based on the change percent."""
-        if text == "n/a":
-            return None
-        pct = float(text.rstrip("%"))
-        if pct <= 0:
-            return "good"
-        if pct >= 5:
-            return "bad"
-        if pct >= 1:
-            return "warn"
-        return None
 
     ANSI_COLORS = {"good": "green", "warn": "yellow", "bad": "red"}
     EMOJI = {"good": "🟢", "warn": "🟡", "bad": "🔴"}
