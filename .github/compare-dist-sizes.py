@@ -131,10 +131,10 @@ def render_table(
     table.align = "r"
     table.align["File"] = "l"
 
-    ANSI_COLORS = {"good": "green", "warn": "yellow", "bad": "red"}
-    EMOJI = {"good": "🟢", "warn": "🟡", "bad": "🔴"}
-
     def style(cells: list[str], role: str) -> list[str]:
+        ANSI_COLORS = {"good": "green", "warn": "yellow", "bad": "red"}
+        EMOJI = {"good": "🟢", "warn": "🟡", "bad": "🔴"}
+
         severity = pct_severity(cells[3])
         if markdown:
             if severity:
@@ -158,13 +158,10 @@ def render_table(
     # Put sdist first for readability
     keys.sort(key=lambda k: (k != "sdist", k))
 
-    wheel_before = 0
-    wheel_after = 0
-    total_before = 0
-    total_after = 0
-    wheel_before_count = 0
-    wheel_after_count = 0
-    total_after_count = 0
+    wheel_before = []
+    wheel_after = []
+    total_before = []
+    total_after = []
     for key in keys:
         baseline_entry = baseline_sizes.get(key)
         local_entry = local_sizes.get(key)
@@ -176,16 +173,13 @@ def render_table(
             role = "orphan"
         else:
             # Present locally (in both, or newly added): count in totals
-            total_after += after
-            total_after_count += 1
+            total_after.append(after)
             if before is not None:
-                total_before += before
+                total_before.append(before)
             if key != "sdist":
-                wheel_after += after
-                wheel_after_count += 1
+                wheel_after.append(after)
                 if before is not None:
-                    wheel_before += before
-                    wheel_before_count += 1
+                    wheel_before.append(before)
             role = "data"
         cells = [
             display_name,
@@ -198,15 +192,15 @@ def render_table(
     if not markdown:
         table.add_divider()
 
-    if wheel_after_count:
-        avg_before = wheel_before // wheel_before_count if wheel_before_count else None
+    if wheel_after:
+        avg_before = sum(wheel_before) // len(wheel_before) if wheel_before else None
         table.add_row(
             style(
                 [
-                    f"wheel average ({wheel_after_count} wheels)",
+                    f"wheel average ({len(wheel_after)} wheels)",
                     human(avg_before),
-                    human(wheel_after // wheel_after_count),
-                    pct_change(avg_before, wheel_after // wheel_after_count),
+                    human(sum(wheel_after) // len(wheel_after)),
+                    pct_change(avg_before, sum(wheel_after) // len(wheel_after)),
                 ],
                 "summary",
             )
@@ -214,24 +208,24 @@ def render_table(
         table.add_row(
             style(
                 [
-                    f"wheel total ({wheel_after_count} wheels)",
-                    human(wheel_before),
-                    human(wheel_after),
-                    pct_change(wheel_before, wheel_after),
+                    f"wheel total ({len(wheel_after)} wheels)",
+                    human(sum(wheel_before)),
+                    human(sum(wheel_after)),
+                    pct_change(sum(wheel_before), sum(wheel_after)),
                 ],
                 "summary",
             ),
             divider=not markdown,
         )
 
-    if total_after_count:
+    if total_after:
         table.add_row(
             style(
                 [
-                    f"artifacts total ({total_after_count} artifacts)",
-                    human(total_before),
-                    human(total_after),
-                    pct_change(total_before, total_after),
+                    f"artifacts total ({len(total_after)} artifacts)",
+                    human(sum(total_before)),
+                    human(sum(total_after)),
+                    pct_change(sum(total_before), sum(total_after)),
                 ],
                 "summary",
             )
