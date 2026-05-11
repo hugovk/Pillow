@@ -111,7 +111,6 @@ def render_table(
     *,
     markdown: bool,
 ) -> str:
-    color = not markdown
     table = PrettyTable()
     table.set_style(TableStyle.MARKDOWN if markdown else TableStyle.SINGLE_BORDER)
     table.field_names = ["File", "Size before", "Size now", "Change"]
@@ -239,7 +238,7 @@ def render_table(
         )
 
     title = f"## Dist size comparison vs {baseline_label}"
-    if color:
+    if not markdown:
         title = colored(title, attrs=["bold"])
     return f"{title}\n\n{table.get_string()}\n"
 
