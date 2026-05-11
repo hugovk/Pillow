@@ -105,16 +105,16 @@ def pct_change(before: int | None, after: int | None) -> str:
 
 
 def pct_severity(text: str) -> str | None:
-    """Return "good" / "warn" / "bad" based on the change percent."""
+    """Return status indicators based on the change percent."""
     if text == "n/a":
         return None
     pct = float(text.rstrip("%"))
     if pct >= 5:
-        return "bad"
+        return {"color": "red", "emoji": "🔴"}
     if pct >= 1:
-        return "warn"
+        return {"color": "yellow", "emoji": "🟡"}
     else:
-        return "good"
+        return {"color": "green", "emoji": "🟢"}
 
 
 def render_table(
@@ -131,13 +131,10 @@ def render_table(
     table.align["File"] = "l"
 
     def style(cells: list[str], role: str) -> list[str]:
-        ANSI_COLORS = {"good": "green", "warn": "yellow", "bad": "red"}
-        EMOJI = {"good": "🟢", "warn": "🟡", "bad": "🔴"}
-
         severity = pct_severity(cells[3])
         if markdown:
             if severity:
-                cells[3] = f"{EMOJI[severity]} {cells[3]}"
+                cells[3] = f"{severity['emoji']} {cells[3]}"
             if role == "orphan":
                 return [f"*{c}*" for c in cells]
             if role == "summary":
@@ -148,7 +145,7 @@ def render_table(
         if bold_attrs := ["bold"] if role == "summary" else []:
             cells[:3] = [colored(c, attrs=bold_attrs) for c in cells[:3]]
         if severity:
-            cells[3] = colored(cells[3], ANSI_COLORS[severity], attrs=bold_attrs)
+            cells[3] = colored(cells[3], severity["color"], attrs=bold_attrs)
         elif bold_attrs:
             cells[3] = colored(cells[3], attrs=bold_attrs)
         return cells
