@@ -109,13 +109,12 @@ def pct_severity(text: str) -> str | None:
     if text == "n/a":
         return None
     pct = float(text.rstrip("%"))
-    if pct <= 0:
-        return "good"
     if pct >= 5:
         return "bad"
     if pct >= 1:
         return "warn"
-    return None
+    else:
+        return "good"
 
 
 def render_table(
