@@ -154,7 +154,7 @@ def render_table(
             cells[3] = colored(cells[3], attrs=bold_attrs)
         return cells
 
-    keys = sorted(set(baseline_sizes) | set(local_sizes))
+    keys = list(set(baseline_sizes) | set(local_sizes))
     # Put sdist first for readability
     keys.sort(key=lambda k: (k != "sdist", k))
 
