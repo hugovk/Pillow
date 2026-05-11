@@ -165,7 +165,7 @@ def render_table(
     wheel_before_count = 0
     wheel_after_count = 0
     total_after_count = 0
-    for i, key in enumerate(keys):
+    for key in keys:
         baseline_entry = baseline_sizes.get(key)
         local_entry = local_sizes.get(key)
         display_name = display_for((local_entry or baseline_entry)[0])
