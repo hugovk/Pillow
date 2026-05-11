@@ -47,7 +47,7 @@ SDIST_RE = re.compile(
 )
 
 
-def key_for(filename: str) -> str | None:
+def key_for(filename: str) -> str:
     """Return a version-independent identifier for a dist file."""
     if m := WHEEL_RE.match(filename):
         build = f"-{m['build']}" if m["build"] else ""
@@ -77,8 +77,6 @@ def fetch_pypi_sizes() -> tuple[str, dict[str, tuple[str, int]]]:
     for entry in data.get("urls", []):
         filename = entry["filename"]
         key = key_for(filename)
-        if key is None:
-            continue
         sizes[key] = (filename, entry["size"])
     return version, sizes
 
@@ -89,8 +87,6 @@ def collect_local_sizes(dist_dir: Path) -> dict[str, tuple[str, int]]:
         if not path.is_file():
             continue
         key = key_for(path.name)
-        if key is None:
-            continue
         sizes[key] = (path.name, path.stat().st_size)
     return sizes
 
