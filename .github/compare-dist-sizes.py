@@ -37,8 +37,7 @@ PYPI_JSON_URL = "https://pypi.org/pypi/pillow/json"
 # Wheel filename: {distribution}-{version}(-{build})?-{python}-{abi}-{platform}.whl
 # sdist filename: {distribution}-{version}.tar.gz
 WHEEL_RE = re.compile(
-    r"^(?P<dist>[^-]+)-(?P<version>[^-]+)"
-    r"(?:-(?P<build>\d[^-]*))?"
+    r"^[^-]+-[^-]+(?:-(?P<build>\d[^-]*))?"
     r"-(?P<python>[^-]+)-(?P<abi>[^-]+)-(?P<platform>[^-]+)\.whl$",
     re.IGNORECASE,
 )
