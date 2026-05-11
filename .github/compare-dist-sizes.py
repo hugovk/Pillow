@@ -50,8 +50,8 @@ SDIST_RE = re.compile(
 def key_for(filename: str) -> str:
     """Return a version-independent identifier for a dist file."""
     if m := WHEEL_RE.match(filename):
-        build = f"-{m['build']}" if m["build"] else ""
-        return f"wheel:{build}-{m['python']}-{m['abi']}-{m['platform']}"
+        build = f"{m['build']}-" if m["build"] else ""
+        return f"wheel:{build}{m['python']}-{m['abi']}-{m['platform']}"
     if SDIST_RE.match(filename):
         return "sdist"
     msg = f"Unexpected dist name: {filename}"
