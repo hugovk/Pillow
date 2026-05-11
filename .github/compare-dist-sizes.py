@@ -140,9 +140,12 @@ def render_table(
             if role == "summary":
                 return [f"**{c}**" for c in cells]
             return cells
+
         if role == "orphan":
             return [colored(c, "dark_grey") for c in cells]
-        if bold_attrs := ["bold"] if role == "summary" else []:
+
+        bold_attrs = ["bold"] if role == "summary" else []
+        if bold_attrs:
             cells[:3] = [colored(c, attrs=bold_attrs) for c in cells[:3]]
         if severity:
             cells[3] = colored(cells[3], severity["color"], attrs=bold_attrs)
