@@ -13,7 +13,7 @@ Usage:
 # requires-python = ">=3.10"
 # dependencies = [
 #     "humanize",
-#     "prettytable>=3.16",
+#     "prettytable",
 #     "termcolor",
 # ]
 # ///
