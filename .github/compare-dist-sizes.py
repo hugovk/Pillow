@@ -104,7 +104,7 @@ def pct_change(before: int | None, after: int | None) -> str:
     return f"{delta:+.2f}%"
 
 
-def pct_severity(text: str) -> str | None:
+def pct_severity(text: str) -> dict[str, str] | None:
     """Return status indicators based on the change percent."""
     if text == "n/a":
         return None
