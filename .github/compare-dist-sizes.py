@@ -146,13 +146,12 @@ def render_table(
             return cells
         if role == "orphan":
             return [colored(c, "dark_grey") for c in cells]
-        bold_attrs = ["bold"] if role == "summary" else []
+        if bold_attrs := ["bold"] if role == "summary" else []:
+            cells[:3] = [colored(c, attrs=bold_attrs) for c in cells[:3]]
         if severity:
             cells[3] = colored(cells[3], ANSI_COLORS[severity], attrs=bold_attrs)
         elif bold_attrs:
             cells[3] = colored(cells[3], attrs=bold_attrs)
-        if bold_attrs:
-            cells[:3] = [colored(c, attrs=bold_attrs) for c in cells[:3]]
         return cells
 
     keys = sorted(set(baseline_sizes) | set(local_sizes))
