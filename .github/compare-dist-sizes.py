@@ -52,7 +52,7 @@ def key_for(filename: str) -> str | None:
     if m := WHEEL_RE.match(filename):
         build = f"-{m['build']}" if m["build"] else ""
         return f"wheel:{build}-{m['python']}-{m['abi']}-{m['platform']}"
-    if m := SDIST_RE.match(filename):
+    if SDIST_RE.match(filename):
         return "sdist"
     msg = f"Unexpected dist name: {filename}"
     raise ValueError(msg)
