@@ -98,9 +98,9 @@ def human(n: int | None) -> str:
 
 
 def pct_change(before: int | None, after: int | None) -> str:
-    if not before or after is None:
+    if before is None or after is None:
         return "n/a"
-    delta = (after - before) / before * 100
+    delta = (after - before) / before * 100 if before != 0 else 0
     return f"{delta:+.2f}%"
 
 
