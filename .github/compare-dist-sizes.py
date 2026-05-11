@@ -111,7 +111,7 @@ def pct_severity(text: str) -> dict[str, str] | None:
     pct = float(text.rstrip("%"))
     if pct >= 5:
         return {"color": "red", "emoji": "🔴"}
-    if pct >= 1:
+    if pct > 0:
         return {"color": "yellow", "emoji": "🟡"}
     else:
         return {"color": "green", "emoji": "🟢"}
