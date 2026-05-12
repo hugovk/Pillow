@@ -141,9 +141,9 @@ jobs:
       matrix:
         include:
           - cibw_arch: x86
-            os: windows-latest
+            os: windows-2025-vs2026
           - cibw_arch: AMD64
-            os: windows-latest
+            os: windows-2025-vs2026
           - cibw_arch: ARM64
             os: windows-11-arm
     steps:
