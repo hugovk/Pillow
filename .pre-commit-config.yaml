@@ -57,6 +57,8 @@ repos:
     rev: 0.37.2
     hooks:
       - id: check-github-workflows
+        # TODO: drop once parallel steps supported
+        exclude: ^\.github/workflows/(lint|test-windows)\.yml$
       - id: check-readthedocs
       - id: check-renovate
 
@@ -64,6 +66,8 @@ repos:
     rev: v1.25.2
     hooks:
       - id: zizmor
+        # TODO: drop once parallel steps supported
+        exclude: ^\.github/workflows/(lint|test-windows)\.yml$
 
   - repo: https://github.com/sphinx-contrib/sphinx-lint
     rev: v1.0.2
