@@ -120,66 +120,98 @@ jobs:
         & python.exe winbuild\build_prepare.py -v
       shell: pwsh
 
-    - name: Build dependencies / libjpeg-turbo
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_libjpeg.cmd"
-
-    - name: Build dependencies / zlib
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_zlib.cmd"
-
-    - name: Build dependencies / xz
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_xz.cmd"
-
-    - name: Build dependencies / WebP
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_libwebp.cmd"
-
-    - name: Build dependencies / LibTiff
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_libtiff.cmd"
-
-    # for FreeType CBDT/SBIX font support
-    - name: Build dependencies / libpng
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_libpng.cmd"
-
     - name: Build dependencies / libavif
+      id: libavif
       if: steps.build-cache.outputs.cache-hit != 'true' && matrix.architecture == 'x64'
       run: "& winbuild\\build\\build_dep_libavif.cmd"
+      background: true
+
+    - name: Build dependencies / libjpeg-turbo
+      id: libjpeg
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_libjpeg.cmd"
+      background: true
+
+    - name: Build dependencies / zlib
+      id: zlib
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_zlib.cmd"
+      background: true
+
+    - name: Build dependencies / xz
+      id: xz
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_xz.cmd"
+      background: true
+
+    - name: Build dependencies / WebP
+      id: libwebp
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_libwebp.cmd"
+      background: true
 
     # for FreeType WOFF2 font support
     - name: Build dependencies / brotli
+      id: brotli
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_brotli.cmd"
-
-    - name: Build dependencies / FreeType
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_freetype.cmd"
+      background: true
 
     - name: Build dependencies / LCMS2
+      id: lcms2
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_lcms2.cmd"
+      background: true
 
     - name: Build dependencies / OpenJPEG
+      id: openjpeg
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_openjpeg.cmd"
+      background: true
 
     # GPL licensed
     - name: Build dependencies / libimagequant
+      id: libimagequant
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_libimagequant.cmd"
+      background: true
 
-    # Raqm dependencies
-    - name: Build dependencies / HarfBuzz
-      if: steps.build-cache.outputs.cache-hit != 'true'
-      run: "& winbuild\\build\\build_dep_harfbuzz.cmd"
-
-    # Raqm dependencies
+    # Raqm dependency
     - name: Build dependencies / FriBidi
+      id: fribidi
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_fribidi.cmd"
+      background: true
+
+    - wait: zlib
+    - name: Build dependencies / libpng
+      id: libpng
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_libpng.cmd"
+      background: true
+
+    - wait: [xz, libwebp]
+    - name: Build dependencies / LibTiff
+      id: libtiff
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_libtiff.cmd"
+      background: true
+
+    - wait: [zlib, libpng, brotli]
+    - name: Build dependencies / FreeType
+      id: freetype
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_freetype.cmd"
+      background: true
+
+    - wait: freetype
+    - name: Build dependencies / HarfBuzz
+      id: harfbuzz
+      if: steps.build-cache.outputs.cache-hit != 'true'
+      run: "& winbuild\\build\\build_dep_harfbuzz.cmd"
+      background: true
+
+    - wait-all:
 
     # trim ~150MB for each job
     - name: Optimize build cache
