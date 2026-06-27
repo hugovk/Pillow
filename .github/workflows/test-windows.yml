@@ -120,6 +120,14 @@ jobs:
         & python.exe winbuild\build_prepare.py -v
       shell: pwsh
 
+    # Start the slowest dependency (aom + dav1d + libyuv) in the background up front,
+    # so it overlaps the entire rest of the dependency chain.
+    - name: Build dependencies / libavif
+      id: libavif
+      if: steps.build-cache.outputs.cache-hit != 'true' && matrix.architecture == 'x64'
+      run: "& winbuild\\build\\build_dep_libavif.cmd"
+      background: true
+
     - name: Build dependencies / libjpeg-turbo
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_libjpeg.cmd"
@@ -144,10 +152,6 @@ jobs:
     - name: Build dependencies / libpng
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_libpng.cmd"
-
-    - name: Build dependencies / libavif
-      if: steps.build-cache.outputs.cache-hit != 'true' && matrix.architecture == 'x64'
-      run: "& winbuild\\build\\build_dep_libavif.cmd"
 
     # for FreeType WOFF2 font support
     - name: Build dependencies / brotli
@@ -180,6 +184,9 @@ jobs:
     - name: Build dependencies / FriBidi
       if: steps.build-cache.outputs.cache-hit != 'true'
       run: "& winbuild\\build\\build_dep_fribidi.cmd"
+
+    # Make sure libavif has finished before trimming the cache / building Pillow.
+    - wait-all:
 
     # trim ~150MB for each job
     - name: Optimize build cache
