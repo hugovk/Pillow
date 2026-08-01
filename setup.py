@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import os
+import platform
 import re
 import shutil
 import struct
@@ -996,6 +997,15 @@ class pil_build_ext(build_ext):
 
         tk_libs = ["psapi"] if sys.platform in ("win32", "cygwin") else []
         self._update_extension("PIL._imagingtk", tk_libs)
+
+        if sys.platform != "win32" or PLATFORM_MINGW:
+            # Build with frame pointers enabled, preparation for PEP 831
+            frame_pointer_args = ["-fno-omit-frame-pointer"]
+            if platform.machine().lower() in ("amd64", "x86_64", "arm64", "aarch64"):
+                # only recognized on x86 and ARM64
+                frame_pointer_args.append("-mno-omit-leaf-frame-pointer")
+            for extension in self.extensions:
+                extension.extra_compile_args += frame_pointer_args
 
         build_ext.build_extensions(self)
 
