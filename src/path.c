@@ -26,7 +26,7 @@
  */
 
 #include "Python.h"
-#include "thirdparty/pythoncapi_compat.h"
+#include "pillow_compat.h"
 #include "libImaging/Imaging.h"
 
 #include <math.h>
@@ -47,7 +47,7 @@ typedef struct {
     int mapping;
 } PyPathObject;
 
-static PyTypeObject PyPathType;
+static PyTypeObject *PyPathType;
 
 static double *
 alloc_array(Py_ssize_t count) {
@@ -79,12 +79,7 @@ path_new(Py_ssize_t count, double *xy, int duplicate) {
         xy = p;
     }
 
-    if (PyType_Ready(&PyPathType) < 0) {
-        free(xy);
-        return NULL;
-    }
-
-    path = PyObject_New(PyPathObject, &PyPathType);
+    path = PyObject_New(PyPathObject, PyPathType);
     if (path == NULL) {
         free(xy);
         return NULL;
@@ -100,25 +95,25 @@ path_new(Py_ssize_t count, double *xy, int duplicate) {
 static void
 path_dealloc(PyPathObject *path) {
     free(path->xy);
-    PyObject_Del(path);
+    pil_object_free(path);
 }
 
 /* -------------------------------------------------------------------- */
 /* Helpers                                                              */
 /* -------------------------------------------------------------------- */
 
-#define PyPath_Check(op) (Py_TYPE(op) == &PyPathType)
+#define PyPath_Check(op) (Py_TYPE(op) == PyPathType)
 
 static int
 assign_item_to_array(double *xy, Py_ssize_t j, PyObject *op) {
     if (PyFloat_Check(op)) {
-        xy[j++] = PyFloat_AS_DOUBLE(op);
+        xy[j++] = PyFloat_AsDouble(op);
     } else if (PyLong_Check(op)) {
-        xy[j++] = (float)PyLong_AS_LONG(op);
+        xy[j++] = (float)PyLong_AsLong(op);
     } else if (PyNumber_Check(op)) {
         xy[j++] = PyFloat_AsDouble(op);
     } else if (PyList_Check(op)) {
-        if (PyList_GET_SIZE(op) != 2) {
+        if (PyList_Size(op) != 2) {
             PyErr_SetString(
                 PyExc_ValueError, "coordinate list must contain exactly 2 coordinates"
             );
@@ -233,7 +228,7 @@ PyPath_Flatten(PyObject *data, double **pxy) {
         }
     } else if (PyTuple_Check(data)) {
         for (i = 0; i < n; i++) {
-            PyObject *op = PyTuple_GET_ITEM(data, i);
+            PyObject *op = PyTuple_GetItem(data, i);
             j = assign_item_to_array(xy, j, op);
             if (j == -1) {
                 free(xy);
@@ -604,12 +599,12 @@ path_subscript(PyPathObject *self, PyObject *item) {
         return path_getitem(self, i);
     }
     if (PySlice_Check(item)) {
-        int len = self->count;
         Py_ssize_t start, stop, step, slicelength;
 
-        if (PySlice_GetIndicesEx(item, len, &start, &stop, &step, &slicelength) < 0) {
+        if (PySlice_Unpack(item, &start, &stop, &step) < 0) {
             return NULL;
         }
+        slicelength = PySlice_AdjustIndices(self->count, &start, &stop, step);
 
         if (slicelength <= 0) {
             double *xy = alloc_array(0);
@@ -621,35 +616,38 @@ path_subscript(PyPathObject *self, PyObject *item) {
             return NULL;
         }
     } else {
-        PyErr_Format(
-            PyExc_TypeError,
-            "Path indices must be integers, not %.200s",
-            Py_TYPE(item)->tp_name
-        );
+        PyObject *name = PyType_GetName(Py_TYPE(item));
+        if (name != NULL) {
+            PyErr_Format(
+                PyExc_TypeError, "Path indices must be integers, not %S", name
+            );
+            Py_DECREF(name);
+        }
         return NULL;
     }
 }
 
-static PySequenceMethods path_as_sequence = {
-    (lenfunc)path_len,                /*sq_length*/
-    (binaryfunc)0,                    /*sq_concat*/
-    (ssizeargfunc)0,                  /*sq_repeat*/
-    (ssizeargfunc)path_getitem,       /*sq_item*/
-    (ssizessizeargfunc)path_getslice, /*sq_slice*/
-    (ssizeobjargproc)path_setitem,    /*sq_ass_item*/
-    (ssizessizeobjargproc)0,          /*sq_ass_slice*/
+static PyType_Slot path_slots[] = {
+    {Py_tp_dealloc, (destructor)path_dealloc},
+    {Py_tp_methods, methods},
+    {Py_tp_getset, getsetters},
+    {Py_sq_length, (lenfunc)path_len},
+    {Py_sq_item, (ssizeargfunc)path_getitem},
+    {Py_sq_ass_item, (ssizeobjargproc)path_setitem},
+    {Py_mp_length, (lenfunc)path_len},
+    {Py_mp_subscript, (binaryfunc)path_subscript},
+    {0, NULL},
 };
 
-static PyMappingMethods path_as_mapping = {
-    (lenfunc)path_len, (binaryfunc)path_subscript, NULL
+static PyType_Spec path_spec = {
+    .name = "Path",
+    .basicsize = sizeof(PyPathObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = path_slots,
 };
 
-static PyTypeObject PyPathType = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "Path",
-    .tp_basicsize = sizeof(PyPathObject),
-    .tp_dealloc = (destructor)path_dealloc,
-    .tp_as_sequence = &path_as_sequence,
-    .tp_as_mapping = &path_as_mapping,
-    .tp_methods = methods,
-    .tp_getset = getsetters,
-};
+int
+PyPath_SetupTypes(void) {
+    return pil_create_type(&PyPathType, &path_spec);
+}

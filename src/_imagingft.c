@@ -20,7 +20,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include "Python.h"
-#include "thirdparty/pythoncapi_compat.h"
+#include "pillow_compat.h"
 #include "libImaging/Imaging.h"
 
 #include <ft2build.h>
@@ -92,7 +92,7 @@ typedef struct {
     int layout_engine;
 } FontObject;
 
-static PyTypeObject Font_Type;
+static PyTypeObject *Font_Type;
 
 /* round a 26.6 pixel coordinate to the nearest integer */
 #define PIXEL(x) ((((x) + 32) & -64) >> 6)
@@ -119,6 +119,7 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
     FontObject *self;
     int error = 0;
 
+    PyObject *filename_bytes = NULL;
     char *filename = NULL;
     float size;
     FT_Size_RequestRec req;
@@ -137,35 +138,13 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
         return NULL;
     }
 
-#if PY_MAJOR_VERSION > 3 || PY_MINOR_VERSION > 11
-    PyConfig config;
-    PyConfig_InitPythonConfig(&config);
     if (!PyArg_ParseTupleAndKeywords(
             args,
             kw,
-            "etf|nsy#n",
+            "O&f|nsy#n",
             kwlist,
-            config.filesystem_encoding,
-            &filename,
-            &size,
-            &index,
-            &encoding,
-            &font_bytes,
-            &font_bytes_size,
-            &layout_engine
-        )) {
-        PyConfig_Clear(&config);
-        return NULL;
-    }
-    PyConfig_Clear(&config);
-#else
-    if (!PyArg_ParseTupleAndKeywords(
-            args,
-            kw,
-            "etf|nsy#n",
-            kwlist,
-            Py_FileSystemDefaultEncoding,
-            &filename,
+            PyUnicode_FSConverter,
+            &filename_bytes,
             &size,
             &index,
             &encoding,
@@ -175,13 +154,11 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
         )) {
         return NULL;
     }
-#endif
+    filename = PyBytes_AsString(filename_bytes);
 
-    self = PyObject_New(FontObject, &Font_Type);
+    self = PyObject_New(FontObject, Font_Type);
     if (!self) {
-        if (filename) {
-            PyMem_Free(filename);
-        }
+        Py_DECREF(filename_bytes);
         return NULL;
     }
 
@@ -229,9 +206,7 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
             FT_MAKE_TAG(encoding[0], encoding[1], encoding[2], encoding[3]);
         error = FT_Select_Charmap(self->face, encoding_tag);
     }
-    if (filename) {
-        PyMem_Free(filename);
-    }
+    Py_DECREF(filename_bytes);
 
     if (error) {
         if (self->font_bytes) {
@@ -271,7 +246,7 @@ text_layout_raqm(
     int set_text;
     if (PyUnicode_Check(string)) {
         Py_UCS4 *text = PyUnicode_AsUCS4Copy(string);
-        size = PyUnicode_GET_LENGTH(string);
+        size = PyUnicode_GetLength(string);
         if (!text || !size) {
             /* return 0 and clean up, no glyphs==no size,
                and raqm fails with empty strings */
@@ -337,9 +312,13 @@ text_layout_raqm(
             goto failed;
         }
 
-        len = PySequence_Fast_GET_SIZE(seq);
+        len = PySequence_Size(seq);
         for (j = 0; j < len; j++) {
-            PyObject *item = PySequence_Fast_GET_ITEM(seq, j);
+            PyObject *item = pil_fast_getitem(seq, j);
+            if (item == NULL) {
+                Py_DECREF(seq);
+                goto failed;
+            }
             if (!PyUnicode_Check(item)) {
                 Py_DECREF(seq);
                 PyErr_SetString(PyExc_TypeError, "expected a string");
@@ -430,7 +409,7 @@ text_layout_fallback(
     }
 
     if (PyUnicode_Check(string)) {
-        count = PyUnicode_GET_LENGTH(string);
+        count = PyUnicode_GetLength(string);
     } else if (PyBytes_Check(string)) {
         PyBytes_AsStringAndSize(string, &buffer, &count);
     } else {
@@ -458,7 +437,7 @@ text_layout_fallback(
         if (buffer) {
             ch = buffer[i];
         } else {
-            ch = PyUnicode_READ_CHAR(string, i);
+            ch = ucs4[i];
         }
         (*glyph_info)[i].index = FT_Get_Char_Index(self->face, ch);
         error = FT_Load_Glyph(self->face, (*glyph_info)[i].index, load_flags);
@@ -1466,9 +1445,9 @@ font_setvaraxes_impl(FontObject *self, PyObject *args) {
         }
 
         if (PyFloat_Check(item)) {
-            coord = PyFloat_AS_DOUBLE(item);
+            coord = PyFloat_AsDouble(item);
         } else if (PyLong_Check(item)) {
-            coord = (float)PyLong_AS_LONG(item);
+            coord = (float)PyLong_AsLong(item);
         } else if (PyNumber_Check(item)) {
             coord = PyFloat_AsDouble(item);
         } else {
@@ -1509,7 +1488,7 @@ font_dealloc(FontObject *self) {
     if (self->font_bytes) {
         PyMem_Free(self->font_bytes);
     }
-    PyObject_Del(self);
+    pil_object_free(self);
 }
 
 static PyMethodDef font_methods[] = {
@@ -1626,12 +1605,19 @@ static struct PyGetSetDef font_getsetters[] = {
     {NULL}
 };
 
-static PyTypeObject Font_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "Font",
-    .tp_basicsize = sizeof(FontObject),
-    .tp_dealloc = (destructor)font_dealloc,
-    .tp_methods = font_methods,
-    .tp_getset = font_getsetters,
+static PyType_Slot font_slots[] = {
+    {Py_tp_dealloc, (destructor)font_dealloc},
+    {Py_tp_methods, font_methods},
+    {Py_tp_getset, font_getsetters},
+    {0, NULL},
+};
+
+static PyType_Spec font_spec = {
+    .name = "Font",
+    .basicsize = sizeof(FontObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = font_slots,
 };
 
 static PyMethodDef _functions[] = {
@@ -1647,7 +1633,7 @@ setup_module(PyObject *m) {
     d = PyModule_GetDict(m);
 
     /* Ready object type */
-    if (PyType_Ready(&Font_Type) < 0) {
+    if (pil_create_type(&Font_Type, &font_spec) < 0) {
         return -1;
     }
 

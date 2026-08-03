@@ -15,6 +15,8 @@
 
 #include "Python.h"
 
+#include <errno.h>
+
 #include "libImaging/Imaging.h"
 
 #include "math.h"

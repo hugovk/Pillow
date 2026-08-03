@@ -29,7 +29,6 @@ https://www.cazabon.com\n\
 #define PY_SSIZE_T_CLEAN
 #include "Python.h"  // Include before wchar.h so _GNU_SOURCE is set
 #include "wchar.h"
-#include "datetime.h"
 
 #include "lcms2.h"
 #include "libImaging/Imaging.h"
@@ -79,15 +78,15 @@ typedef struct {
     PyObject_HEAD cmsHPROFILE profile;
 } CmsProfileObject;
 
-static PyTypeObject CmsProfile_Type;
+static PyTypeObject *CmsProfile_Type;
 
-#define CmsProfile_Check(op) (Py_TYPE(op) == &CmsProfile_Type)
+#define CmsProfile_Check(op) (Py_TYPE(op) == CmsProfile_Type)
 
 static PyObject *
 cms_profile_new(cmsHPROFILE profile) {
     CmsProfileObject *self;
 
-    self = PyObject_New(CmsProfileObject, &CmsProfile_Type);
+    self = PyObject_New(CmsProfileObject, CmsProfile_Type);
     if (!self) {
         return NULL;
     }
@@ -143,7 +142,7 @@ cms_profile_tobytes(PyObject *self, PyObject *args) {
     cmsHPROFILE *profile;
 
     PyObject *ret;
-    if (!PyArg_ParseTuple(args, "O!", &CmsProfile_Type, &CmsProfile)) {
+    if (!PyArg_ParseTuple(args, "O!", CmsProfile_Type, &CmsProfile)) {
         return NULL;
     }
 
@@ -175,7 +174,7 @@ cms_profile_tobytes(PyObject *self, PyObject *args) {
 static void
 cms_profile_dealloc(CmsProfileObject *self) {
     (void)cmsCloseProfile(self->profile);
-    PyObject_Del(self);
+    pil_object_free(self);
 }
 
 /* a transform represents the mapping between two profiles */
@@ -184,15 +183,15 @@ typedef struct {
     PyObject_HEAD cmsHTRANSFORM transform;
 } CmsTransformObject;
 
-static PyTypeObject CmsTransform_Type;
+static PyTypeObject *CmsTransform_Type;
 
-#define CmsTransform_Check(op) (Py_TYPE(op) == &CmsTransform_Type)
+#define CmsTransform_Check(op) (Py_TYPE(op) == CmsTransform_Type)
 
 static PyObject *
 cms_transform_new(cmsHTRANSFORM transform) {
     CmsTransformObject *self;
 
-    self = PyObject_New(CmsTransformObject, &CmsTransform_Type);
+    self = PyObject_New(CmsTransformObject, CmsTransform_Type);
     if (!self) {
         return NULL;
     }
@@ -205,7 +204,7 @@ cms_transform_new(cmsHTRANSFORM transform) {
 static void
 cms_transform_dealloc(CmsTransformObject *self) {
     cmsDeleteTransform(self->transform);
-    PyObject_Del(self);
+    pil_object_free(self);
 }
 
 /* -------------------------------------------------------------------- */
@@ -450,9 +449,9 @@ buildTransform(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(
             args,
             "O!O!ss|ii:buildTransform",
-            &CmsProfile_Type,
+            CmsProfile_Type,
             &pInputProfile,
-            &CmsProfile_Type,
+            CmsProfile_Type,
             &pOutputProfile,
             &sInMode,
             &sOutMode,
@@ -494,11 +493,11 @@ buildProofTransform(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(
             args,
             "O!O!O!ss|iii:buildProofTransform",
-            &CmsProfile_Type,
+            CmsProfile_Type,
             &pInputProfile,
-            &CmsProfile_Type,
+            CmsProfile_Type,
             &pOutputProfile,
-            &CmsProfile_Type,
+            CmsProfile_Type,
             &pProofProfile,
             &sInMode,
             &sOutMode,
@@ -851,7 +850,7 @@ _profile_read_named_color_list(CmsProfileObject *self, cmsTagSignature info) {
             Py_DECREF(result);
             return NULL;
         }
-        PyList_SET_ITEM(result, i, str);
+        PyList_SetItem(result, i, str);
     }
 
     return result;
@@ -1027,15 +1026,36 @@ static PyObject *
 cms_profile_getattr_creation_date(CmsProfileObject *self, void *closure) {
     cmsBool result;
     struct tm ct;
+    PyObject *datetime_module;
+    PyObject *datetime_class;
+    PyObject *dt;
 
     result = cmsGetHeaderCreationDateTime(self->profile, &ct);
     if (!result) {
         Py_RETURN_NONE;
     }
 
-    return PyDateTime_FromDateAndTime(
-        1900 + ct.tm_year, ct.tm_mon, ct.tm_mday, ct.tm_hour, ct.tm_min, ct.tm_sec, 0
+    datetime_module = PyImport_ImportModule("datetime");
+    if (!datetime_module) {
+        return NULL;
+    }
+    datetime_class = PyObject_GetAttrString(datetime_module, "datetime");
+    Py_DECREF(datetime_module);
+    if (!datetime_class) {
+        return NULL;
+    }
+    dt = PyObject_CallFunction(
+        datetime_class,
+        "iiiiii",
+        1900 + ct.tm_year,
+        ct.tm_mon,
+        ct.tm_mday,
+        ct.tm_hour,
+        ct.tm_min,
+        ct.tm_sec
     );
+    Py_DECREF(datetime_class);
+    return dt;
 }
 
 static PyObject *
@@ -1413,23 +1433,37 @@ static struct PyGetSetDef cms_profile_getsetters[] = {
     {NULL}
 };
 
-static PyTypeObject CmsProfile_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "PIL.ImageCms.core.CmsProfile",
-    .tp_basicsize = sizeof(CmsProfileObject),
-    .tp_dealloc = (destructor)cms_profile_dealloc,
-    .tp_methods = cms_profile_methods,
-    .tp_getset = cms_profile_getsetters,
+static PyType_Slot cms_profile_slots[] = {
+    {Py_tp_dealloc, (destructor)cms_profile_dealloc},
+    {Py_tp_methods, cms_profile_methods},
+    {Py_tp_getset, cms_profile_getsetters},
+    {0, NULL},
+};
+
+static PyType_Spec cms_profile_spec = {
+    .name = "PIL.ImageCms.core.CmsProfile",
+    .basicsize = sizeof(CmsProfileObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = cms_profile_slots,
 };
 
 static struct PyMethodDef cms_transform_methods[] = {
     {"apply", (PyCFunction)cms_transform_apply, 1}, {NULL, NULL} /* sentinel */
 };
 
-static PyTypeObject CmsTransform_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "PIL.ImageCms.core.CmsTransform",
-    .tp_basicsize = sizeof(CmsTransformObject),
-    .tp_dealloc = (destructor)cms_transform_dealloc,
-    .tp_methods = cms_transform_methods,
+static PyType_Slot cms_transform_slots[] = {
+    {Py_tp_dealloc, (destructor)cms_transform_dealloc},
+    {Py_tp_methods, cms_transform_methods},
+    {0, NULL},
+};
+
+static PyType_Spec cms_transform_spec = {
+    .name = "PIL.ImageCms.core.CmsTransform",
+    .basicsize = sizeof(CmsTransformObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = cms_transform_slots,
 };
 
 static int
@@ -1439,16 +1473,17 @@ setup_module(PyObject *m) {
     int vn;
 
     /* Ready object types */
-    if (PyType_Ready(&CmsProfile_Type) < 0 || PyType_Ready(&CmsTransform_Type) < 0) {
+    if (pil_create_type(&CmsProfile_Type, &cms_profile_spec) < 0) {
+        return -1;
+    }
+    if (pil_create_type(&CmsTransform_Type, &cms_transform_spec) < 0) {
         return -1;
     }
 
-    if (PyModule_AddObjectRef(m, "CmsProfile", (PyObject *)&CmsProfile_Type) < 0 ||
-        PyModule_AddObjectRef(m, "CmsTransform", (PyObject *)&CmsTransform_Type) < 0) {
+    if (PyModule_AddObjectRef(m, "CmsProfile", (PyObject *)CmsProfile_Type) < 0 ||
+        PyModule_AddObjectRef(m, "CmsTransform", (PyObject *)CmsTransform_Type) < 0) {
         return -1;
     }
-
-    PyDateTime_IMPORT;
 
     d = PyModule_GetDict(m);
 

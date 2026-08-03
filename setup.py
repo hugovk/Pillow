@@ -14,6 +14,7 @@ import shutil
 import struct
 import subprocess
 import sys
+import sysconfig
 import warnings
 from collections.abc import Iterator
 
@@ -23,6 +24,7 @@ from setuptools.command.build_ext import build_ext
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
+
     from setuptools import _BuildInfo
 
 configuration: dict[str, list[str]] = {}
@@ -1074,6 +1076,18 @@ files.extend("src/" + src_file + ".c" for src_file in _IMAGING)
 files.extend(
     os.path.join("src/libImaging", src_file + ".c") for src_file in _LIB_IMAGING
 )
+
+# Build against the Limited API to produce a single abi3 wheel per platform.
+# Free-threaded builds are excluded: abi3 does not apply to them, and build
+# tools cannot produce PEP 803 abi3t wheels yet. Alternative implementations
+# are also excluded.
+ABI3_FLOOR = (3, 11)
+limited_api = (
+    os.environ.get("PILLOW_LIMITED_API") == "1"
+    and sys.implementation.name == "cpython"
+    and not sysconfig.get_config_var("Py_GIL_DISABLED")
+)
+
 ext_modules = [
     Extension("PIL._imaging", files),
     Extension("PIL._imagingft", ["src/_imagingft.c"]),
@@ -1095,6 +1109,11 @@ try:
         cmdclass={"build_ext": pil_build_ext},
         ext_modules=ext_modules,
         libraries=libraries,
+        options=(
+            {"bdist_wheel": {"py_limited_api": f"cp{ABI3_FLOOR[0]}{ABI3_FLOOR[1]}"}}
+            if limited_api
+            else {}
+        ),
     )
 except RequiredDependencyException as err:
     msg = f"""

@@ -10,6 +10,11 @@
 #define PY_SSIZE_T_CLEAN
 #include "Python.h"
 
+/* With Py_LIMITED_API defined, Python.h no longer pulls these in */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 /* Check that we have an ANSI compliant compiler */
 #ifndef HAVE_PROTOTYPES
 #error Sorry, this library requires support for ANSI prototypes.

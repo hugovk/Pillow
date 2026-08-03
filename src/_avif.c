@@ -1,6 +1,9 @@
 #define PY_SSIZE_T_CLEAN
 
 #include <Python.h>
+#include "pillow_compat.h"
+#include <stdlib.h>
+#include <string.h>
 #include "avif/avif.h"
 
 // Encoder type
@@ -10,7 +13,7 @@ typedef struct {
     int first_frame;
 } AvifEncoderObject;
 
-static PyTypeObject AvifEncoder_Type;
+static PyTypeObject *AvifEncoder_Type;
 
 // Decoder type
 typedef struct {
@@ -18,7 +21,7 @@ typedef struct {
     Py_buffer buffer;
 } AvifDecoderObject;
 
-static PyTypeObject AvifDecoder_Type;
+static PyTypeObject *AvifDecoder_Type;
 
 static int
 normalize_tiles_log2(int value) {
@@ -175,11 +178,11 @@ _add_codec_specific_options(avifEncoder *encoder, PyObject *opts) {
         PyErr_SetString(PyExc_ValueError, "Invalid advanced codec options");
         return 1;
     }
-    size = PyTuple_GET_SIZE(opts);
+    size = PyTuple_Size(opts);
 
     for (i = 0; i < size; i++) {
         keyval = PyTuple_GetItem(opts, i);
-        if (!PyTuple_Check(keyval) || PyTuple_GET_SIZE(keyval) != 2) {
+        if (!PyTuple_Check(keyval) || PyTuple_Size(keyval) != 2) {
             PyErr_SetString(PyExc_ValueError, "Invalid advanced codec options");
             return 1;
         }
@@ -189,8 +192,8 @@ _add_codec_specific_options(avifEncoder *encoder, PyObject *opts) {
             PyErr_SetString(PyExc_ValueError, "Invalid advanced codec options");
             return 1;
         }
-        const char *key = PyUnicode_AsUTF8(py_key);
-        const char *val = PyUnicode_AsUTF8(py_val);
+        const char *key = PyUnicode_AsUTF8AndSize(py_key, NULL);
+        const char *val = PyUnicode_AsUTF8AndSize(py_val, NULL);
         if (key == NULL || val == NULL) {
             PyErr_SetString(PyExc_ValueError, "Invalid advanced codec options");
             return 1;
@@ -341,7 +344,7 @@ AvifEncoderNew(PyObject *self_, PyObject *args) {
         goto end;
     }
 
-    self = PyObject_New(AvifEncoderObject, &AvifEncoder_Type);
+    self = PyObject_New(AvifEncoderObject, AvifEncoder_Type);
     if (!self) {
         PyErr_SetString(PyExc_RuntimeError, "could not create encoder object");
         error = 1;
@@ -417,7 +420,7 @@ end:
             avifEncoderDestroy(encoder);
         }
         if (self) {
-            PyObject_Del(self);
+            pil_object_free(self);
         }
         return NULL;
     }
@@ -433,7 +436,7 @@ _encoder_dealloc(AvifEncoderObject *self) {
     if (self->image) {
         avifImageDestroy(self->image);
     }
-    Py_TYPE(self)->tp_free(self);
+    pil_object_free(self);
 }
 
 PyObject *
@@ -636,7 +639,7 @@ AvifDecoderNew(PyObject *self_, PyObject *args) {
         codec = avifCodecChoiceFromName(codec_str);
     }
 
-    self = PyObject_New(AvifDecoderObject, &AvifDecoder_Type);
+    self = PyObject_New(AvifDecoderObject, AvifDecoder_Type);
     if (!self) {
         PyErr_SetString(PyExc_RuntimeError, "could not create decoder object");
         PyBuffer_Release(&buffer);
@@ -647,7 +650,7 @@ AvifDecoderNew(PyObject *self_, PyObject *args) {
     if (!decoder) {
         PyErr_SetString(PyExc_MemoryError, "Can't allocate decoder");
         PyBuffer_Release(&buffer);
-        PyObject_Del(self);
+        pil_object_free(self);
         return NULL;
     }
     decoder->maxThreads = max_threads;
@@ -668,7 +671,7 @@ AvifDecoderNew(PyObject *self_, PyObject *args) {
         );
         avifDecoderDestroy(decoder);
         PyBuffer_Release(&buffer);
-        PyObject_Del(self);
+        pil_object_free(self);
         return NULL;
     }
 
@@ -681,7 +684,7 @@ AvifDecoderNew(PyObject *self_, PyObject *args) {
         );
         avifDecoderDestroy(decoder);
         PyBuffer_Release(&buffer);
-        PyObject_Del(self);
+        pil_object_free(self);
         return NULL;
     }
 
@@ -697,7 +700,7 @@ _decoder_dealloc(AvifDecoderObject *self) {
         avifDecoderDestroy(self->decoder);
     }
     PyBuffer_Release(&self->buffer);
-    Py_TYPE(self)->tp_free(self);
+    pil_object_free(self);
 }
 
 PyObject *
@@ -871,11 +874,18 @@ static struct PyMethodDef _encoder_methods[] = {
 };
 
 // AvifEncoder type definition
-static PyTypeObject AvifEncoder_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "AvifEncoder",
-    .tp_basicsize = sizeof(AvifEncoderObject),
-    .tp_dealloc = (destructor)_encoder_dealloc,
-    .tp_methods = _encoder_methods,
+static PyType_Slot encoder_slots[] = {
+    {Py_tp_dealloc, (destructor)_encoder_dealloc},
+    {Py_tp_methods, _encoder_methods},
+    {0, NULL},
+};
+
+static PyType_Spec encoder_spec = {
+    .name = "AvifEncoder",
+    .basicsize = sizeof(AvifEncoderObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = encoder_slots,
 };
 
 // AvifDecoder methods
@@ -886,11 +896,18 @@ static struct PyMethodDef _decoder_methods[] = {
 };
 
 // AvifDecoder type definition
-static PyTypeObject AvifDecoder_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "AvifDecoder",
-    .tp_basicsize = sizeof(AvifDecoderObject),
-    .tp_dealloc = (destructor)_decoder_dealloc,
-    .tp_methods = _decoder_methods,
+static PyType_Slot decoder_slots[] = {
+    {Py_tp_dealloc, (destructor)_decoder_dealloc},
+    {Py_tp_methods, _decoder_methods},
+    {0, NULL},
+};
+
+static PyType_Spec decoder_spec = {
+    .name = "AvifDecoder",
+    .basicsize = sizeof(AvifDecoderObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = decoder_slots,
 };
 
 /* -------------------------------------------------------------------- */
@@ -908,7 +925,10 @@ static PyMethodDef avifMethods[] = {
 
 static int
 setup_module(PyObject *m) {
-    if (PyType_Ready(&AvifDecoder_Type) < 0 || PyType_Ready(&AvifEncoder_Type) < 0) {
+    if (pil_create_type(&AvifDecoder_Type, &decoder_spec) < 0) {
+        return -1;
+    }
+    if (pil_create_type(&AvifEncoder_Type, &encoder_spec) < 0) {
         return -1;
     }
 

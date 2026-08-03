@@ -25,7 +25,7 @@
 #define PY_SSIZE_T_CLEAN
 #include "Python.h"
 
-#include "thirdparty/pythoncapi_compat.h"
+#include "pillow_compat.h"
 #include "libImaging/Imaging.h"
 #include "libImaging/Bcn.h"
 #include "libImaging/Gif.h"
@@ -49,18 +49,14 @@ typedef struct {
     int pushes_fd;
 } ImagingEncoderObject;
 
-static PyTypeObject ImagingEncoderType;
+static PyTypeObject *ImagingEncoderType;
 
 static ImagingEncoderObject *
 PyImaging_EncoderNew(int contextsize) {
     ImagingEncoderObject *encoder;
     void *context;
 
-    if (PyType_Ready(&ImagingEncoderType) < 0) {
-        return NULL;
-    }
-
-    encoder = PyObject_New(ImagingEncoderObject, &ImagingEncoderType);
+    encoder = PyObject_New(ImagingEncoderObject, ImagingEncoderType);
     if (encoder == NULL) {
         return NULL;
     }
@@ -103,7 +99,7 @@ _dealloc(ImagingEncoderObject *encoder) {
     free(encoder->state.context);
     Py_XDECREF(encoder->lock);
     Py_XDECREF(encoder->state.fd);
-    PyObject_Del(encoder);
+    pil_object_free(encoder);
 }
 
 static PyObject *
@@ -141,8 +137,14 @@ _encode(ImagingEncoderObject *encoder, PyObject *args) {
     );
 
     /* adjust string length to avoid slicing in encoder */
-    if (_PyBytes_Resize(&buf, (status > 0) ? status : 0) < 0) {
-        return NULL;
+    Py_ssize_t newsize = (status > 0) ? status : 0;
+    if (newsize != bufsize) {
+        PyObject *newbuf = PyBytes_FromStringAndSize(PyBytes_AsString(buf), newsize);
+        Py_DECREF(buf);
+        if (!newbuf) {
+            return NULL;
+        }
+        buf = newbuf;
     }
 
     result = Py_BuildValue("iiO", status, encoder->state.errcode, buf);
@@ -241,7 +243,7 @@ _setimage(ImagingEncoderObject *encoder, PyObject *args) {
         x1 = im->xsize;
         y1 = im->ysize;
     } else {
-        if (!PyTuple_Check(extents) || PyTuple_GET_SIZE(extents) != 4) {
+        if (!PyTuple_Check(extents) || PyTuple_Size(extents) != 4) {
             PyErr_SetString(PyExc_ValueError, "invalid extents");
             return NULL;
         }
@@ -346,13 +348,25 @@ static struct PyGetSetDef getseters[] = {
     {NULL, NULL, NULL, NULL, NULL} /* sentinel */
 };
 
-static PyTypeObject ImagingEncoderType = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "ImagingEncoder",
-    .tp_basicsize = sizeof(ImagingEncoderObject),
-    .tp_dealloc = (destructor)_dealloc,
-    .tp_methods = methods,
-    .tp_getset = getseters,
+static PyType_Slot encoder_slots[] = {
+    {Py_tp_dealloc, (destructor)_dealloc},
+    {Py_tp_methods, methods},
+    {Py_tp_getset, getseters},
+    {0, NULL},
 };
+
+static PyType_Spec encoder_spec = {
+    .name = "ImagingEncoder",
+    .basicsize = sizeof(ImagingEncoderObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = encoder_slots,
+};
+
+int
+PyImagingEncoder_SetupTypes(void) {
+    return pil_create_type(&ImagingEncoderType, &encoder_spec);
+}
 
 /* -------------------------------------------------------------------- */
 
@@ -771,9 +785,9 @@ PyImaging_LibTiffEncoderNew(PyObject *self, PyObject *args) {
         }
 
         // We already checked that tags is a 2-tuple list.
-        key = PyTuple_GET_ITEM(item, 0);
+        key = PyTuple_GetItem(item, 0);
         key_int = (int)PyLong_AsLong(key);
-        value = PyTuple_GET_ITEM(item, 1);
+        value = PyTuple_GetItem(item, 1);
 
         status = 0;
         is_core_tag = 0;
@@ -1128,8 +1142,8 @@ get_qtables_arrays(PyObject *qtables, int *qtablesLen) {
         return ImagingError_MemoryError();
     }
     for (i = 0; i < num_tables; i++) {
-        table = PySequence_Fast_GET_ITEM(tables, i);
-        if (!PySequence_Check(table)) {
+        table = pil_fast_getitem(tables, i);
+        if (!table || !PySequence_Check(table)) {
             PyErr_SetString(PyExc_ValueError, "Invalid quantization tables");
             goto JPEG_QTABLES_ERR;
         }
@@ -1138,9 +1152,16 @@ get_qtables_arrays(PyObject *qtables, int *qtablesLen) {
             goto JPEG_QTABLES_ERR;
         }
         table_data = PySequence_Fast(table, "expected a sequence");
+        if (!table_data) {
+            goto JPEG_QTABLES_ERR;
+        }
         for (j = 0; j < DCTSIZE2; j++) {
-            qarrays[i * DCTSIZE2 + j] =
-                PyLong_AS_LONG(PySequence_Fast_GET_ITEM(table_data, j));
+            PyObject *table_item = pil_fast_getitem(table_data, j);
+            if (!table_item) {
+                Py_DECREF(table_data);
+                goto JPEG_QTABLES_ERR;
+            }
+            qarrays[i * DCTSIZE2 + j] = PyLong_AsLong(table_item);
         }
         Py_DECREF(table_data);
     }
@@ -1319,9 +1340,9 @@ static void
 j2k_decode_coord_tuple(PyObject *tuple, int *x, int *y) {
     *x = *y = 0;
 
-    if (tuple && PyTuple_Check(tuple) && PyTuple_GET_SIZE(tuple) == 2) {
-        *x = (int)PyLong_AsLong(PyTuple_GET_ITEM(tuple, 0));
-        *y = (int)PyLong_AsLong(PyTuple_GET_ITEM(tuple, 1));
+    if (tuple && PyTuple_Check(tuple) && PyTuple_Size(tuple) == 2) {
+        *x = (int)PyLong_AsLong(PyTuple_GetItem(tuple, 0));
+        *y = (int)PyLong_AsLong(PyTuple_GetItem(tuple, 1));
 
         if (*x < 0) {
             *x = 0;
