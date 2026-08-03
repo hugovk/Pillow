@@ -1010,7 +1010,7 @@ _convert(ImagingObject *self, PyObject *args) {
         return NULL;
     }
     if (paletteimage != NULL) {
-        if (!PyImaging_Check(paletteimage)) {
+        if (!PyImaging_Check((PyObject *)paletteimage)) {
             PyErr_SetString(
                 PyExc_ValueError, "palette argument must be image with mode 'P'"
             );
@@ -2795,7 +2795,7 @@ _font_new(PyObject *self_, PyObject *args) {
     self->ysize = y1 - y0;
 
     /* keep a reference to the bitmap object */
-    Py_INCREF(imagep);
+    Py_INCREF((PyObject *)imagep);
     self->ref = imagep;
 
     return (PyObject *)self;
@@ -2979,7 +2979,7 @@ _draw_new(PyObject *self_, PyObject *args) {
     }
 
     /* keep a reference to the image object */
-    Py_INCREF(imagep);
+    Py_INCREF((PyObject *)imagep);
     self->image = imagep;
 
     self->ink[0] = self->ink[1] = self->ink[2] = self->ink[3] = 0;
@@ -3541,7 +3541,7 @@ pixel_access_new(ImagingObject *imagep, PyObject *args) {
     }
 
     /* keep a reference to the image object */
-    Py_INCREF(imagep);
+    Py_INCREF((PyObject *)imagep);
     self->image = imagep;
 
     self->readonly = readonly;
@@ -3815,7 +3815,7 @@ _getattr_ptr(ImagingObject *self, void *closure) {
     if (!capsule) {
         return NULL;
     }
-    Py_INCREF(self);
+    Py_INCREF((PyObject *)self);
     PyCapsule_SetContext(capsule, self);
     return capsule;
 }
