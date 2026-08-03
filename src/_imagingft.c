@@ -420,8 +420,17 @@ text_layout_fallback(
         return 0;
     }
 
+    Py_UCS4 *ucs4 = NULL;
+    if (buffer == NULL) {
+        ucs4 = PyUnicode_AsUCS4Copy(string);
+        if (ucs4 == NULL) {
+            return 0;
+        }
+    }
+
     (*glyph_info) = PyMem_New(GlyphInfo, count);
     if ((*glyph_info) == NULL) {
+        PyMem_Free(ucs4);
         PyErr_SetString(PyExc_MemoryError, "PyMem_New() failed");
         return 0;
     }
@@ -442,6 +451,7 @@ text_layout_fallback(
         (*glyph_info)[i].index = FT_Get_Char_Index(self->face, ch);
         error = FT_Load_Glyph(self->face, (*glyph_info)[i].index, load_flags);
         if (error) {
+            PyMem_Free(ucs4);
             geterror(error);
             return 0;
         }
@@ -468,6 +478,7 @@ text_layout_fallback(
         last_index = (*glyph_info)[i].index;
         (*glyph_info)[i].cluster = ch;
     }
+    PyMem_Free(ucs4);
     return count;
 }
 

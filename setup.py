@@ -640,7 +640,7 @@ class pil_build_ext(build_ext):
                 _add_directory(include_dirs, os.path.join(sdk_path, "usr", "include"))
 
                 for extension in self.extensions:
-                    extension.extra_compile_args = ["-Wno-nullability-completeness"]
+                    extension.extra_compile_args.append("-Wno-nullability-completeness")
 
         elif sys.platform == "ios":
             # Add the iOS SDK path.
@@ -651,7 +651,7 @@ class pil_build_ext(build_ext):
             _add_directory(include_dirs, os.path.join(sdk_path, "usr", "include"))
 
             for extension in self.extensions:
-                extension.extra_compile_args = ["-Wno-nullability-completeness"]
+                extension.extra_compile_args.append("-Wno-nullability-completeness")
 
         elif sys.platform.startswith(("linux", "gnu", "freebsd")):
             for dirname in _find_library_dirs_ldconfig():
@@ -1102,6 +1102,22 @@ ext_modules = [
     ),
     Extension("PIL._imagingmorph", ["src/_imagingmorph.c"]),
 ]
+if limited_api:
+    for ext_module in ext_modules:
+        ext_module.py_limited_api = True
+        ext_module.define_macros.append(
+            ("Py_LIMITED_API", f"0x{ABI3_FLOOR[0]:02X}{ABI3_FLOOR[1]:02X}0000")
+        )
+        # Py_TYPE and friends are static inline functions taking PyObject *
+        # under the Limited API; make passing other pointer types an error
+        # everywhere, matching GCC 14 on manylinux
+        if os.name != "nt" or PLATFORM_MINGW:
+            ext_module.extra_compile_args.append("-Werror=incompatible-pointer-types")
+            # Only export each module's PyInit function. Pillow's internal
+            # Py-prefixed symbols would otherwise fail abi3audit --strict
+            ext_module.extra_compile_args.append("-fvisibility=hidden")
+        else:
+            ext_module.extra_compile_args.append("/we4133")
 
 
 try:

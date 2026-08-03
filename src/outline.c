@@ -18,6 +18,7 @@
  */
 
 #include "Python.h"
+#include "pillow_compat.h"
 
 #include "libImaging/Imaging.h"
 

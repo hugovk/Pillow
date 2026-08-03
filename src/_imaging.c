@@ -73,6 +73,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include "Python.h"
+#include "pillow_compat.h"
 
 #ifdef HAVE_LIBJPEG
 #include "jconfig.h"

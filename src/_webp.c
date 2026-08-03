@@ -1,5 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include "pillow_compat.h"
 #include "libImaging/Imaging.h"
 #include <webp/encode.h>
 #include <webp/decode.h>
