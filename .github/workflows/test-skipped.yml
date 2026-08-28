@@ -9,7 +9,6 @@
 name: Test skipped
 
 on:
-  push:
   pull_request:
     paths:
       - ".github/workflows/docs.yml"
