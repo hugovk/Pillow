@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest"]
+        os: ["ubuntu-26.04"]
         docker: [
           # Run slower jobs first to give them a headstart and reduce waiting time
           ubuntu-26.04-resolute-ppc64le,
@@ -110,7 +110,7 @@ jobs:
       contents: none
     if: always()
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     name: Docker Test Successful
     steps:
       - name: Success

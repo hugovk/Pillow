@@ -236,7 +236,7 @@ jobs:
       contents: none
     if: always()
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     name: Windows Test Successful
     steps:
       - name: Success
