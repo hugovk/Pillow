@@ -33,7 +33,7 @@ jobs:
       matrix:
         os: [
           "macos-latest",
-          "ubuntu-latest",
+          "ubuntu-26.04",
         ]
         python-version: [
           "pypy3.12",
@@ -117,7 +117,7 @@ jobs:
         GHA_PYTHON_VERSION: ${{ matrix.python-version }}
 
     - name: Register gcc problem matcher
-      if: "matrix.os == 'ubuntu-latest' && matrix.python-version == '3.14'"
+      if: "matrix.os == 'ubuntu-26.04' && matrix.python-version == '3.14'"
       run: echo "::add-matcher::.github/problem-matchers/gcc.json"
 
     - name: Build
@@ -126,7 +126,7 @@ jobs:
 
     - name: Test
       run: |
-        if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+        if [ "${{ matrix.os }}" = "ubuntu-26.04" ]; then
           xvfb-run -s '-screen 0 1024x768x24' sway&
           export WAYLAND_DISPLAY=wayland-1
           .ci/test.sh
@@ -151,7 +151,7 @@ jobs:
     - name: Upload coverage
       uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
       with:
-        flags: ${{ matrix.os == 'ubuntu-latest' && 'GHA_Ubuntu' || 'GHA_macOS' }}
+        flags: ${{ matrix.os == 'ubuntu-26.04' && 'GHA_Ubuntu' || 'GHA_macOS' }}
         name: ${{ matrix.os }} Python ${{ matrix.python-version }}
 
   success:
@@ -159,7 +159,7 @@ jobs:
       contents: none
     if: always()
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     name: Test Successful
     steps:
       - name: Success
