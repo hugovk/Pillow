@@ -285,22 +285,43 @@ class TestEmbeddable:
             fh.write(f"""
 #include <Python.h>
 
+static int import_pil(const char *stage)
+{{
+    PyObject *module;
+
+    fprintf(stderr, "embed_pil: %s: initializing\\n", stage);
+    fflush(stderr);
+    Py_InitializeEx(0);
+
+    fprintf(stderr, "embed_pil: %s: importing PIL.Image\\n", stage);
+    fflush(stderr);
+    module = PyImport_ImportModule("PIL.Image");
+    if (module == NULL) {{
+        PyErr_Print();
+        return 1;
+    }}
+    Py_DECREF(module);
+
+    fprintf(stderr, "embed_pil: %s: finalizing\\n", stage);
+    fflush(stderr);
+    Py_Finalize();
+    return 0;
+}}
+
 int main(int argc, char* argv[])
 {{
     char *home = "{home}";
     wchar_t *whome = Py_DecodeLocale(home, NULL);
     Py_SetPythonHome(whome);
 
-    Py_InitializeEx(0);
-    Py_DECREF(PyImport_ImportModule("PIL.Image"));
-    Py_Finalize();
-
-    Py_InitializeEx(0);
-    Py_DECREF(PyImport_ImportModule("PIL.Image"));
-    Py_Finalize();
+    if (import_pil("first") || import_pil("second")) {{
+        return 1;
+    }}
 
     PyMem_RawFree(whome);
 
+    fprintf(stderr, "embed_pil: done\\n");
+    fflush(stderr);
     return 0;
 }}
         """)
