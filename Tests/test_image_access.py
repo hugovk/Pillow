@@ -280,30 +280,33 @@ class TestEmbeddable:
         except Exception:
             pytest.skip("Compiler could not be initialized")
 
+        is_mingw = compiler.compiler_type == "mingw32"
         with open("embed_pil.c", "w", encoding="utf-8") as fh:
             home = sys.prefix.replace("\\", "\\\\")
+            add_dll_directory = ""
+            if is_mingw:
+                # Extension modules are loaded without searching PATH, and the
+                # DLLs that _imaging depends on are in the bin directory
+                dll_dir = os.path.join(sys.prefix, "bin").replace("\\", "/")
+                add_dll_directory = (
+                    "    PyRun_SimpleString("
+                    f"\"import os; os.add_dll_directory('{dll_dir}')\");"
+                )
             fh.write(f"""
 #include <Python.h>
 
-static int import_pil(const char *stage)
+static int import_pil(void)
 {{
     PyObject *module;
 
-    fprintf(stderr, "embed_pil: %s: initializing\\n", stage);
-    fflush(stderr);
     Py_InitializeEx(0);
-
-    fprintf(stderr, "embed_pil: %s: importing PIL.Image\\n", stage);
-    fflush(stderr);
+{add_dll_directory}
     module = PyImport_ImportModule("PIL.Image");
     if (module == NULL) {{
         PyErr_Print();
         return 1;
     }}
     Py_DECREF(module);
-
-    fprintf(stderr, "embed_pil: %s: finalizing\\n", stage);
-    fflush(stderr);
     Py_Finalize();
     return 0;
 }}
@@ -314,21 +317,19 @@ int main(int argc, char* argv[])
     wchar_t *whome = Py_DecodeLocale(home, NULL);
     Py_SetPythonHome(whome);
 
-    if (import_pil("first") || import_pil("second")) {{
+    if (import_pil() || import_pil()) {{
         return 1;
     }}
 
     PyMem_RawFree(whome);
 
-    fprintf(stderr, "embed_pil: done\\n");
-    fflush(stderr);
     return 0;
 }}
         """)
 
         objects = compiler.compile(["embed_pil.c"])
         libraries = []
-        if compiler.compiler_type == "mingw32":
+        if is_mingw:
             # MSVC links the Python library automatically via a pragma in
             # pyconfig.h, but MinGW needs it to be passed explicitly
             libraries.append(
