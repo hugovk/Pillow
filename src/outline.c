@@ -18,6 +18,7 @@
  */
 
 #include <Python.h>
+#include "pillow_compat.h"
 
 #include "libImaging/Imaging.h"
 
@@ -28,23 +29,15 @@ typedef struct {
     PyObject_HEAD ImagingOutline outline;
 } OutlineObject;
 
-static PyTypeObject OutlineType;
+static PyTypeObject *OutlineType;
 
-int
-outline_setup(void) {
-    if (PyType_Ready(&OutlineType) < 0) {
-        return -1;
-    }
-    return 0;
-}
-
-#define PyOutline_Check(op) (Py_TYPE(op) == &OutlineType)
+#define PyOutline_Check(op) (Py_TYPE(op) == OutlineType)
 
 static OutlineObject *
 _outline_new(void) {
     OutlineObject *self;
 
-    self = PyObject_New(OutlineObject, &OutlineType);
+    self = PyObject_New(OutlineObject, OutlineType);
     if (self == NULL) {
         return NULL;
     }
@@ -57,7 +50,7 @@ _outline_new(void) {
 static void
 _outline_dealloc(OutlineObject *self) {
     ImagingOutlineDelete(self->outline);
-    PyObject_Del(self);
+    pil_object_free(self);
 }
 
 ImagingOutline
@@ -152,9 +145,21 @@ static struct PyMethodDef _outline_methods[] = {
     {NULL, NULL} /* sentinel */
 };
 
-static PyTypeObject OutlineType = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "Outline",
-    .tp_basicsize = sizeof(OutlineObject),
-    .tp_dealloc = (destructor)_outline_dealloc,
-    .tp_methods = _outline_methods,
+static PyType_Slot outline_slots[] = {
+    {Py_tp_dealloc, (destructor)_outline_dealloc},
+    {Py_tp_methods, _outline_methods},
+    {0, NULL},
 };
+
+static PyType_Spec outline_spec = {
+    .name = "PIL._imaging.Outline",
+    .basicsize = sizeof(OutlineObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = outline_slots,
+};
+
+int
+outline_setup(void) {
+    return pil_create_type(&OutlineType, &outline_spec);
+}

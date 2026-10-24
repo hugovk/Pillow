@@ -1,5 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include "pillow_compat.h"
 #include "libImaging/Imaging.h"
 #include <webp/encode.h>
 #include <webp/decode.h>
@@ -126,7 +127,7 @@ typedef struct {
     WebPPicture frame;
 } WebPAnimEncoderObject;
 
-static PyTypeObject WebPAnimEncoder_Type;
+static PyTypeObject *WebPAnimEncoder_Type;
 
 // Decoder type
 typedef struct {
@@ -136,7 +137,7 @@ typedef struct {
     ModeID mode;
 } WebPAnimDecoderObject;
 
-static PyTypeObject WebPAnimDecoder_Type;
+static PyTypeObject *WebPAnimDecoder_Type;
 
 // Encoder functions
 PyObject *
@@ -188,7 +189,7 @@ _anim_encoder_new(PyObject *self, PyObject *args) {
     }
 
     // Create a new animation encoder and picture frame
-    encp = PyObject_New(WebPAnimEncoderObject, &WebPAnimEncoder_Type);
+    encp = PyObject_New(WebPAnimEncoderObject, WebPAnimEncoder_Type);
     if (encp) {
         if (WebPPictureInit(&(encp->frame))) {
             enc = WebPAnimEncoderNew(width, height, &enc_options);
@@ -198,7 +199,7 @@ _anim_encoder_new(PyObject *self, PyObject *args) {
             }
             WebPPictureFree(&(encp->frame));
         }
-        PyObject_Del(encp);
+        pil_object_free(encp);
     }
     PyErr_SetString(PyExc_RuntimeError, "could not create encoder object");
     return NULL;
@@ -209,7 +210,7 @@ _anim_encoder_dealloc(PyObject *self) {
     WebPAnimEncoderObject *encp = (WebPAnimEncoderObject *)self;
     WebPPictureFree(&(encp->frame));
     WebPAnimEncoderDelete(encp->enc);
-    Py_TYPE(self)->tp_free(self);
+    pil_object_free(self);
 }
 
 PyObject *
@@ -386,7 +387,7 @@ _anim_encoder_assemble(PyObject *self, PyObject *args) {
 // Decoder functions
 PyObject *
 _anim_decoder_new(PyObject *self, PyObject *args) {
-    PyBytesObject *webp_string;
+    PyObject *webp_string;
     const uint8_t *webp;
     Py_ssize_t size;
     WebPData webp_src;
@@ -398,7 +399,7 @@ _anim_decoder_new(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "S", &webp_string)) {
         return NULL;
     }
-    PyBytes_AsStringAndSize((PyObject *)webp_string, (char **)&webp, &size);
+    PyBytes_AsStringAndSize(webp_string, (char **)&webp, &size);
     webp_src.bytes = webp;
     webp_src.size = size;
 
@@ -411,7 +412,7 @@ _anim_decoder_new(PyObject *self, PyObject *args) {
     }
 
     // Create the decoder (default mode is RGBA, if no options passed)
-    decp = PyObject_New(WebPAnimDecoderObject, &WebPAnimDecoder_Type);
+    decp = PyObject_New(WebPAnimDecoderObject, WebPAnimDecoder_Type);
     if (decp) {
         decp->mode = mode;
         if (WebPDataCopy(&webp_src, &(decp->data))) {
@@ -424,7 +425,7 @@ _anim_decoder_new(PyObject *self, PyObject *args) {
             }
             WebPDataClear(&(decp->data));
         }
-        PyObject_Del(decp);
+        pil_object_free(decp);
     }
     PyErr_SetString(PyExc_OSError, "could not create decoder object");
     return NULL;
@@ -435,7 +436,7 @@ _anim_decoder_dealloc(PyObject *self) {
     WebPAnimDecoderObject *decp = (WebPAnimDecoderObject *)self;
     WebPDataClear(&(decp->data));
     WebPAnimDecoderDelete(decp->dec);
-    Py_TYPE(self)->tp_free(self);
+    pil_object_free(self);
 }
 
 PyObject *
@@ -527,11 +528,18 @@ static struct PyMethodDef _anim_encoder_methods[] = {
 };
 
 // WebPAnimEncoder type definition
-static PyTypeObject WebPAnimEncoder_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "WebPAnimEncoder",
-    .tp_basicsize = sizeof(WebPAnimEncoderObject),
-    .tp_dealloc = (destructor)_anim_encoder_dealloc,
-    .tp_methods = _anim_encoder_methods,
+static PyType_Slot _anim_encoder_slots[] = {
+    {Py_tp_dealloc, (destructor)_anim_encoder_dealloc},
+    {Py_tp_methods, _anim_encoder_methods},
+    {0, NULL},
+};
+
+static PyType_Spec _anim_encoder_spec = {
+    .name = "PIL._webp.WebPAnimEncoder",
+    .basicsize = sizeof(WebPAnimEncoderObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = _anim_encoder_slots,
 };
 
 // WebPAnimDecoder methods
@@ -544,11 +552,18 @@ static struct PyMethodDef _anim_decoder_methods[] = {
 };
 
 // WebPAnimDecoder type definition
-static PyTypeObject WebPAnimDecoder_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "WebPAnimDecoder",
-    .tp_basicsize = sizeof(WebPAnimDecoderObject),
-    .tp_dealloc = (destructor)_anim_decoder_dealloc,
-    .tp_methods = _anim_decoder_methods,
+static PyType_Slot _anim_decoder_slots[] = {
+    {Py_tp_dealloc, (destructor)_anim_decoder_dealloc},
+    {Py_tp_methods, _anim_decoder_methods},
+    {0, NULL},
+};
+
+static PyType_Spec _anim_decoder_spec = {
+    .name = "PIL._webp.WebPAnimDecoder",
+    .basicsize = sizeof(WebPAnimDecoderObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = _anim_decoder_slots,
 };
 
 /* -------------------------------------------------------------------- */
@@ -751,8 +766,10 @@ static PyMethodDef webpMethods[] = {
 static int
 setup_module(PyObject *m) {
     /* Ready object types */
-    if (PyType_Ready(&WebPAnimDecoder_Type) < 0 ||
-        PyType_Ready(&WebPAnimEncoder_Type) < 0) {
+    if (pil_create_type(&WebPAnimDecoder_Type, &_anim_decoder_spec) < 0) {
+        return -1;
+    }
+    if (pil_create_type(&WebPAnimEncoder_Type, &_anim_encoder_spec) < 0) {
         return -1;
     }
 

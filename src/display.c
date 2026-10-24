@@ -24,6 +24,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include "pillow_compat.h"
 
 #include "libImaging/Imaging.h"
 
@@ -44,21 +45,13 @@ typedef struct {
     PyObject_HEAD ImagingDIB dib;
 } ImagingDisplayObject;
 
-static PyTypeObject ImagingDisplayType;
-
-int
-display_setup(void) {
-    if (PyType_Ready(&ImagingDisplayType) < 0) {
-        return -1;
-    }
-    return 0;
-}
+static PyTypeObject *ImagingDisplayType;
 
 static ImagingDisplayObject *
 _new(const ModeID mode, int xsize, int ysize) {
     ImagingDisplayObject *display;
 
-    display = PyObject_New(ImagingDisplayObject, &ImagingDisplayType);
+    display = PyObject_New(ImagingDisplayObject, ImagingDisplayType);
     if (display == NULL) {
         return NULL;
     }
@@ -77,7 +70,7 @@ _delete(ImagingDisplayObject *display) {
     if (display->dib) {
         ImagingDeleteDIB(display->dib);
     }
-    PyObject_Del(display);
+    pil_object_free(display);
 }
 
 static PyObject *
@@ -271,13 +264,25 @@ static struct PyGetSetDef getsetters[] = {
     {"mode", (getter)_getattr_mode}, {"size", (getter)_getattr_size}, {NULL}
 };
 
-static PyTypeObject ImagingDisplayType = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "ImagingDisplay",
-    .tp_basicsize = sizeof(ImagingDisplayObject),
-    .tp_dealloc = (destructor)_delete,
-    .tp_methods = methods,
-    .tp_getset = getsetters,
+static PyType_Slot display_slots[] = {
+    {Py_tp_dealloc, (destructor)_delete},
+    {Py_tp_methods, methods},
+    {Py_tp_getset, getsetters},
+    {0, NULL},
 };
+
+static PyType_Spec display_spec = {
+    .name = "PIL._imaging.ImagingDisplay",
+    .basicsize = sizeof(ImagingDisplayObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = display_slots,
+};
+
+int
+display_setup(void) {
+    return pil_create_type(&ImagingDisplayType, &display_spec);
+}
 
 PyObject *
 PyImaging_DisplayWin32(PyObject *self, PyObject *args) {
@@ -429,7 +434,7 @@ PyImaging_GrabScreenWin32(PyObject *self, PyObject *args) {
             bitmap,
             0,
             height,
-            PyBytes_AS_STRING(buffer),
+            PyBytes_AsString(buffer),
             (BITMAPINFO *)&core,
             DIB_RGB_COLORS
         )) {
