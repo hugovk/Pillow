@@ -14,7 +14,15 @@ from pathlib import Path
 
 import pytest
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageMath
+from PIL import (
+    Image,
+    ImageChops,
+    ImageDraw,
+    ImageFilter,
+    ImageFont,
+    ImageMath,
+    ImagePath,
+)
 from PIL.Image import Resampling, Transform, Transpose
 
 TYPE_CHECKING = False
@@ -1018,3 +1026,121 @@ def test_quantize_to_palette(
         result = bench(lambda: im._new(im.im.convert(output_mode, dither, palette.im)))
     assert result.mode == output_mode
     benchmark_save(result)
+
+
+# Per-pixel and per-element APIs. These cross the Python/C boundary once per
+# pixel or element, so they measure call overhead rather than C throughput and
+# use a much smaller image than SIZES.
+PIXEL_SIZE = (128, 128)
+FONT_PATH = Path(__file__).parent / "fonts" / "FreeMono.ttf"
+TEXT = "The quick brown fox jumps over the lazy dog"
+
+
+def _solid_color(mode: str) -> tuple[int, ...] | int:
+    nbands = len(Image.new(mode, (1, 1)).getbands())
+    return (10, 20, 30, 40)[:nbands] if nbands > 1 else 10
+
+
+@pytest.mark.benchmark(group="pixel")
+@pytest.mark.parametrize("mode", MODES)
+def test_getpixel(bench: BenchmarkFixture, mode: str) -> None:
+    im = make_pillow_image(mode, PIXEL_SIZE)
+    width, height = im.size
+
+    def run() -> None:
+        for y in range(height):
+            for x in range(width):
+                im.getpixel((x, y))
+
+    bench(run)
+
+
+@pytest.mark.benchmark(group="pixel")
+@pytest.mark.parametrize("mode", MODES)
+def test_putpixel(bench: BenchmarkFixture, mode: str) -> None:
+    im = make_pillow_image(mode, PIXEL_SIZE)
+    width, height = im.size
+    color = _solid_color(mode)
+
+    def run() -> None:
+        for y in range(height):
+            for x in range(width):
+                im.putpixel((x, y), color)
+
+    bench(run)
+
+
+@pytest.mark.benchmark(group="pixel")
+@pytest.mark.parametrize("mode", MODES)
+def test_pixel_access_get(bench: BenchmarkFixture, mode: str) -> None:
+    im = make_pillow_image(mode, PIXEL_SIZE)
+    width, height = im.size
+    px = im.load()
+    assert px is not None
+
+    def run() -> None:
+        for y in range(height):
+            for x in range(width):
+                px[x, y]
+
+    bench(run)
+
+
+@pytest.mark.benchmark(group="pixel")
+@pytest.mark.parametrize("mode", MODES)
+def test_pixel_access_set(bench: BenchmarkFixture, mode: str) -> None:
+    im = make_pillow_image(mode, PIXEL_SIZE)
+    width, height = im.size
+    px = im.load()
+    assert px is not None
+    color = _solid_color(mode)
+
+    def run() -> None:
+        for y in range(height):
+            for x in range(width):
+                px[x, y] = color
+
+    bench(run)
+
+
+@pytest.mark.benchmark(group="pixel")
+@pytest.mark.parametrize("mode", MODES)
+def test_putdata(bench: BenchmarkFixture, mode: str) -> None:
+    im = make_pillow_image(mode, PIXEL_SIZE)
+    data = list(im.get_flattened_data())
+    bench(im.putdata, data)
+
+
+@pytest.mark.benchmark(group="path")
+def test_path_from_list(bench: BenchmarkFixture) -> None:
+    width, height = PIXEL_SIZE
+    points = [(x, y) for y in range(height) for x in range(width)]
+    bench(ImagePath.Path, points)
+
+
+@pytest.mark.benchmark(group="path")
+def test_path_tolist(bench: BenchmarkFixture) -> None:
+    width, height = PIXEL_SIZE
+    path = ImagePath.Path([(x, y) for y in range(height) for x in range(width)])
+    bench(path.tolist)
+
+
+@pytest.mark.benchmark(group="font")
+def test_font_load(bench: BenchmarkFixture) -> None:
+    bench(ImageFont.truetype, FONT_PATH, 20)
+
+
+@pytest.mark.benchmark(group="font")
+def test_font_getbbox(bench: BenchmarkFixture) -> None:
+    font = ImageFont.truetype(FONT_PATH, 20)
+    bench(font.getbbox, TEXT)
+
+
+@pytest.mark.benchmark(group="font")
+@pytest.mark.parametrize("mode", MODES)
+def test_draw_text(bench: BenchmarkFixture, mode: str) -> None:
+    im = Image.new(mode, (600, 40))
+    draw = ImageDraw.Draw(im)
+    font = ImageFont.truetype(FONT_PATH, 20)
+    color = _solid_color(mode)
+    bench(draw.text, (5, 5), TEXT, font=font, fill=color)
