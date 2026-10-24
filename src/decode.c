@@ -31,6 +31,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include "pillow_compat.h"
 
 #include "libImaging/Imaging.h"
 
@@ -55,22 +56,14 @@ typedef struct {
     int pulls_fd;
 } ImagingDecoderObject;
 
-static PyTypeObject ImagingDecoderType;
-
-int
-decode_setup(void) {
-    if (PyType_Ready(&ImagingDecoderType) < 0) {
-        return -1;
-    }
-    return 0;
-}
+static PyTypeObject *ImagingDecoderType;
 
 static ImagingDecoderObject *
 PyImaging_DecoderNew(int contextsize) {
     ImagingDecoderObject *decoder;
     void *context;
 
-    decoder = PyObject_New(ImagingDecoderObject, &ImagingDecoderType);
+    decoder = PyObject_New(ImagingDecoderObject, ImagingDecoderType);
     if (decoder == NULL) {
         return NULL;
     }
@@ -116,7 +109,7 @@ _dealloc(ImagingDecoderObject *decoder) {
     free(decoder->state.context);
     Py_XDECREF(decoder->lock);
     Py_XDECREF(decoder->state.fd);
-    PyObject_Del(decoder);
+    pil_object_free(decoder);
 }
 
 static PyObject *
@@ -176,7 +169,7 @@ _setimage(ImagingDecoderObject *decoder, PyObject *args) {
         x1 = im->xsize;
         y1 = im->ysize;
     } else {
-        if (!PyTuple_Check(extents) || PyTuple_GET_SIZE(extents) != 4) {
+        if (!PyTuple_Check(extents) || PyTuple_Size(extents) != 4) {
             PyErr_SetString(PyExc_ValueError, "invalid extents");
             return NULL;
         }
@@ -290,13 +283,25 @@ static struct PyGetSetDef getseters[] = {
     {NULL, NULL, NULL, NULL, NULL} /* sentinel */
 };
 
-static PyTypeObject ImagingDecoderType = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "ImagingDecoder",
-    .tp_basicsize = sizeof(ImagingDecoderObject),
-    .tp_dealloc = (destructor)_dealloc,
-    .tp_methods = methods,
-    .tp_getset = getseters,
+static PyType_Slot decoder_slots[] = {
+    {Py_tp_dealloc, (destructor)_dealloc},
+    {Py_tp_methods, methods},
+    {Py_tp_getset, getseters},
+    {0, NULL},
 };
+
+static PyType_Spec decoder_spec = {
+    .name = "PIL._imaging.ImagingDecoder",
+    .basicsize = sizeof(ImagingDecoderObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = decoder_slots,
+};
+
+int
+decode_setup(void) {
+    return pil_create_type(&ImagingDecoderType, &decoder_spec);
+}
 
 /* -------------------------------------------------------------------- */
 

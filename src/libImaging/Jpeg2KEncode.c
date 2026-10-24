@@ -411,8 +411,11 @@ j2k_encode_entry(Imaging im, ImagingCodecState state) {
             }
 
             for (n = 0; n < len; ++n) {
-                PyObject *obj = PySequence_ITEM(context->quality_layers, n);
-                pq[n] = PyFloat_AsDouble(obj);
+                PyObject *obj = PySequence_GetItem(context->quality_layers, n);
+                if (obj) {
+                    pq[n] = PyFloat_AsDouble(obj);
+                    Py_DECREF(obj);
+                }
             }
         }
     } else {

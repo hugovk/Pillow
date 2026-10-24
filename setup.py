@@ -649,7 +649,7 @@ class pil_build_ext(build_ext):
                 _add_directory(include_dirs, os.path.join(sdk_path, "usr", "include"))
 
                 for extension in self.extensions:
-                    extension.extra_compile_args = ["-Wno-nullability-completeness"]
+                    extension.extra_compile_args.append("-Wno-nullability-completeness")
 
         elif sys.platform == "ios":
             # Add the iOS SDK path.
@@ -660,7 +660,7 @@ class pil_build_ext(build_ext):
             _add_directory(include_dirs, os.path.join(sdk_path, "usr", "include"))
 
             for extension in self.extensions:
-                extension.extra_compile_args = ["-Wno-nullability-completeness"]
+                extension.extra_compile_args.append("-Wno-nullability-completeness")
 
         elif sys.platform.startswith(("linux", "gnu", "freebsd")):
             for dirname in _find_library_dirs_ldconfig():
@@ -1085,6 +1085,18 @@ files.extend("src/" + src_file + ".c" for src_file in _IMAGING)
 files.extend(
     os.path.join("src/libImaging", src_file + ".c") for src_file in _LIB_IMAGING
 )
+
+# Build against the Limited API to produce a single abi3 wheel per platform.
+# Free-threaded builds are excluded: abi3 does not apply to them, and build
+# tools cannot produce PEP 803 abi3t wheels yet. Alternative implementations
+# are also excluded.
+ABI3_FLOOR = (3, 11)
+limited_api = (
+    os.environ.get("PILLOW_LIMITED_API") == "1"
+    and sys.implementation.name == "cpython"
+    and not sysconfig.get_config_var("Py_GIL_DISABLED")
+)
+
 ext_modules = [
     Extension("PIL._imaging", files),
     Extension("PIL._imagingft", ["src/_imagingft.c"]),
@@ -1099,6 +1111,22 @@ ext_modules = [
     ),
     Extension("PIL._imagingmorph", ["src/_imagingmorph.c"]),
 ]
+if limited_api:
+    for ext_module in ext_modules:
+        ext_module.py_limited_api = True
+        ext_module.define_macros.append(
+            ("Py_LIMITED_API", f"0x{ABI3_FLOOR[0]:02X}{ABI3_FLOOR[1]:02X}0000")
+        )
+        # Py_TYPE and friends are static inline functions taking PyObject *
+        # under the Limited API; make passing other pointer types an error
+        # everywhere, matching GCC 14 on manylinux
+        if os.name != "nt" or PLATFORM_MINGW:
+            ext_module.extra_compile_args.append("-Werror=incompatible-pointer-types")
+            # Only export each module's PyInit function. Pillow's internal
+            # Py-prefixed symbols would otherwise fail abi3audit --strict
+            ext_module.extra_compile_args.append("-fvisibility=hidden")
+        else:
+            ext_module.extra_compile_args.append("/we4133")
 
 
 try:
@@ -1106,6 +1134,11 @@ try:
         cmdclass={"build_ext": pil_build_ext},
         ext_modules=ext_modules,
         libraries=libraries,
+        options=(
+            {"bdist_wheel": {"py_limited_api": f"cp{ABI3_FLOOR[0]}{ABI3_FLOOR[1]}"}}
+            if limited_api
+            else {}
+        ),
     )
 except RequiredDependencyException as err:
     msg = f"""

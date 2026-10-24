@@ -20,7 +20,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include "thirdparty/pythoncapi_compat.h"
+#include "pillow_compat.h"
 #include "libImaging/Imaging.h"
 
 #include <ft2build.h>
@@ -92,7 +92,7 @@ typedef struct {
     int layout_engine;
 } FontObject;
 
-static PyTypeObject Font_Type;
+static PyTypeObject *Font_Type;
 
 /* round a 26.6 pixel coordinate to the nearest integer */
 #define PIXEL(x) ((((x) + 32) & -64) >> 6)
@@ -119,7 +119,7 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
     FontObject *self;
     int error = 0;
 
-    PyBytesObject *filename_bytes = NULL;
+    PyObject *filename_bytes = NULL;
     float size;
     FT_Size_RequestRec req;
     FT_Long width;
@@ -153,9 +153,9 @@ getfont(PyObject *self_, PyObject *args, PyObject *kw) {
         )) {
         return NULL;
     }
-    const char *filename = PyBytes_AS_STRING(filename_bytes);
+    const char *filename = PyBytes_AsString(filename_bytes);
 
-    self = PyObject_New(FontObject, &Font_Type);
+    self = PyObject_New(FontObject, Font_Type);
     if (!self) {
         Py_DECREF(filename_bytes);
         return NULL;
@@ -246,7 +246,7 @@ text_layout_raqm(
     int set_text;
     if (PyUnicode_Check(string)) {
         Py_UCS4 *text = PyUnicode_AsUCS4Copy(string);
-        size = PyUnicode_GET_LENGTH(string);
+        size = PyUnicode_GetLength(string);
         if (!text || !size) {
             /* return 0 and clean up, no glyphs==no size,
                and raqm fails with empty strings */
@@ -312,9 +312,13 @@ text_layout_raqm(
             goto failed;
         }
 
-        len = PySequence_Fast_GET_SIZE(seq);
+        len = PySequence_Size(seq);
         for (j = 0; j < len; j++) {
-            PyObject *item = PySequence_Fast_GET_ITEM(seq, j);
+            PyObject *item = pil_fast_getitem(seq, j);
+            if (item == NULL) {
+                Py_DECREF(seq);
+                goto failed;
+            }
             if (!PyUnicode_Check(item)) {
                 Py_DECREF(seq);
                 PyErr_SetString(PyExc_TypeError, "expected a string");
@@ -405,7 +409,7 @@ text_layout_fallback(
     }
 
     if (PyUnicode_Check(string)) {
-        count = PyUnicode_GET_LENGTH(string);
+        count = PyUnicode_GetLength(string);
     } else if (PyBytes_Check(string)) {
         PyBytes_AsStringAndSize(string, &buffer, &count);
     } else {
@@ -416,8 +420,17 @@ text_layout_fallback(
         return 0;
     }
 
+    Py_UCS4 *ucs4 = NULL;
+    if (buffer == NULL) {
+        ucs4 = PyUnicode_AsUCS4Copy(string);
+        if (ucs4 == NULL) {
+            return 0;
+        }
+    }
+
     (*glyph_info) = PyMem_New(GlyphInfo, count);
     if ((*glyph_info) == NULL) {
+        PyMem_Free(ucs4);
         PyErr_SetString(PyExc_MemoryError, "PyMem_New() failed");
         return 0;
     }
@@ -433,11 +446,12 @@ text_layout_fallback(
         if (buffer) {
             ch = buffer[i];
         } else {
-            ch = PyUnicode_READ_CHAR(string, i);
+            ch = ucs4[i];
         }
         (*glyph_info)[i].index = FT_Get_Char_Index(self->face, ch);
         error = FT_Load_Glyph(self->face, (*glyph_info)[i].index, load_flags);
         if (error) {
+            PyMem_Free(ucs4);
             geterror(error);
             return 0;
         }
@@ -464,6 +478,7 @@ text_layout_fallback(
         last_index = (*glyph_info)[i].index;
         (*glyph_info)[i].cluster = ch;
     }
+    PyMem_Free(ucs4);
     return count;
 }
 
@@ -1442,7 +1457,7 @@ font_setvaraxes_impl(FontObject *self, PyObject *args) {
         }
 
         if (PyFloat_Check(item)) {
-            coord = PyFloat_AS_DOUBLE(item);
+            coord = PyFloat_AsDouble(item);
         } else if (PyLong_Check(item)) {
             coord = (float)PyLong_AsLong(item);
         } else if (PyNumber_Check(item)) {
@@ -1485,7 +1500,7 @@ font_dealloc(FontObject *self) {
     if (self->font_bytes) {
         PyMem_Free(self->font_bytes);
     }
-    PyObject_Del(self);
+    pil_object_free(self);
 }
 
 static PyMethodDef font_methods[] = {
@@ -1602,12 +1617,19 @@ static struct PyGetSetDef font_getsetters[] = {
     {NULL}
 };
 
-static PyTypeObject Font_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0).tp_name = "Font",
-    .tp_basicsize = sizeof(FontObject),
-    .tp_dealloc = (destructor)font_dealloc,
-    .tp_methods = font_methods,
-    .tp_getset = font_getsetters,
+static PyType_Slot font_slots[] = {
+    {Py_tp_dealloc, (destructor)font_dealloc},
+    {Py_tp_methods, font_methods},
+    {Py_tp_getset, font_getsetters},
+    {0, NULL},
+};
+
+static PyType_Spec font_spec = {
+    .name = "PIL._imagingft.Font",
+    .basicsize = sizeof(FontObject),
+    .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION |
+             Py_TPFLAGS_IMMUTABLETYPE,
+    .slots = font_slots,
 };
 
 static PyMethodDef _functions[] = {
@@ -1623,7 +1645,7 @@ setup_module(PyObject *m) {
     d = PyModule_GetDict(m);
 
     /* Ready object type */
-    if (PyType_Ready(&Font_Type) < 0) {
+    if (pil_create_type(&Font_Type, &font_spec) < 0) {
         return -1;
     }
 
