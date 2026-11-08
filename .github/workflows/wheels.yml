@@ -176,6 +176,18 @@ jobs:
     if: github.event_name != 'schedule' || github.event.repository.fork == false
     name: Windows ${{ matrix.cibw_arch }}
     runs-on: ${{ matrix.os }}
+    env:
+      # The wheel test runs in a Windows container, to isolate it from the build
+      # environment. Windows containers are not available on ARM64 runners,
+      # so test directly in the cibuildwheel test environment there.
+      CIBW_TEST_COMMAND_DOCKER: 'docker run --rm
+        -v {project}:C:\pillow
+        -v C:\cibw:C:\cibw
+        -v %CD%\..\venv-test:%CD%\..\venv-test
+        -e CI -e GITHUB_ACTIONS -e FORCE_COLOR
+        mcr.microsoft.com/windows/servercore:ltsc2022
+        powershell C:\pillow\.github\workflows\wheels-test.ps1 %CD%\..\venv-test'
+      CIBW_TEST_COMMAND_DIRECT: 'powershell {project}\.github\workflows\wheels-test.ps1 %CD%\..\venv-test {project}'
     strategy:
       fail-fast: false
       matrix:
@@ -255,14 +267,7 @@ jobs:
           CIBW_BEFORE_ALL: "{package}\\winbuild\\build\\build_dep_all.cmd"
           CIBW_CACHE_PATH: "C:\\cibw"
           CIBW_ENABLE: cpython-prerelease pypy
-          CIBW_TEST_SKIP: "*-win_arm64"
-          CIBW_TEST_COMMAND: 'docker run --rm
-            -v {project}:C:\pillow
-            -v C:\cibw:C:\cibw
-            -v %CD%\..\venv-test:%CD%\..\venv-test
-            -e CI -e GITHUB_ACTIONS -e FORCE_COLOR
-            mcr.microsoft.com/windows/servercore:ltsc2022
-            powershell C:\pillow\.github\workflows\wheels-test.ps1 %CD%\..\venv-test'
+          CIBW_TEST_COMMAND: ${{ matrix.cibw_arch == 'ARM64' && env.CIBW_TEST_COMMAND_DIRECT || env.CIBW_TEST_COMMAND_DOCKER }}
         shell: bash
 
       - name: Download SBOM
