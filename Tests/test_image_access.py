@@ -279,6 +279,10 @@ class TestEmbeddable:
         reason="failing test",
     )
     @pytest.mark.skipif(not is_win32(), reason="requires Windows")
+    @pytest.mark.skipif(
+        sys.prefix != sys.base_prefix,
+        reason="embedded interpreter cannot import PIL from a virtual environment",
+    )
     def test_embeddable(self) -> None:
         pytest.importorskip("setuptools", reason="setuptools not installed")
         import ctypes
