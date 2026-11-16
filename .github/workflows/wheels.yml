@@ -97,7 +97,7 @@ jobs:
             macosx_deployment_target: "10.15"
           - name: "macOS arm64"
             platform: macos
-            os: macos-latest
+            os: xcode-27
             cibw_arch: arm64
             macosx_deployment_target: "11.0"
           - name: "manylinux_2_28 x86_64"
@@ -122,11 +122,11 @@ jobs:
             build: "*musllinux*"
           - name: "iOS arm64 device"
             platform: ios
-            os: macos-latest
+            os: xcode-27
             cibw_arch: arm64_iphoneos
           - name: "iOS arm64 simulator"
             platform: ios
-            os: macos-latest
+            os: xcode-27
             cibw_arch: arm64_iphonesimulator
           - name: "iOS x86_64 simulator"
             platform: ios
