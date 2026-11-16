@@ -109,7 +109,7 @@ jobs:
         GHA_LIBWEBP_CACHE_HIT: ${{ steps.cache-libwebp.outputs.cache-hit }}
 
     - name: Install macOS dependencies
-      if: startsWith(matrix.os, 'macOS')
+      if: runner.os == 'macOS'
       run: |
         .github/workflows/macos-install.sh
       env:
